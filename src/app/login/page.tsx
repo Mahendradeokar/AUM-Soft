@@ -27,9 +27,7 @@ const formSchema = z.object({
       console.log(values)
     }
   
-  
-
-export default function ProfileForm() {
+const LoginForm = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -38,12 +36,12 @@ export default function ProfileForm() {
     })
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex justify-center items-center h-screen">
         <FormField
           control={form.control}
           name="username"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="min-w-[30rem]">
               <FormControl>
                 <Input placeholder="Email" {...field} />
               </FormControl>
@@ -52,11 +50,15 @@ export default function ProfileForm() {
                 <Input placeholder="Password" {...field} />
               </FormControl>
               <FormMessage />
+              <FormControl>
+              <Button className="flex min-w-[30rem] justify-center text-center" type="submit">login</Button>
+              </FormControl>
             </FormItem>
           )}
         />
-        <Button type="submit">login</Button>
       </form>
     </Form>
   )
 }
+
+export default LoginForm
