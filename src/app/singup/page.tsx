@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const Singup = () => {
+const singUp = () => {
   return (
     <Container className="flex justify-center items-center h-screen">
       <div className="fixed top-5 right-5">
@@ -27,4 +27,4 @@ const Singup = () => {
   );
 };
 
-export default Singup;
+export default singUp;
