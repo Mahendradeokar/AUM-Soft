@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
 import {
   Form,
@@ -9,21 +9,21 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 
-import { Input } from '@/components/ui/input';
-import { useForm } from 'react-hook-form';
-import { Button } from '../../../components/ui/button';
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { Button } from "../../../components/ui/button";
 
 const formSchema = z.object({
   name: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
+    message: "Username must be at least 2 characters.",
   }),
   email: z.string().email({
-    message: 'Please enter a valid email address.',
+    message: "Please enter a valid email address.",
   }),
   pwd: z.string().min(6, {
-    message: 'Passwrod must be at least 6 characters.',
+    message: "Passwrod must be at least 6 characters.",
   }),
 });
 
@@ -38,9 +38,9 @@ function SingupForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      pwd: '',
+      name: "",
+      email: "",
+      pwd: "",
     },
   });
 

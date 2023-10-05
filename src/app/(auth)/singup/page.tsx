@@ -1,10 +1,10 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import { SingupForm } from "../components";
+import { Metadata } from 'next';
+import Link from 'next/link';
+import { SingupForm } from '../components';
 
 export const metadata: Metadata = {
-  title: "Singup",
-  description: "Singup",
+  title: 'Singup',
+  description: 'Singup',
 };
 
 export default function Singup() {
@@ -20,7 +20,8 @@ export default function Singup() {
       </div>
       <SingupForm />
       <p className="px-8 text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
+        Already have an account?
+        {' '}
         <Link
           href="login"
           className="underline underline-offset-4 hover:text-primary"
