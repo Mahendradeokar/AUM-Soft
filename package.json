@@ -6,8 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix --max-warnings 0",
+    "format": "prettier --write \"{src,apps,libs,test}/**/*.ts\""
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",
@@ -33,14 +33,18 @@
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "autoprefixer": "latest",
-    "eslint": "latest",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.51.0",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.1.0",
     "eslint-config-next": "latest",
     "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-prettier": "^5.0.0",
     "postcss": "latest",
+    "postcss-preset-env": "^9.1.4",
     "prettier": "^3.0.3",
     "tailwindcss": "latest",
     "typescript": "latest"
