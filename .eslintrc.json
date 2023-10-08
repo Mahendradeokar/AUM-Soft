@@ -8,6 +8,34 @@
     "project": "tsconfig.json"
   },
   "rules": {
-    "react/react-in-jsx-scope": "off"
-  }
+    "react/react-in-jsx-scope": "off",
+    "@typescript-eslint/interface-name-prefix": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-shadow": "off",
+    "camelcase": ["error", { "properties": "never", "ignoreDestructuring": true, "ignoreImports": true, "ignoreGlobals": true }],
+    "import/prefer-default-export": "off",
+    "no-return-await": "off",
+    "no-underscore-dangle": "off",
+    "no-useless-constructor": "off",
+    "class-methods-use-this": "off",
+    "prefer-const": "off",
+    "no-shadow": "off",
+    // "no-console": process.env.NODE_ENV !== "production" ? "off" : "on",
+    "no-await-in-loop": "off",
+    "no-restricted-syntax": "off",
+    "func-names": ["error", "never"],
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never",
+        "mjs": "never",
+      },
+    ],
+  },
 }
