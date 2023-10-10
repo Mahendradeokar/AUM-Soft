@@ -10,7 +10,8 @@
   "next/core-web-vitals",
     "airbnb",
     "airbnb-typescript",
-  "plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],
+  "plugin:@typescript-eslint/recommended", 
+  "plugin:prettier/recommended"],
   "root": true,
   "env": {
     "node": true,
@@ -36,6 +37,8 @@
     "no-restricted-syntax": "off",
     "func-names": ["error", "never"],
     "quotes": "off",
+    "no-new": 0,
+
     "import/extensions": [
       "error",
       "ignorePackages",
@@ -46,12 +49,12 @@
         "tsx": "never",
         "mjs": "never"
       }
-    ],
+    ]
   },
   "settings": {
     "import/extensions": [".js", ".jsx", ".ts", ".tsx"],
     "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"],
+      "@typescript-eslint/parser": [".ts", ".tsx"]
     }
 }
 }
