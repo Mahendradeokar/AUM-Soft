@@ -1,11 +1,11 @@
 import User from '@/model/user.model';
 import { NextRequest, NextResponse } from 'next/server';
 import { StatusCodes } from 'http-status-codes';
-import { generatePublicId, setTimesTamp } from '@/common/common-function';
+import { generatePublicId, hashPassword, setTimesTamp } from '@/common/common-function';
 import { mongooseConnection } from '@/config/database';
 
 mongooseConnection();
-export async function Post(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
     const { username, email, password } = reqBody;
@@ -17,14 +17,14 @@ export async function Post(request: NextRequest) {
         status: StatusCodes.BAD_REQUEST,
       });
     }
-
+    let bcryptPassword = await hashPassword(password);
     // create new user
     const userId = generatePublicId();
-    new User({
+    await User.create({
       user_id: userId,
       user_name: username,
       email,
-      password,
+      password: bcryptPassword,
       created_at: setTimesTamp(),
       created_by: userId,
     });
