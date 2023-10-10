@@ -7,7 +7,7 @@ import { createJwtToken, createRefreshToken } from '@/helper/jwt.helper';
 import { mongooseConnection } from '@/config/database';
 
 mongooseConnection();
-export async function Post(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
     const { email, password } = reqBody;
@@ -57,7 +57,7 @@ export async function Post(request: NextRequest) {
       token: jwtToken,
       refreshToken,
     };
-    NextResponse.json({
+    return NextResponse.json({
       userData,
       success: 'user successfully login',
       status: StatusCodes.OK,
