@@ -4,7 +4,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { StatusCodes } from 'http-status-codes';
 import { comparePassword, setTimesTamp } from '@/common/common-function';
 import { createJwtToken, createRefreshToken } from '@/helper/jwt.helper';
+import { mongooseConnection } from '@/config/database';
 
+mongooseConnection();
 export async function Post(request: NextRequest) {
   try {
     const reqBody = await request.json();
