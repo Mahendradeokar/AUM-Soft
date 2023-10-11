@@ -54,7 +54,7 @@ export default function Dashboard() {
     <div className="hidden md:block">
       <div className="bg-background">
         <div className="grid lg:grid-cols-5 h-screen box-border">
-          <Sidebar className="hidden lg:block sticky h-[100vh]" />
+          <Sidebar className="hidden lg:block sticky h-screen" />
           <ScrollArea className="px-4 lg:px-8 col-span-3 lg:col-span-4 lg:border-l box-border">
             {/* <div className=""> */}
             <div className="h-full py-6">
@@ -63,7 +63,6 @@ export default function Dashboard() {
                 <div className="flex h-16 items-center">
                   <TeamSwitcher />
                   <div className="ml-auto flex items-center space-x-4">
-                    {/* <UserNav /> */}
                     <CalendarDateRangePicker />
                     <Button>Select</Button>
                   </div>
