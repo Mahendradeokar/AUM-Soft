@@ -1,7 +1,9 @@
-"use client";
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import React from "react";
+/* eslint-disable react/require-default-props */
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React from 'react';
 
 interface DashCartProps {
   title: string;
@@ -10,15 +12,10 @@ interface DashCartProps {
   Icon?: React.FC | null;
 }
 
-export default function DashCart({
-  title,
-  content,
-  description,
-  Icon = null,
-}: DashCartProps) {
+export default function DashCart({ title, content, description, Icon = null }: DashCartProps) {
   const handleClick = () => {
-    console.log("handle click");
-    alert("handle click");
+    console.log('handle click');
+    alert('handle click');
   };
 
   return (
