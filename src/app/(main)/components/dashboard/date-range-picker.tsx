@@ -1,22 +1,16 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 // import { CalendarIcon } from "@radix-ui/react-icons"
 
-import { cn } from "@/lib/utils";
-import { DateRange } from "react-day-picker";
-import { addDays, format } from "date-fns";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { cn } from '@/lib/utils';
+import { DateRange } from 'react-day-picker';
+import { addDays, format } from 'date-fns';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 
-export default function CalendarDateRangePicker({
-  className,
-}: React.HTMLAttributes<HTMLDivElement>) {
+export default function CalendarDateRangePicker({ className }: React.HTMLAttributes<HTMLDivElement>) {
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(2023, 0, 20),
     to: addDays(new Date(2023, 0, 20), 20),
@@ -27,25 +21,22 @@ export default function CalendarDateRangePicker({
     if (date.to) {
       dateFormat = (
         <>
-          {format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
+          {format(date.from, 'LLL dd, y')} - {format(date.to, 'LLL dd, y')}
         </>
       );
     } else {
-      dateFormat = format(date.from, "LLL dd, y");
+      dateFormat = format(date.from, 'LLL dd, y');
     }
   }
 
   return (
-    <div className={cn("grid gap-2", className)}>
+    <div className={cn('grid gap-2', className)}>
       <Popover>
         <PopoverTrigger asChild>
           <Button
             id="date"
             variant="outline"
-            className={cn(
-              "w-[260px] justify-start text-left font-normal",
-              !date && "text-muted-foreground"
-            )}
+            className={cn('w-[260px] justify-start text-left font-normal', !date && 'text-muted-foreground')}
           >
             {/* <CalendarIcon className="mr-2 h-4 w-4" /> */}
             {dateFormat && <span>Pick a date</span>}
