@@ -1,36 +1,25 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useForm } from 'react-hook-form';
+import { MARKETPLACE_TYPE } from '@/common/common';
 
 const formSchema = z.object({
   marketPlace: z.string({
-    required_error: "Please select the marketplace.",
+    required_error: 'Please select the marketplace.',
   }),
   apiKey: z.string({
-    required_error: "API key is required!",
+    required_error: 'API key is required!',
   }),
   apiSecret: z.string({
-    required_error: "API Secret is required!",
+    required_error: 'API Secret is required!',
   }),
 });
 
@@ -42,18 +31,31 @@ function onSubmit(values: z.infer<typeof formSchema>) {
 }
 
 const marketplaceOptions = [
-  { name: "Flipkart", value: "flpkrt", isDisable: false },
-  { name: "Amazon", value: "amzn", isDisable: true },
-  { name: "Meesho", value: "meesho", isDisable: true },
+  { name: 'Flipkart', value: MARKETPLACE_TYPE.flipkart, isDisable: false },
+  { name: 'Amazon', value: MARKETPLACE_TYPE.amazon, isDisable: true },
+  { name: 'Meesho', value: MARKETPLACE_TYPE.meesho, isDisable: true },
 ];
 
-function APIKeyForm() {
+enum Mode {
+  edit = 'edit',
+  create = 'create',
+}
+
+interface IAPIKeyFormProps {
+  mode?: Mode;
+  key?: string;
+  secret?: string;
+}
+
+function APIKeyForm({ mode = Mode.create, key = '', secret = '' }: IAPIKeyFormProps) {
+  const defaultValues = {
+    apiKey: mode === Mode.edit ? key : '',
+    apiSecret: mode === Mode.edit ? secret : '',
+  };
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      apiKey: "",
-      apiSecret: "",
-    },
+    defaultValues,
   });
   return (
     //  eslint-disable-next-line react/jsx-props-no-spreading

@@ -38,7 +38,7 @@ const links = [
     link: '/change-password',
   },
   {
-    label: 'API Keys',
+    label: 'Marketplace settings',
     Icon: KeyRoundIcon,
     link: '/key-config',
   },
