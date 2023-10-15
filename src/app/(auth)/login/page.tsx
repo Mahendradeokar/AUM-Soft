@@ -3,11 +3,11 @@ import Link from 'next/link';
 import { LoginForm } from '../components';
 
 export const metadata: Metadata = {
-  title: 'Signup',
-  description: 'Signup',
+  title: 'Login',
+  description: 'Login',
 };
 
-export default function Signup() {
+export default function Login() {
   return (
     <>
       <div className="flex flex-col space-y-2 text-center">
@@ -16,12 +16,8 @@ export default function Signup() {
       </div>
       <LoginForm />
       <p className="px-8 text-center text-sm text-muted-foreground">
-        Don&apos;t have an account?
-        {' '}
-        <Link
-          href="singup"
-          className="underline underline-offset-4 hover:text-primary"
-        >
+        Don&apos;t have an account?{' '}
+        <Link href="singup" className="underline underline-offset-4 hover:text-primary">
           Sign up now
         </Link>
       </p>

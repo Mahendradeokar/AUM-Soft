@@ -8,20 +8,38 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import APIKeyForm from './APIKeyForm';
+import APIKeyForm, { Mode } from './APIKeyForm';
 
-export default function APIModel() {
+interface IAPIModel {
+  mode?: Mode;
+  apiKey?: string;
+  secret?: string;
+  open: boolean;
+  marketPlace: string;
+  setOpen: (isOpen: boolean) => void;
+}
+
+const texts = {
+  add: {
+    title: 'Add API Credentials',
+    description: 'Enter new API key and secret.',
+  },
+  edit: {
+    title: 'Edit API Credentials',
+    description: 'Update API key and secret',
+  },
+};
+
+export default function APIModel({ mode = 'create', apiKey = '', secret = '', open, setOpen, marketPlace }: IAPIModel) {
+  const content = mode === 'edit' ? texts.edit : texts.add;
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
-          <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
+          <DialogTitle>{content.title}</DialogTitle>
+          <DialogDescription>{content.description}</DialogDescription>
         </DialogHeader>
-        <APIKeyForm />
+        <APIKeyForm mode={mode} apiKey={apiKey} secret={secret} marketPlace={marketPlace} />
       </DialogContent>
     </Dialog>
   );

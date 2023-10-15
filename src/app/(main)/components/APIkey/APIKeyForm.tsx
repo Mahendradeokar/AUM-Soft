@@ -15,12 +15,8 @@ const formSchema = z.object({
   marketPlace: z.string({
     required_error: 'Please select the marketplace.',
   }),
-  apiKey: z.string({
-    required_error: 'API key is required!',
-  }),
-  apiSecret: z.string({
-    required_error: 'API Secret is required!',
-  }),
+  apiKey: z.string().min(3, 'Please enter the valid API Key!'),
+  apiSecret: z.string().min(3, 'Please enter the valid API Secret!'),
 });
 
 // 2. Define a submit handler.
@@ -36,21 +32,19 @@ const marketplaceOptions = [
   { name: 'Meesho', value: MARKETPLACE_TYPE.meesho, isDisable: true },
 ];
 
-enum Mode {
-  edit = 'edit',
-  create = 'create',
-}
+export type Mode = 'edit' | 'create';
 
 interface IAPIKeyFormProps {
   mode?: Mode;
-  key?: string;
+  apiKey?: string;
   secret?: string;
+  marketPlace?: string;
 }
 
-function APIKeyForm({ mode = Mode.create, key = '', secret = '' }: IAPIKeyFormProps) {
+function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = '' }: IAPIKeyFormProps) {
   const defaultValues = {
-    apiKey: mode === Mode.edit ? key : '',
-    apiSecret: mode === Mode.edit ? secret : '',
+    apiKey: mode === 'edit' ? apiKey : '',
+    apiSecret: mode === 'edit' ? secret : '',
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -67,10 +61,10 @@ function APIKeyForm({ mode = Mode.create, key = '', secret = '' }: IAPIKeyFormPr
           render={({ field }) => (
             <FormItem>
               {/* <FormLabel>Marketplace</FormLabel> */}
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value} disabled={Boolean(marketPlace)}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a marketplace" />
+                    <SelectValue placeholder={marketPlace ?? 'Select a marketplace'} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -116,7 +110,7 @@ function APIKeyForm({ mode = Mode.create, key = '', secret = '' }: IAPIKeyFormPr
           )}
         />
         <Button className="w-full" type="submit">
-          Submit
+          {mode === 'edit' ? 'Update' : 'Add'}
         </Button>
       </form>
     </Form>

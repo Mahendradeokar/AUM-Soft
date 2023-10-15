@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: 'Singup',
 };
 
-export default function Singup() {
+export default function Sigup() {
   return (
     <>
       <div className="flex flex-col space-y-2 text-center">

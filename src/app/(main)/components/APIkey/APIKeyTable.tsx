@@ -1,40 +1,27 @@
 'use client';
 
 import * as React from 'react';
-import { CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
+import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { MARKETPLACE_TYPE } from '@/common/common';
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { Button } from '@/components/ui/button';
+import APIModel from './APIModel';
 
 export type MarketPlaceCred = {
   id: string;
   apiKey: string;
   apiSecret: string;
   marketPlace: string;
+  showModel?: () => void;
 };
 
 const data: MarketPlaceCred[] = [
@@ -42,80 +29,45 @@ const data: MarketPlaceCred[] = [
     id: 'm5gr84i9',
     apiKey: 'R7Bgt3E2fs9TqA1P',
     apiSecret: 'xhFvL9qQz6jwXm58Zd0Q32Ej4YrnOAbc',
-    marketPlace: MARKETPLACE_TYPE.flipkart,
+    marketPlace: 'Flipkart',
   },
   {
     id: 'm5gr84i9',
     apiKey: 'Gn2kCp5rVl9mS3tQ',
     apiSecret: 'Y4jHbA2uN5zKw8v9X6fR2mD7oB1lJ0x5',
-    marketPlace: MARKETPLACE_TYPE.amazon,
+    marketPlace: 'Amazon',
   },
   {
     id: 'm5gr84i9',
     apiKey: 'yT8vN1pJ7m2qB9lA',
     apiSecret: 'W6rF7bK1n5tH8zJ2mL3aD0qY4vE5xN9t',
-    marketPlace: MARKETPLACE_TYPE.meesho,
+    marketPlace: 'meesho',
   },
 ];
 
 export const columns: ColumnDef<MarketPlaceCred>[] = [
   {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
+    accessorKey: 'marketPlace',
+    header: 'Marketplace',
+    cell: ({ row }) => <div className="capitalize">{row.getValue('marketPlace')}</div>,
   },
   {
-    accessorKey: 'status',
-    header: 'Status',
-    cell: ({ row }) => <div className="capitalize">{row.getValue('status')}</div>,
+    accessorKey: 'apiKey',
+    header: () => <div className="text-center">Api key</div>,
+    cell: ({ row }) => <div className="text-center">{row.getValue('apiKey')}</div>,
   },
   {
-    accessorKey: 'email',
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          Email
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue('email')}</div>,
-  },
-  {
-    accessorKey: 'amount',
-    header: () => <div className="text-right">Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue('amount'));
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
+    accessorKey: 'apiSecret',
+    header: () => <div className="text-center">Api Secret</div>,
+    cell: ({ row }) => <div className="text-center">{row.getValue('apiSecret')}</div>,
   },
   {
     id: 'actions',
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const payment = row.original;
-
+      const { showModel } = table.options.meta;
+      console.log(table.options.meta);
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -126,12 +78,15 @@ export const columns: ColumnDef<MarketPlaceCred>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
-              Copy payment ID
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                showModel({ key: payment.apiKey, secret: payment.apiSecret, marketPlace: payment.marketPlace })
+              }
+            >
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem>Disable</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -140,35 +95,41 @@ export const columns: ColumnDef<MarketPlaceCred>[] = [
 ];
 
 export default function DataTableDemo() {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [model, setModel] = React.useState({ open: false, key: '', secret: '', marketPlace: '' });
+
+  const handleModelOpen = (isOpen: boolean) => {
+    setModel((preState) => {
+      return { ...preState, open: isOpen };
+    });
+  };
 
   const table = useReactTable({
     data,
     columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
+    meta: {
+      showModel: ({ key, secret, marketPlace }: { key: string; secret: string; marketPlace: string }) => {
+        setModel({
+          open: true,
+          key,
+          secret,
+          marketPlace,
+        });
+      },
     },
   });
 
   return (
     <div className="w-full">
       <div className="flex items-center justify-between py-4">
-        <h1 className="text-2xl">Marketplace's</h1>
-        <Button>Add Marketplace</Button>
+        <h1 className="text-sm text-muted-foreground">Available Marketplace</h1>
+        <Button
+          onClick={() => {
+            setModel({ open: true, key: '', secret: '', marketPlace: '' });
+          }}
+        >
+          Add Marketplace
+        </Button>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -204,25 +165,14 @@ export default function DataTableDemo() {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
-          selected.
-        </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-            Next
-          </Button>
-        </div>
-      </div>
+      <APIModel
+        mode={model.key ? 'edit' : 'create'}
+        apiKey={model.key}
+        secret={model.secret}
+        open={model.open}
+        marketPlace={model.marketPlace}
+        setOpen={handleModelOpen}
+      />
     </div>
   );
 }
