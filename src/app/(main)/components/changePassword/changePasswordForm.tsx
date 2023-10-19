@@ -26,8 +26,6 @@ const changePasswordSchema = z
     path: ['confirmPwd'],
   });
 
-// @TODO :- make all form validation common
-
 type TChangePasswordValues = z.infer<typeof changePasswordSchema>;
 
 const defaultValues: Partial<TChangePasswordValues> = {

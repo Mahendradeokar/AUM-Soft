@@ -20,8 +20,6 @@ const profileFormSchema = z.object({
   }),
 });
 
-// @TODO :- make all form validation common
-
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 // This can come from your database or API.

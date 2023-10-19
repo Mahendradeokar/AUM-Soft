@@ -73,5 +73,3 @@ export default function Dashboard() {
     </>
   );
 }
-
-// @TODO :- resolved the theme toggle button

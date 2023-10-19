@@ -21,5 +21,3 @@ export default function KeyConfig() {
     </div>
   );
 }
-
-// @TODO :- solved scroll issue
