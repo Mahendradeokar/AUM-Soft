@@ -1,4 +1,4 @@
-import { ThemeProvider, ThemeToggle } from '@/components/Theme';
+import { ThemeProvider } from '@/components/Theme';
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -22,8 +22,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           {children}
-          <Toaster />
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );

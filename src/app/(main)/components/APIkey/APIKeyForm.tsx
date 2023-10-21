@@ -1,37 +1,22 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useForm } from 'react-hook-form';
+import { MARKETPLACE_TYPE } from '@/common/common';
 
 const formSchema = z.object({
   marketPlace: z.string({
-    required_error: "Please select the marketplace.",
+    required_error: 'Please select the marketplace.',
   }),
-  apiKey: z.string({
-    required_error: "API key is required!",
-  }),
-  apiSecret: z.string({
-    required_error: "API Secret is required!",
-  }),
+  apiKey: z.string().min(3, 'Please enter the valid API Key!'),
+  apiSecret: z.string().min(3, 'Please enter the valid API Secret!'),
 });
 
 // 2. Define a submit handler.
@@ -42,18 +27,29 @@ function onSubmit(values: z.infer<typeof formSchema>) {
 }
 
 const marketplaceOptions = [
-  { name: "Flipkart", value: "flpkrt", isDisable: false },
-  { name: "Amazon", value: "amzn", isDisable: true },
-  { name: "Meesho", value: "meesho", isDisable: true },
+  { name: 'Flipkart', value: MARKETPLACE_TYPE.flipkart, isDisable: false },
+  { name: 'Amazon', value: MARKETPLACE_TYPE.amazon, isDisable: true },
+  { name: 'Meesho', value: MARKETPLACE_TYPE.meesho, isDisable: true },
 ];
 
-function APIKeyForm() {
+export type Mode = 'edit' | 'create';
+
+interface IAPIKeyFormProps {
+  mode?: Mode;
+  apiKey?: string;
+  secret?: string;
+  marketPlace?: string;
+}
+
+function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = '' }: IAPIKeyFormProps) {
+  const defaultValues = {
+    apiKey: mode === 'edit' ? apiKey : '',
+    apiSecret: mode === 'edit' ? secret : '',
+  };
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      apiKey: "",
-      apiSecret: "",
-    },
+    defaultValues,
   });
   return (
     //  eslint-disable-next-line react/jsx-props-no-spreading
@@ -65,10 +61,10 @@ function APIKeyForm() {
           render={({ field }) => (
             <FormItem>
               {/* <FormLabel>Marketplace</FormLabel> */}
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value} disabled={Boolean(marketPlace)}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a marketplace" />
+                    <SelectValue placeholder={marketPlace ?? 'Select a marketplace'} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -114,7 +110,7 @@ function APIKeyForm() {
           )}
         />
         <Button className="w-full" type="submit">
-          Submit
+          {mode === 'edit' ? 'Update' : 'Add'}
         </Button>
       </form>
     </Form>

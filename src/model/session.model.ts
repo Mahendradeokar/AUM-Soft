@@ -28,6 +28,6 @@ const SessionSchema: Schema = new Schema({
   deleted_at: { type: String },
 });
 
-const session = mongoose.model<ISessionModel>('session', SessionSchema);
+const Session = mongoose.models.Session || mongoose.model<ISessionModel>('Session', SessionSchema);
 
-export default session;
+export default Session;

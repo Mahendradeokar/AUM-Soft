@@ -25,6 +25,6 @@ const userSchema: Schema = new Schema({
   updated_by: { type: String },
   deleted_by: { type: String },
 });
-const User = mongoose.model<IUserModel>('User', userSchema);
+const User = mongoose.models.User || mongoose.model<IUserModel>('User', userSchema);
 
 export default User;

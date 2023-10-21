@@ -7,6 +7,10 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
+import axiosInstance from '@/config/axios';
+import { useToast } from '@/components/ui/use-toast';
+import { useRouter } from 'next/navigation';
+import { APIError } from '@/common/ApiError';
 import { Button } from '../../../components/ui/button';
 
 const formSchema = z.object({
@@ -21,14 +25,9 @@ const formSchema = z.object({
   }),
 });
 
-// 2. Define a submit handler.
-function onSubmit(values: z.infer<typeof formSchema>) {
-  // Do something with the form values.
-  // ✅ This will be type-safe and validated.
-  console.log(values);
-}
-
 function SingupForm() {
+  const router = useRouter();
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,6 +36,32 @@ function SingupForm() {
       pwd: '',
     },
   });
+
+  const onSubmit = async function (values: z.infer<typeof formSchema>) {
+    try {
+      const reqData = {
+        name: values.name,
+        email: values.email,
+        password: values.pwd,
+      };
+      await axiosInstance.post('auth/signup', reqData);
+      router.push('/login');
+    } catch (error: any) {
+      if (error instanceof APIError) {
+        toast({
+          variant: 'destructive',
+          title: String(error.statusCode),
+          description: error.message,
+        });
+        return;
+      }
+      toast({
+        variant: 'destructive',
+        title: 'Whoops!!',
+        description: 'Something went wrong, Please try again later!',
+      });
+    }
+  };
 
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
@@ -81,8 +106,8 @@ function SingupForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
-          Singup
+        <Button type="submit" className="w-full" isLoading={form.formState.isSubmitting}>
+          Signup
         </Button>
       </form>
     </Form>

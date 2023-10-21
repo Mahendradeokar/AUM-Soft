@@ -2,29 +2,23 @@
 
 'use client';
 
-import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
-import { cn } from '@/lib/utils';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 
 const profileFormSchema = z.object({
   name: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
+    message: 'Name must be at least 2 characters.',
   }),
   email: z.string().email({
     message: 'Please enter a valid email address.',
   }),
 });
-
-// @TODO :- make all form validation common
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
@@ -62,9 +56,9 @@ export function ProfileForm() {
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Name" {...field} />
+                <Input placeholder="Enter you full name." {...field} />
               </FormControl>
-              <FormDescription>Enter you full name.</FormDescription>
+              {/* <FormDescription>Enter you full name.</FormDescription> */}
               <FormMessage />
             </FormItem>
           )}
@@ -74,12 +68,12 @@ export function ProfileForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Email</FormLabel>
               <FormControl>
                 {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-                <Input placeholder="Email" {...field} />
+                <Input placeholder="Please enter the you email address." {...field} />
               </FormControl>
-              <FormMessage />
-              <FormDescription>Please enter the you email address.</FormDescription>
+              {/* <FormDescription>Please enter the you email address.</FormDescription> */}
               <FormMessage />
             </FormItem>
           )}

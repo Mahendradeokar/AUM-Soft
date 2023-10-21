@@ -9,39 +9,39 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
+import { useForm } from 'react-hook-form';
 
-const changePasswordSchema = z.object({
-  oldPwd: z.string().min(6, {
-    message: 'Password must be at least 6 characters.',
-  }),
-  newPwd: z.string().min(6, {
-    message: 'Password must be at least 6 characters.',
-  }),
-  confirmPwd: z.string().refine((value, context) => value === context.parent.newPwd, {
+const changePasswordSchema = z
+  .object({
+    oldPwd: z.string().min(6, {
+      message: 'Password must be at least 6 characters.',
+    }),
+    newPwd: z.string().min(6, {
+      message: 'Password must be at least 6 characters.',
+    }),
+    confirmPwd: z.string(),
+  })
+  .refine((value) => value.confirmPwd === value.newPwd, {
     message: 'Passwords do not match',
     path: ['confirmPwd'],
-  }),
-});
+  });
 
-// @TODO :- make all form validation common
+type TChangePasswordValues = z.infer<typeof changePasswordSchema>;
 
-type changePasswordValues = z.infer<typeof changePasswordSchema>;
-
-// TODO :- This can come from API.
-const defaultValues: Partial<changePasswordValues> = {
+const defaultValues: Partial<TChangePasswordValues> = {
   oldPwd: '',
   newPwd: '',
   confirmPwd: '',
 };
 
-export function ChangePassword() {
-  const form = useForm<changePasswordValues>({
+export default function ChangePassword() {
+  const form = useForm<TChangePasswordValues>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues,
     mode: 'onChange',
   });
 
-  function onSubmit(data: changePasswordValues) {
+  function onSubmit(data: TChangePasswordValues) {
     toast({
       title: 'You submitted the following values:',
       description: (
@@ -57,21 +57,21 @@ export function ChangePassword() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="name"
+          name="oldPwd"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Old Password</FormLabel>
               <FormControl>
-                <Input placeholder="Name" {...field} />
+                <Input {...field} />
               </FormControl>
-              <FormDescription>Enter you full name.</FormDescription>
+              <FormDescription>Enter your old password.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
           control={form.control}
-          name="email"
+          name="confirmPwd"
           render={({ field }) => (
             <FormItem>
               <FormControl>

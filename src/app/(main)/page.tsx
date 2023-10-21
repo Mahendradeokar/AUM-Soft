@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button';
 import { CalendarDateRangePicker, DashCart, DataTable, MarketPlaceSwitcher } from './components/dashboard';
 
 export const metadata: Metadata = {
-  title: 'Music App',
-  description: 'Example music app using the components.',
+  title: 'Dashboard',
+  description: 'Dashboard',
 };
 
 const cardData: {
@@ -73,5 +73,3 @@ export default function Dashboard() {
     </>
   );
 }
-
-// @TODO :- resolved the theme toggle button

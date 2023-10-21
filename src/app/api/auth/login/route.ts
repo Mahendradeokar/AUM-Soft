@@ -1,5 +1,5 @@
 import User from '@/model/user.model';
-import session from '@/model/session.model';
+import Session from '@/model/session.model';
 import { NextRequest, NextResponse } from 'next/server';
 import { StatusCodes } from 'http-status-codes';
 import { comparePassword, setTimesTamp } from '@/common/common-function';
@@ -13,18 +13,26 @@ export async function POST(request: NextRequest) {
     const { email, password } = reqBody;
     const user = await User.findOne({ email, is_deleted: false });
     if (!user) {
-      return NextResponse.json({
-        error: 'user not found',
-        status: StatusCodes.NOT_FOUND,
-      });
+      return NextResponse.json(
+        {
+          error: 'user not found',
+        },
+        {
+          status: StatusCodes.NOT_FOUND,
+        },
+      );
     }
     // login password match
     const isMatch = comparePassword(password, user.password);
     if (!isMatch) {
-      return NextResponse.json({
-        error: 'password does not match please try again',
-        status: StatusCodes.BAD_REQUEST,
-      });
+      return NextResponse.json(
+        {
+          error: 'password does not match please try again',
+        },
+        {
+          status: StatusCodes.BAD_REQUEST,
+        },
+      );
     }
 
     // created jwt token
@@ -42,7 +50,7 @@ export async function POST(request: NextRequest) {
     });
 
     // created user session
-    await session.create({
+    await Session.create({
       user_id: user.user_id,
       access_token: jwtToken,
       refresh_token: refreshToken,
@@ -57,15 +65,23 @@ export async function POST(request: NextRequest) {
       token: jwtToken,
       refreshToken,
     };
-    return NextResponse.json({
-      userData,
-      success: 'user successfully login',
-      status: StatusCodes.OK,
-    });
+    return NextResponse.json(
+      {
+        userData,
+        success: 'user successfully login',
+      },
+      {
+        status: StatusCodes.OK,
+      },
+    );
   } catch (error: any) {
-    return NextResponse.json({
-      error: error.message,
-      status: StatusCodes.INTERNAL_SERVER_ERROR,
-    });
+    return NextResponse.json(
+      {
+        error: error.message,
+      },
+      {
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+      },
+    );
   }
 }
