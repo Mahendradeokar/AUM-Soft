@@ -13,7 +13,7 @@ export interface ISessionModel {
   updated_at: string;
   deleted_at: string;
 }
-const SessionSchema: Schema = new Schema({
+const SessionSchema = new Schema({
   user_id: { type: String },
   is_expired: { type: Boolean, default: false },
   access_token: { type: String },
@@ -28,6 +28,6 @@ const SessionSchema: Schema = new Schema({
   deleted_at: { type: String },
 });
 
-const session = mongoose.model<ISessionModel>('session', SessionSchema);
+const Session = mongoose.models.session || mongoose.model<ISessionModel>('session', SessionSchema);
 
-export default session;
+export default Session;

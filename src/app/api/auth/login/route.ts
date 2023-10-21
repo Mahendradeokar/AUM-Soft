@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import { comparePassword, setTimesTamp } from '@/common/common-function';
 import { createJwtToken, createRefreshToken } from '@/helper/jwt.helper';
 import { mongooseConnection } from '@/config/database';
+import { expiredValidSession } from '@/helper/session.helper';
 
 mongooseConnection();
 export async function POST(request: NextRequest) {
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
       email: user.email,
       created_by: user.user_id,
     });
-
+    expiredValidSession({ userId: user.user_id });
     // created user session
     await session.create({
       user_id: user.user_id,
