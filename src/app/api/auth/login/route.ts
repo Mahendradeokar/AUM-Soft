@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
       );
     }
     // login password match
-    const isMatch = comparePassword(password, user.password);
+    const isMatch = await comparePassword(password, user.password);
     if (!isMatch) {
       return NextResponse.json(
         {
