@@ -1,32 +1,26 @@
-// import {verifyJwt}  from '@/helper/jwt.helper';
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+// import { ITokenData } from './common/globle-constant';
+// import { verifyJwt } from './helper/jwt.helper';
+const isProfileRoute = (pathname: string) => {
+  return pathname.startsWith('/api/profile');
+};
+export default async function middleware(request: NextRequest) {
+  try {
+    const token: any = request.headers.get('authorization');
+    const { pathname } = request.nextUrl;
 
-export function middleware(request: NextRequest) {
-  // Clone the request headers and set a new header `x-hello-from-middleware1`
-  const requestHeaders = request.headers;
-  // const Authorization :any = requestHeaders
+    if (isProfileRoute(pathname) && !token) {
+      return NextResponse.redirect(new URL('/api/auth/unauthorized', request.url));
+    }
 
-  // const  tokenData = await verifyJwt(Authorization)
-  // console.log('tokenData :>> ', tokenData);
-  // if(!tokenData){
-  //    return NextResponse.json({error:"you not authorized"})
-  // }
-
-  const response = NextResponse.next({
-    request: {
-      // New request headers
-      headers: requestHeaders,
-    },
-  });
-
-  // You can also set request headers in NextResponse.rewrite
-
-  // Set a new response header `x-hello-from-middleware2`
-  response.headers.set('x-hello-from-middleware2', 'hello');
-  // return response
-  // Set a new response header `x-hello-from-middleware2`
+    // if (isAdminRoute(pathname) && role !== "admin") {
+    //   return NextResponse.redirect(new URL('/api/auth/unauthorized', req.url));
+    // }
+    return NextResponse.next();
+  } catch (error) {
+    return error;
+  }
 }
 export const config = {
-  matcher: ['/api/:path*'],
+  matcher: ['/api/profile/:path*'],
 };

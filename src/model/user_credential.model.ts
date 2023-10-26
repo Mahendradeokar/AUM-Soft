@@ -1,0 +1,31 @@
+import mongoose, { Schema } from 'mongoose';
+
+export interface IUserCredentialModel {
+  platform_id: string;
+  user_id: string;
+  api_key: string;
+  secret: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string;
+  created_by: string;
+  updated_by: string;
+  deleted_by: string;
+}
+const userCredentialSchema = new Schema({
+  platform_id: { type: String },
+  user_id: { type: String },
+  api_key: { type: String },
+  secret: { type: String },
+  is_deleted: { type: Boolean, default: false },
+  created_at: { type: String },
+  updated_at: { type: String },
+  deleted_at: { type: String, default: false },
+  created_by: { type: String },
+  updated_by: { type: String },
+  deleted_by: { type: String },
+});
+const UserCredential =
+  mongoose.models.UserCredential || mongoose.model<IUserCredentialModel>('user_credential', userCredentialSchema);
+
+export default UserCredential;

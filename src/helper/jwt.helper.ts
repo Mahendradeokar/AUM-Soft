@@ -1,5 +1,6 @@
 import { ITokenData } from '@/common/globle-constant';
-import { sign, verify } from 'jsonwebtoken';
+import { sign } from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -17,7 +18,13 @@ export const createJwtToken = (data: ITokenData) => {
 export const createRefreshToken = (data: ITokenData) => {
   return sign(data, process.env.SECRET_KEY!, refreshTokenOption);
 };
-export async function verifyJwt(authorization: string): Promise<ITokenData> {
-  const token = await verify(authorization, process.env.SECRET_KEY!);
-  return token as ITokenData;
+export async function verifyJwt(authorization: any): Promise<ITokenData> {
+  const token = await jwtVerify(authorization, new TextEncoder().encode(process.env.SECRET_KEY));
+  return token.payload as unknown as ITokenData;
 }
+
+export const getTokenData = async (request: any) => {
+  const token = request.headers.get('authorization');
+  const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.SECRET_KEY));
+  return payload;
+};
