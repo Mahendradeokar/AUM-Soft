@@ -1,6 +1,6 @@
 import { setTimesTamp } from '@/common/common-function';
 import { mongooseConnection } from '@/config/database';
-import { getTokenData } from '@/helper/jwt.helper';
+import { getToken, getTokenData } from '@/helper/jwt.helper';
 import UserCredential from '@/model/user_credential.model';
 
 import { StatusCodes } from 'http-status-codes';
@@ -10,7 +10,8 @@ mongooseConnection();
 export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
-    const { user_id: userId } = await getTokenData(request);
+    const token: any = getToken();
+    const { user_id: userId } = await getTokenData(token);
     const { api_key: apiKey, secret } = reqBody;
     const foundCredentials = await UserCredential.findOne({ api_key: apiKey });
 

@@ -26,5 +26,5 @@ export default async function middleware(request: NextRequest) {
   }
 }
 export const config = {
-  matcher: `/((?!login|singup|api/auth/login|api/auth/signup|_next/static|_next/image|favicon.ico).*)`,
+  matcher: `/((?!login|singup|api/auth/login|api/auth/signup|api/profile/|_next/static|_next/image|favicon.ico).*)`,
 };
