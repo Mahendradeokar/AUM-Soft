@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { useForm } from 'react-hook-form';
+import axiosInstance from '@/config/axios';
+import { APIError } from '@/common/ApiError';
 
 const changePasswordSchema = z
   .object({
@@ -41,15 +43,33 @@ export default function ChangePassword() {
     mode: 'onChange',
   });
 
-  function onSubmit(data: TChangePasswordValues) {
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  async function onSubmit(values: TChangePasswordValues) {
+    try {
+      const reqData = {
+        old_password: values.oldPwd,
+        new_password: values.newPwd,
+      };
+      await axiosInstance.put('/profile/changes-password', reqData);
+      toast({
+        variant: 'default',
+        title: 'New Password Update!',
+        description: 'Your password is changed',
+      });
+    } catch (error: any) {
+      if (error instanceof APIError) {
+        toast({
+          variant: 'destructive',
+          title: String(error.statusCode),
+          description: error.message,
+        });
+        return;
+      }
+      toast({
+        variant: 'destructive',
+        title: 'Whoops!!',
+        description: 'Something went wrong, Please try again later!',
+      });
+    }
   }
 
   return (
@@ -71,20 +91,39 @@ export default function ChangePassword() {
         />
         <FormField
           control={form.control}
-          name="confirmPwd"
+          name="newPwd"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>New Password</FormLabel>
               <FormControl>
                 {/* eslint-disable-next-line react/jsx-props-no-spreading */}
                 <Input placeholder="Email" {...field} />
               </FormControl>
               <FormMessage />
-              <FormDescription>Please enter the you email address.</FormDescription>
+              <FormDescription>Please enter new Password.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Update profile</Button>
+        <FormField
+          control={form.control}
+          name="confirmPwd"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm Password</FormLabel>
+              <FormControl>
+                {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+                <Input placeholder="Email" {...field} />
+              </FormControl>
+              <FormMessage />
+              <FormDescription>Please confirm your new password.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit" isLoading={form.formState.isSubmitting}>
+          Update Password
+        </Button>
       </form>
     </Form>
   );

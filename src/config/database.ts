@@ -1,7 +1,5 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 
-dotenv.config();
 const configs: any = {
   development: {
     connection: process.env.DATABASE_CONNECTION_URI_DEV,

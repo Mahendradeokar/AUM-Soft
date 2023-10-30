@@ -1,11 +1,10 @@
 import { ITokenData } from '@/common/globle-constant';
 import { sign } from 'jsonwebtoken';
 import { jwtVerify } from 'jose';
-import dotenv from 'dotenv';
+import { cookies } from 'next/headers';
 
-dotenv.config();
 const jwtOption = {
-  expiresIn: process.env.EXPIRED_IN || '1d',
+  expiresIn: process.env.EXPIRED_IN || '1m',
 };
 
 const refreshTokenOption = {
@@ -23,8 +22,17 @@ export async function verifyJwt(authorization: any): Promise<ITokenData> {
   return token.payload as unknown as ITokenData;
 }
 
-export const getTokenData = async (request: any) => {
-  const token = request.headers.get('authorization');
+export const getTokenData = async (token: string) => {
   const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.SECRET_KEY));
   return payload;
+};
+
+export const getToken = () => {
+  return cookies().get('token')?.value ?? null;
+};
+
+export const getAuthUser = async () => {
+  const token = getToken()!; // (!) To inform TypeScript that token will always be present
+  const userData = await getTokenData(token);
+  return userData;
 };
