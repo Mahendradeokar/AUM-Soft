@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 
 export interface IUserCredentialModel {
   platform_id: string;
+  market_place_name: string;
   user_id: string;
   api_key: string;
   secret: string;
@@ -13,7 +14,8 @@ export interface IUserCredentialModel {
   deleted_by: string;
 }
 const userCredentialSchema = new Schema({
-  platform_id: { type: String },
+  platform_id: { type: String, unique: true },
+  market_place_name: { type: String },
   user_id: { type: String },
   api_key: { type: String },
   secret: { type: String },
