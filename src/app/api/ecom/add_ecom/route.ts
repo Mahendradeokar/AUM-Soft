@@ -1,4 +1,4 @@
-import { setTimesTamp } from '@/common/common-function';
+import { generatePublicId, setTimesTamp } from '@/common/common-function';
 import { mongooseConnection } from '@/config/database';
 import { getToken, getTokenData } from '@/helper/jwt.helper';
 import UserCredential from '@/model/user_credential.model';
@@ -12,8 +12,8 @@ export async function POST(request: NextRequest) {
     const reqBody = await request.json();
     const token: any = getToken();
     const { user_id: userId } = await getTokenData(token);
-    const { api_key: apiKey, secret } = reqBody;
-    const foundCredentials = await UserCredential.findOne({ api_key: apiKey });
+    const { api_key: apiKey, secret, market_place_name: marketPlaceName, account_name: accountName } = reqBody;
+    const foundCredentials = await UserCredential.findOne({ api_key: apiKey, is_deleted: false });
 
     if (foundCredentials) {
       return NextResponse.json({
@@ -21,7 +21,11 @@ export async function POST(request: NextRequest) {
         status: StatusCodes.BAD_REQUEST,
       });
     }
+    const platformId = generatePublicId();
     await UserCredential.create({
+      platform_id: platformId,
+      market_place_name: marketPlaceName,
+      account_name: accountName,
       api_key: apiKey,
       secret,
       user_id: userId,

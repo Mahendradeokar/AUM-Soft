@@ -19,15 +19,16 @@ const userCredentialSchema = new Schema({
   user_id: { type: String },
   api_key: { type: String },
   secret: { type: String },
+  account_name: { type: String },
   is_deleted: { type: Boolean, default: false },
   created_at: { type: String },
   updated_at: { type: String },
-  deleted_at: { type: String, default: false },
+  deleted_at: { type: String },
   created_by: { type: String },
   updated_by: { type: String },
   deleted_by: { type: String },
 });
 const UserCredential =
-  mongoose.models.UserCredential || mongoose.model<IUserCredentialModel>('user_credential', userCredentialSchema);
+  mongoose.models.UserCredential || mongoose.model<IUserCredentialModel>('UserCredential', userCredentialSchema);
 
 export default UserCredential;
