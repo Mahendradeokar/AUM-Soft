@@ -55,6 +55,7 @@
     ],
     "quotes": "off",
     "no-new": 0,
+    "react/jsx-props-no-spreading": 0,
     "react/require-default-props": "off",
     
     "import/extensions": [
