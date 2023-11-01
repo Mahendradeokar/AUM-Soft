@@ -12,7 +12,6 @@ export const metadata: Metadata = {
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: 'white' },
     { media: '(prefers-color-scheme: dark)', color: 'black' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' },
   ],
 };
 
