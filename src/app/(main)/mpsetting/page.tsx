@@ -9,15 +9,15 @@ export const metadata: Metadata = {
 
 export default function KeyConfig() {
   return (
-    <div className="grid grid-cols-5 gap-4">
-      <div className="col-span-3 space-y-6 mx-1">
-        <div>
-          <h3 className="text-lg font-medium mb-2">Marketplace Setting</h3>
-          <p className="text-sm text-muted-foreground">You can mange your marketplace API keys and secrets</p>
-        </div>
-        <Separator />
-        <APIKeyTable />
+    // <div className="">
+    <div className="space-y-6 mx-1">
+      <div>
+        <h3 className="text-lg font-medium mb-2">Marketplace Setting</h3>
+        <p className="text-sm text-muted-foreground">You can mange your marketplace API keys and secrets</p>
       </div>
+      <Separator />
+      <APIKeyTable />
     </div>
+    // </div>
   );
 }

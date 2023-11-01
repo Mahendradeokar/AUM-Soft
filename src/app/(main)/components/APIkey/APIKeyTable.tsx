@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { commonAPICallHandler } from '@/lib/utils';
 import { toast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
+import { Loader } from '@/components/ui/loader';
 import APIModel from './APIModel';
 
 export type MarketPlaceCred = {
@@ -52,22 +53,38 @@ export const columns: ColumnDef<MarketPlaceCred>[] = [
   {
     accessorKey: 'market_place_name',
     header: 'Marketplace',
-    cell: ({ row }) => <div className="capitalize">{row.getValue('market_place_name')}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize max-w-[200px]" title={row.getValue('market_place_name')}>
+        {row.getValue('market_place_name')}
+      </div>
+    ),
   },
   {
     accessorKey: 'account_name',
-    header: () => <div className="text-center">Account Name</div>,
-    cell: ({ row }) => <div className="text-center">{row.getValue('account_name')}</div>,
+    header: () => <div className="text-start">Account Name</div>,
+    cell: ({ row }) => (
+      <div className="text-start truncate max-w-[200px]" title={row.getValue('account_name')}>
+        {row.getValue('account_name')}
+      </div>
+    ),
   },
   {
     accessorKey: 'api_key',
-    header: () => <div className="text-center">Api key</div>,
-    cell: ({ row }) => <div className="text-center">{row.getValue('api_key')}</div>,
+    header: () => <div className="text-start">Api key</div>,
+    cell: ({ row }) => (
+      <div className="text-start truncate max-w-[200px]" title={row.getValue('api_key')}>
+        {row.getValue('api_key')}
+      </div>
+    ),
   },
   {
     accessorKey: 'secret',
-    header: () => <div className="text-center">Api Secret</div>,
-    cell: ({ row }) => <div className="text-center">{row.getValue('secret')}</div>,
+    header: () => <div className="text-start">Api Secret</div>,
+    cell: ({ row }) => (
+      <div className="text-start truncate max-w-[200px]" title={row.getValue('secret')}>
+        {row.getValue('secret')}
+      </div>
+    ),
   },
   {
     id: 'actions',
@@ -106,8 +123,12 @@ export default function DataTableDemo() {
   const router = useRouter();
   const [model, setModel] = React.useState({ open: false, key: '', secret: '', marketPlace: '' });
   const [marketPlaceData, setMarketplaceData] = React.useState<MarketPlaceCred[]>([]);
+  const [isLoading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
+    if (model.open) {
+      return;
+    }
     (async () => {
       try {
         const response = (await commonAPICallHandler({
@@ -125,9 +146,11 @@ export default function DataTableDemo() {
           title: 'Whoops!!',
           description: 'Something went wrong, Please try again later!',
         });
+      } finally {
+        setLoading(false);
       }
     })();
-  }, [router]);
+  }, [router, model.open]);
 
   const handleModelOpen = (isOpen: boolean) => {
     setModel((preState) => {
@@ -163,8 +186,8 @@ export default function DataTableDemo() {
           Add Marketplace
         </Button>
       </div>
-      <div className="rounded-md border">
-        <Table>
+      <div className="rounded-md border w-full overflow-hidden">
+        <Table className="w-full overflow-hidden">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -190,7 +213,7 @@ export default function DataTableDemo() {
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  {isLoading ? <Loader /> : 'No results.'}
                 </TableCell>
               </TableRow>
             )}

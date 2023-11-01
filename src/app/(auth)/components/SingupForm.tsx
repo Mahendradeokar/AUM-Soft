@@ -39,7 +39,7 @@ function SingupForm() {
   const onSubmit = async function (values: z.infer<typeof formSchema>) {
     try {
       const reqData = {
-        name: values.name,
+        username: values.name,
         email: values.email,
         password: values.pwd,
       };
