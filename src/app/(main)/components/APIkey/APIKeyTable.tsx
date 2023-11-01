@@ -14,60 +14,68 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
+import { commonAPICallHandler } from '@/lib/utils';
+import { toast } from '@/components/ui/use-toast';
+import { useRouter } from 'next/navigation';
 import APIModel from './APIModel';
 
 export type MarketPlaceCred = {
-  id: string;
+  _id: string;
   apiKey: string;
-  apiSecret: string;
-  marketPlace: string;
-  showModel?: () => void;
+  Secret: string;
+  marketPlace_name: string;
+  account_name: string;
 };
 
-const data: MarketPlaceCred[] = [
-  {
-    id: 'm5gr84i9',
-    apiKey: 'R7Bgt3E2fs9TqA1P',
-    apiSecret: 'xhFvL9qQz6jwXm58Zd0Q32Ej4YrnOAbc',
-    marketPlace: 'Flipkart',
-  },
-  {
-    id: 'm5gr84i9',
-    apiKey: 'Gn2kCp5rVl9mS3tQ',
-    apiSecret: 'Y4jHbA2uN5zKw8v9X6fR2mD7oB1lJ0x5',
-    marketPlace: 'Amazon',
-  },
-  {
-    id: 'm5gr84i9',
-    apiKey: 'yT8vN1pJ7m2qB9lA',
-    apiSecret: 'W6rF7bK1n5tH8zJ2mL3aD0qY4vE5xN9t',
-    marketPlace: 'meesho',
-  },
-];
+// const data: MarketPlaceCred[] = [
+//   {
+//     id: 'm5gr84i9',
+//     apiKey: 'R7Bgt3E2fs9TqA1P',
+//     apiSecret: 'xhFvL9qQz6jwXm58Zd0Q32Ej4YrnOAbc',
+//     marketPlace: 'Flipkart',
+//   },
+//   {
+//     id: 'm5gr84i9',
+//     apiKey: 'Gn2kCp5rVl9mS3tQ',
+//     apiSecret: 'Y4jHbA2uN5zKw8v9X6fR2mD7oB1lJ0x5',
+//     marketPlace: 'Amazon',
+//   },
+//   {
+//     id: 'm5gr84i9',
+//     apiKey: 'yT8vN1pJ7m2qB9lA',
+//     apiSecret: 'W6rF7bK1n5tH8zJ2mL3aD0qY4vE5xN9t',
+//     marketPlace: 'meesho',
+//   },
+// ];
 
 export const columns: ColumnDef<MarketPlaceCred>[] = [
   {
-    accessorKey: 'marketPlace',
+    accessorKey: 'market_place_name',
     header: 'Marketplace',
-    cell: ({ row }) => <div className="capitalize">{row.getValue('marketPlace')}</div>,
+    cell: ({ row }) => <div className="capitalize">{row.getValue('market_place_name')}</div>,
   },
   {
-    accessorKey: 'apiKey',
+    accessorKey: 'account_name',
+    header: () => <div className="text-center">Account Name</div>,
+    cell: ({ row }) => <div className="text-center">{row.getValue('account_name')}</div>,
+  },
+  {
+    accessorKey: 'api_key',
     header: () => <div className="text-center">Api key</div>,
-    cell: ({ row }) => <div className="text-center">{row.getValue('apiKey')}</div>,
+    cell: ({ row }) => <div className="text-center">{row.getValue('api_key')}</div>,
   },
   {
-    accessorKey: 'apiSecret',
+    accessorKey: 'secret',
     header: () => <div className="text-center">Api Secret</div>,
-    cell: ({ row }) => <div className="text-center">{row.getValue('apiSecret')}</div>,
+    cell: ({ row }) => <div className="text-center">{row.getValue('secret')}</div>,
   },
   {
     id: 'actions',
     enableHiding: false,
-    cell: ({ row, table }) => {
-      const payment = row.original;
-      const { showModel } = table.options.meta;
-      console.log(table.options.meta);
+    // { row, table }
+    cell: () => {
+      // const payment = row.original;
+      // const { showModel } = table.options.meta;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -79,14 +87,14 @@ export const columns: ColumnDef<MarketPlaceCred>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
+            {/* <DropdownMenuItem
               onClick={() =>
                 showModel({ key: payment.apiKey, secret: payment.apiSecret, marketPlace: payment.marketPlace })
               }
             >
               Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem>Disable</DropdownMenuItem>
+            </DropdownMenuItem> */}
+            <DropdownMenuItem>Delete (Coming Soon)</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -95,7 +103,31 @@ export const columns: ColumnDef<MarketPlaceCred>[] = [
 ];
 
 export default function DataTableDemo() {
+  const router = useRouter();
   const [model, setModel] = React.useState({ open: false, key: '', secret: '', marketPlace: '' });
+  const [marketPlaceData, setMarketplaceData] = React.useState<MarketPlaceCred[]>([]);
+
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const response = (await commonAPICallHandler({
+          url: '/ecom/get_ecom',
+          method: 'GET',
+        })) as { message: string; data: any[] };
+        setMarketplaceData(response.data);
+      } catch (error: any) {
+        if (error.error === 'ERR_JWT_EXPIRED') {
+          router.push('/login');
+          return;
+        }
+        toast({
+          variant: 'destructive',
+          title: 'Whoops!!',
+          description: 'Something went wrong, Please try again later!',
+        });
+      }
+    })();
+  }, [router]);
 
   const handleModelOpen = (isOpen: boolean) => {
     setModel((preState) => {
@@ -104,7 +136,7 @@ export default function DataTableDemo() {
   };
 
   const table = useReactTable({
-    data,
+    data: marketPlaceData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     meta: {

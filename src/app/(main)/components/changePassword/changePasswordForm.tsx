@@ -10,8 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { useForm } from 'react-hook-form';
-import axiosInstance from '@/config/axios';
-import { APIError } from '@/common/ApiError';
+import { commonAPICallHandler } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 const changePasswordSchema = z
   .object({
@@ -37,6 +37,7 @@ const defaultValues: Partial<TChangePasswordValues> = {
 };
 
 export default function ChangePassword() {
+  const router = useRouter();
   const form = useForm<TChangePasswordValues>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues,
@@ -49,19 +50,15 @@ export default function ChangePassword() {
         old_password: values.oldPwd,
         new_password: values.newPwd,
       };
-      await axiosInstance.put('/profile/changes-password', reqData);
+      await commonAPICallHandler({ url: '/profile/changes-password', data: reqData, method: 'PUT' });
       toast({
         variant: 'default',
         title: 'New Password Update!',
         description: 'Your password is changed',
       });
     } catch (error: any) {
-      if (error instanceof APIError) {
-        toast({
-          variant: 'destructive',
-          title: String(error.statusCode),
-          description: error.message,
-        });
+      if (error.error === 'ERR_JWT_EXPIRED') {
+        router.push('/login');
         return;
       }
       toast({

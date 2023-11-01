@@ -1,5 +1,5 @@
 export const MARKETPLACE_TYPE = {
-  flipkart: 'flpkrt',
-  amazon: 'amzn',
-  meesho: 'meesho',
+  flipkart: 'Flipkart',
+  amazon: 'Amazon',
+  meesho: 'Meesho',
 };

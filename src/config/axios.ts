@@ -16,14 +16,15 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError;
+      const axiosError = error as AxiosError<any>;
       const statusCode = axiosError.response?.status || 500;
+      const errorCode = axiosError.response?.data?.error || 'Unknown';
       const responseData = axiosError.response?.data;
       if (responseData) {
         const resData: { error?: string } = responseData as { error?: string };
-        return Promise.reject(new APIError(statusCode, resData.error || 'An error occurred.'));
+        return Promise.reject(new APIError(statusCode, resData.error || 'An error occurred.', errorCode));
       }
-      return Promise.reject(new APIError(statusCode, 'Unknown API error!!'));
+      return Promise.reject(new APIError(statusCode, 'Unknown API error!!', errorCode));
     }
     return Promise.reject(new Error('An unexpected error occurred.'));
   },

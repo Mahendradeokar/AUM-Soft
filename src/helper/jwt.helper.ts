@@ -4,7 +4,7 @@ import { jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 
 const jwtOption = {
-  expiresIn: process.env.EXPIRED_IN || '1m',
+  expiresIn: process.env.EXPIRED_IN || '1d',
 };
 
 const refreshTokenOption = {

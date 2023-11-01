@@ -10,21 +10,24 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { MARKETPLACE_TYPE } from '@/common/common';
+import { toast } from '@/components/ui/use-toast';
+import { commonAPICallHandler } from '@/lib/utils';
 
 const formSchema = z.object({
-  marketPlace: z.string({
-    required_error: 'Please select the marketplace.',
-  }),
+  marketPlace: z.string().min(1, 'Please select the marketplace.'),
   apiKey: z.string().min(3, 'Please enter the valid API Key!'),
   apiSecret: z.string().min(3, 'Please enter the valid API Secret!'),
+  accountName: z.string().min(4, 'Please entry the account name'),
 });
 
 // 2. Define a submit handler.
-function onSubmit(values: z.infer<typeof formSchema>) {
-  // Do something with the form values.
-  // ✅ This will be type-safe and validated.
-  console.log(values);
-}
+// function onSubmit(values: z.infer<typeof formSchema>) {
+//   try {
+//     axiosInstance.post("/ecom/add_ecom")
+//   } catch (error) {
+
+//   }
+// }
 
 const marketplaceOptions = [
   { name: 'Flipkart', value: MARKETPLACE_TYPE.flipkart, isDisable: false },
@@ -38,19 +41,57 @@ interface IAPIKeyFormProps {
   mode?: Mode;
   apiKey?: string;
   secret?: string;
-  marketPlace?: string;
+  marketPlace?: string | null;
 }
 
-function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = '' }: IAPIKeyFormProps) {
+function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = null }: IAPIKeyFormProps) {
   const defaultValues = {
     apiKey: mode === 'edit' ? apiKey : '',
     apiSecret: mode === 'edit' ? secret : '',
+    accountName: '',
+    marketPlace: '',
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
+
+  const onSubmit = async function (values: z.infer<typeof formSchema>) {
+    try {
+      const reqData = {
+        api_key: values.apiKey,
+        secret: values.apiSecret,
+        market_place_name: values.marketPlace,
+        account_name: values.accountName,
+      };
+
+      if (mode === 'edit') {
+        return toast({
+          variant: 'destructive',
+          title: 'Contact Support',
+          description: 'No api is available for edit',
+        });
+      }
+      await commonAPICallHandler({ url: 'ecom/add_ecom', method: 'POST', data: reqData });
+
+      toast({
+        variant: 'default',
+        description: 'Credentials added!',
+      });
+
+      form.reset();
+      return null;
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Whoops!!',
+        description: error.message,
+      });
+      return error;
+    }
+  };
+
   return (
     //  eslint-disable-next-line react/jsx-props-no-spreading
     <Form {...form}>
@@ -61,10 +102,15 @@ function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = '
           render={({ field }) => (
             <FormItem>
               {/* <FormLabel>Marketplace</FormLabel> */}
-              <Select onValueChange={field.onChange} defaultValue={field.value} disabled={Boolean(marketPlace)}>
+              <Select
+                onValueChange={field.onChange}
+                value={field.value}
+                defaultValue={field.value}
+                disabled={Boolean(marketPlace)}
+              >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder={marketPlace ?? 'Select a marketplace'} />
+                    <SelectValue placeholder={marketPlace || 'Select a marketplace'} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -75,6 +121,21 @@ function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = '
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="accountName"
+          render={({ field }) => (
+            <FormItem>
+              {/* <FormLabel>API Key</FormLabel> */}
+              <FormControl>
+                {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+                <Input placeholder="Account Name" {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -109,7 +170,7 @@ function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = '
             </FormItem>
           )}
         />
-        <Button className="w-full" type="submit">
+        <Button className="w-full" type="submit" isLoading={form.formState.isSubmitting}>
           {mode === 'edit' ? 'Update' : 'Add'}
         </Button>
       </form>

@@ -8,9 +8,8 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { useToast } from '@/components/ui/use-toast';
-import axiosInstance from '@/config/axios';
 import { useRouter } from 'next/navigation';
-import { APIError } from '@/common/ApiError';
+import { commonAPICallHandler } from '@/lib/utils';
 
 const formSchema = z.object({
   email: z.string().email({
@@ -38,21 +37,13 @@ function LoginForm() {
         email: values.email,
         password: values.pwd,
       };
-      await axiosInstance.post('auth/login', reqData);
+      await commonAPICallHandler({ url: 'auth/login', data: reqData, method: 'POST' });
       router.push('/');
     } catch (error: any) {
-      if (error instanceof APIError) {
-        toast({
-          variant: 'destructive',
-          title: String(error.statusCode),
-          description: error.message,
-        });
-        return;
-      }
       toast({
         variant: 'destructive',
         title: 'Whoops!!',
-        description: 'Something went wrong, Please try again later!',
+        description: error.message,
       });
     }
   };

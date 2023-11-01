@@ -14,15 +14,27 @@ export default async function middleware(request: NextRequest) {
     // }
     return NextResponse.next();
   } catch (error: any) {
-    return NextResponse.json(
-      {
-        message: 'Something went wrong',
-        error: error.message,
-      },
-      {
-        status: StatusCodes.INTERNAL_SERVER_ERROR,
-      },
-    );
+    let response = {
+      message: 'Something went wrong',
+      error: error.message,
+    };
+
+    let status = {
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+    };
+    if (error.code === 'ERR_JWT_EXPIRED') {
+      if (!request.nextUrl.pathname.includes('api')) {
+        return NextResponse.redirect(new URL('/login', request.url));
+      }
+      response = {
+        message: 'Token expired',
+        error: 'ERR_JWT_EXPIRED',
+      };
+      status = {
+        status: StatusCodes.UNAUTHORIZED,
+      };
+    }
+    return NextResponse.json(response, status);
   }
 }
 export const config = {

@@ -14,8 +14,7 @@ interface DashCartProps {
 
 export default function DashCart({ title, content, description, Icon = null }: DashCartProps) {
   const handleClick = () => {
-    console.log('handle click');
-    alert('handle click');
+    // alert('handle click');
   };
 
   return (

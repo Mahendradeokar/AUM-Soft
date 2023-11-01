@@ -1,6 +1,6 @@
 import { generatePublicId, setTimesTamp } from '@/common/common-function';
 import { mongooseConnection } from '@/config/database';
-import { getToken, getTokenData } from '@/helper/jwt.helper';
+import { getAuthUser } from '@/helper/jwt.helper';
 import UserCredential from '@/model/user_credential.model';
 
 import { StatusCodes } from 'http-status-codes';
@@ -10,16 +10,19 @@ mongooseConnection();
 export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
-    const token: any = getToken();
-    const { user_id: userId } = await getTokenData(token);
+    const { user_id: userId } = await getAuthUser();
     const { api_key: apiKey, secret, market_place_name: marketPlaceName, account_name: accountName } = reqBody;
     const foundCredentials = await UserCredential.findOne({ api_key: apiKey, is_deleted: false });
 
     if (foundCredentials) {
-      return NextResponse.json({
-        error: 'credentials all ready added',
-        status: StatusCodes.BAD_REQUEST,
-      });
+      return NextResponse.json(
+        {
+          error: 'credentials all ready added',
+        },
+        {
+          status: StatusCodes.BAD_REQUEST,
+        },
+      );
     }
     const platformId = generatePublicId();
     await UserCredential.create({
@@ -32,14 +35,23 @@ export async function POST(request: NextRequest) {
       created_by: userId,
       created_at: setTimesTamp(),
     });
-    return NextResponse.json({
-      success: 'credentials added successfully',
-      status: StatusCodes.OK,
-    });
+
+    return NextResponse.json(
+      {
+        success: 'credentials added successfully',
+      },
+      {
+        status: StatusCodes.OK,
+      },
+    );
   } catch (error: any) {
-    return NextResponse.json({
-      error: error.message,
-      status: StatusCodes.INTERNAL_SERVER_ERROR,
-    });
+    return NextResponse.json(
+      {
+        error: error.message,
+      },
+      {
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+      },
+    );
   }
 }

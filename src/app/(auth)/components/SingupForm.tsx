@@ -7,10 +7,9 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
-import axiosInstance from '@/config/axios';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
-import { APIError } from '@/common/ApiError';
+import { commonAPICallHandler } from '@/lib/utils';
 import { Button } from '../../../components/ui/button';
 
 const formSchema = z.object({
@@ -44,21 +43,13 @@ function SingupForm() {
         email: values.email,
         password: values.pwd,
       };
-      await axiosInstance.post('auth/signup', reqData);
+      await commonAPICallHandler({ url: 'auth/signup', data: reqData, method: 'POST' });
       router.push('/login');
     } catch (error: any) {
-      if (error instanceof APIError) {
-        toast({
-          variant: 'destructive',
-          title: String(error.statusCode),
-          description: error.message,
-        });
-        return;
-      }
       toast({
         variant: 'destructive',
         title: 'Whoops!!',
-        description: 'Something went wrong, Please try again later!',
+        description: error.message,
       });
     }
   };
