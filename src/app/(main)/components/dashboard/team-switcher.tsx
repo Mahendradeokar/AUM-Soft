@@ -27,6 +27,20 @@ import { CheckIcon } from 'lucide-react';
 import { CaretSortIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 import APIKeyForm from '../APIkey/APIKeyForm';
 
+function getInitials(label: string) {
+  let lb = label.toUpperCase();
+  let initials = 'ES';
+  const arrayOfLabel = lb.split(' ');
+  if (arrayOfLabel.length >= 2) {
+    initials = `${arrayOfLabel[0][0] ?? 'E'}${arrayOfLabel[1][0] ?? 'S'}`;
+  } else {
+    const secondInitialIndex = lb.length / 2;
+    initials = `${lb[0]}${lb[secondInitialIndex]}`;
+  }
+
+  return initials;
+}
+
 const groups = [
   {
     label: 'Marketplaces',
@@ -151,18 +165,4 @@ export default function MarketPlaceSwitcher({ className }: MarketPlaceSwitcherPr
       </DialogContent>
     </Dialog>
   );
-}
-
-function getInitials(label: string) {
-  let lb = label.toUpperCase();
-  let initials = 'ES';
-  const arrayOfLabel = lb.split(' ');
-  if (arrayOfLabel.length >= 2) {
-    initials = `${arrayOfLabel[0][0] ?? 'E'}${arrayOfLabel[1][0] ?? 'S'}`;
-  } else {
-    const secondInitialIndex = lb.length / 2;
-    initials = `${lb[0]}${lb[secondInitialIndex]}`;
-  }
-
-  return initials;
 }

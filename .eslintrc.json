@@ -24,13 +24,14 @@
     ".eslintrc.json"
   ],
   "rules": {
-    "prettier/prettier":0,
+    "prettier/prettier": 0,
     "react/react-in-jsx-scope": "off",
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-shadow": "off",
+    "react/prop-types": "off",
     "camelcase": [
       "error",
       {
@@ -57,7 +58,6 @@
     "no-new": 0,
     "react/jsx-props-no-spreading": 0,
     "react/require-default-props": "off",
-    
     "import/extensions": [
       "error",
       "ignorePackages",
