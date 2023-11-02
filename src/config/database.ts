@@ -10,6 +10,9 @@ const configs: any = {
   staging: {
     connection: process.env.DATABASE_CONNECTION_URI_STAGE,
   },
+  production: {
+    connection: process.env.DATABASE_CONNECTION_URI_DEV,
+  },
 };
 
 const config = configs[process.env.NODE_ENV || 'development'].connection;
