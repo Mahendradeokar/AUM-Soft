@@ -6,9 +6,9 @@ import UserCredential from '@/model/user_credential.model';
 import { StatusCodes } from 'http-status-codes';
 import { NextRequest, NextResponse } from 'next/server';
 
-mongooseConnection();
 export async function POST(request: NextRequest) {
   try {
+    await mongooseConnection();
     const reqBody = await request.json();
     const { user_id: userId } = await getAuthUser();
     const { api_key: apiKey, secret, market_place_name: marketPlaceName, account_name: accountName } = reqBody;

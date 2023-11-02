@@ -4,9 +4,9 @@ import UserCredential from '@/model/user_credential.model';
 import { StatusCodes } from 'http-status-codes';
 import { NextResponse } from 'next/server';
 
-mongooseConnection();
 export async function GET() {
   try {
+    await mongooseConnection();
     const { user_id: userId } = await getAuthUser();
     const credentialDetails = await UserCredential.find({ user_id: userId, is_deleted: false });
     if (!credentialDetails) {

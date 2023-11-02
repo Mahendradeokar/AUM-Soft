@@ -13,9 +13,9 @@ const sevenDayExpirationDate = new Date(Date.now() + sevenDaysInMilliseconds);
 // const fifteenDaysInMilliseconds = 15 * 24 * 60 * 60 * 1000; // 15 days in milliseconds
 // const fifteenDayExpirationDate = new Date(Date.now() + fifteenDaysInMilliseconds);
 
-mongooseConnection();
 export async function POST(request: NextRequest) {
   try {
+    await mongooseConnection();
     const reqBody = await request.json();
     const { email, password } = reqBody;
     const user = await User.findOne({ email, is_deleted: false });

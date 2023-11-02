@@ -1,3 +1,4 @@
+import { mongooseConnection } from '@/config/database';
 import { getToken, getTokenData } from '@/helper/jwt.helper';
 import Session from '@/model/session.model';
 import { StatusCodes } from 'http-status-codes';
@@ -7,6 +8,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
+    await mongooseConnection();
     const token: any = getToken();
     const { user_id: userId } = await getTokenData(token);
 

@@ -4,11 +4,10 @@ import User from '@/model/user.model';
 import { StatusCodes } from 'http-status-codes';
 import { NextRequest, NextResponse } from 'next/server';
 
-mongooseConnection();
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(request: NextRequest) {
   try {
+    await mongooseConnection();
     const { user_id: userId } = await getAuthUser();
     const response: any = await User.findOne({ user_id: userId, is_deleted: false }).lean();
     delete response.password;
