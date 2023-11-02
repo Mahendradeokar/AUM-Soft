@@ -56,6 +56,7 @@ export default function ChangePassword() {
         title: 'New Password Update!',
         description: 'Your password is changed',
       });
+      form.reset();
     } catch (error: any) {
       if (error.error === 'ERR_JWT_EXPIRED') {
         router.push('/login');

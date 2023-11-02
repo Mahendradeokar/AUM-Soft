@@ -10,7 +10,11 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 
-export default function CalendarDateRangePicker({ className }: React.HTMLAttributes<HTMLDivElement>) {
+interface CalendarDateRangePickerProps extends React.HTMLAttributes<HTMLDivElement> {
+  className?: string;
+}
+
+export default function CalendarDateRangePicker({ className }: CalendarDateRangePickerProps) {
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(2023, 0, 20),
     to: addDays(new Date(2023, 0, 20), 20),
