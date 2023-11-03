@@ -80,7 +80,7 @@ export default function ChangePassword() {
             <FormItem>
               <FormLabel>Old Password</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input placeholder="Old Password" {...field} />
               </FormControl>
               <FormDescription>Enter your old password.</FormDescription>
               <FormMessage />
@@ -95,7 +95,7 @@ export default function ChangePassword() {
               <FormLabel>New Password</FormLabel>
               <FormControl>
                 {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-                <Input placeholder="Email" {...field} />
+                <Input placeholder="New Password" {...field} />
               </FormControl>
               <FormMessage />
               <FormDescription>Please enter new Password.</FormDescription>
@@ -111,7 +111,7 @@ export default function ChangePassword() {
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
                 {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-                <Input placeholder="Email" {...field} />
+                <Input placeholder="Confirm Password" {...field} />
               </FormControl>
               <FormMessage />
               <FormDescription>Please confirm your new password.</FormDescription>

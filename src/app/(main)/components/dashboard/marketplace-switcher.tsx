@@ -44,24 +44,27 @@ function getInitials(label: string) {
 const groups = [
   {
     label: 'Marketplaces',
-    teams: [
+    marketplaces: [
       {
         label: 'Flipkart',
         value: 'flpkrt',
+        disable: false,
       },
       {
         label: 'Amazon - Coming Soon',
         value: 'amzn',
+        disable: true,
       },
       {
         label: 'Meesho - Coming Soon',
         value: 'meesho',
+        disable: true,
       },
     ],
   },
 ];
 
-type Team = (typeof groups)[number]['teams'][number];
+type Team = (typeof groups)[number]['marketplaces'][number];
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
@@ -70,7 +73,7 @@ interface MarketPlaceSwitcherProps extends PopoverTriggerProps {}
 export default function MarketPlaceSwitcher({ className }: MarketPlaceSwitcherProps) {
   const [open, setOpen] = React.useState(false);
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
-  const [selectedTeam, setSelectedTeam] = React.useState<Team>(groups[0].teams[0]);
+  const [selectedTeam, setSelectedTeam] = React.useState<Team>(groups[0].marketplaces[0]);
 
   return (
     <Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
@@ -98,28 +101,29 @@ export default function MarketPlaceSwitcher({ className }: MarketPlaceSwitcherPr
               <CommandEmpty>No team found.</CommandEmpty>
               {groups.map((group) => (
                 <CommandGroup key={group.label} heading={group.label}>
-                  {group.teams.map((team) => (
+                  {group.marketplaces.map((marketplace) => (
                     <CommandItem
-                      key={team.value}
+                      disabled={marketplace.disable}
+                      key={marketplace.value}
                       onSelect={() => {
-                        setSelectedTeam(team);
+                        setSelectedTeam(marketplace);
                         setOpen(false);
                       }}
                       className="text-sm"
                     >
                       <Avatar className="mr-2 h-5 w-5">
                         <AvatarImage
-                          src={`https://avatar.vercel.sh/${team.value}.png`}
-                          alt={team.label}
+                          src={`https://avatar.vercel.sh/${marketplace.value}.png`}
+                          alt={marketplace.label}
                           className="grayscale"
                         />
-                        <AvatarFallback>{getInitials(team.label)}</AvatarFallback>
+                        <AvatarFallback>{getInitials(marketplace.label)}</AvatarFallback>
                       </Avatar>
-                      {team.label}
+                      {marketplace.label}
                       <CheckIcon
                         className={cn(
                           'ml-auto h-4 w-4',
-                          selectedTeam.value === team.value ? 'opacity-100' : 'opacity-0',
+                          selectedTeam.value === marketplace.value ? 'opacity-100' : 'opacity-0',
                         )}
                       />
                     </CommandItem>
