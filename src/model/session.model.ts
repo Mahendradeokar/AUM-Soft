@@ -1,10 +1,11 @@
 import mongoose, { Schema } from 'mongoose';
 
 export interface ISessionModel {
+  // session_id: string;
   user_id: string;
   is_expired: boolean;
   access_token: string;
-  refresh_token: string;
+  // refresh_token: string;
   created_by: string;
   updated_by: string;
   deleted_by: string;
@@ -14,10 +15,11 @@ export interface ISessionModel {
   deleted_at: string;
 }
 const SessionSchema = new Schema({
-  user_id: { type: String },
+  // session_id: { type: String, unique: true },
   is_expired: { type: Boolean, default: false },
   access_token: { type: String },
-  refresh_token: { type: String },
+  user_id: { type: String },
+  // refresh_token: { type: String },
   user_type: { type: String },
   created_by: { type: String },
   updated_by: { type: String },

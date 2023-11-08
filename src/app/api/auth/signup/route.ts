@@ -4,9 +4,9 @@ import { StatusCodes } from 'http-status-codes';
 import { generatePublicId, hashPassword, setTimesTamp } from '@/common/common-function';
 import { mongooseConnection } from '@/config/database';
 
-mongooseConnection();
 export async function POST(request: NextRequest) {
   try {
+    await mongooseConnection();
     const reqBody = await request.json();
     const { username, email, password } = reqBody;
     // already exists user

@@ -43,6 +43,11 @@ const links = [
     Icon: KeyRoundIcon,
     link: '/mpsetting',
   },
+  {
+    label: 'Sign up',
+    Icon: KeyRoundIcon,
+    link: '/singup',
+  },
 ];
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}

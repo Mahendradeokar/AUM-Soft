@@ -20,11 +20,11 @@ const formSchema = z.object({
     message: 'Please enter a valid email address.',
   }),
   pwd: z.string().min(6, {
-    message: 'Passwrod must be at least 6 characters.',
+    message: 'Password must be at least 6 characters.',
   }),
 });
 
-function SingupForm() {
+function SignUpForm() {
   const router = useRouter();
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -98,11 +98,11 @@ function SingupForm() {
           )}
         />
         <Button type="submit" className="w-full" isLoading={form.formState.isSubmitting}>
-          Signup
+          Sign up
         </Button>
       </form>
     </Form>
   );
 }
 
-export default SingupForm;
+export default SignUpForm;
