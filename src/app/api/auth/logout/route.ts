@@ -6,10 +6,13 @@ import { cookies } from 'next/headers';
 
 import { NextResponse } from 'next/server';
 
+mongooseConnection();
+
 export async function GET() {
   try {
     await mongooseConnection();
     const token: any = getToken();
+
     const { user_id: userId } = await getTokenData(token);
 
     const sessionData = await Session.findOne({ user_id: userId, is_expired: false });

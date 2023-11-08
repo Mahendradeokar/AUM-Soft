@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 
 export interface ISessionModel {
+  session_id: string;
   user_id: string;
   is_expired: boolean;
   access_token: string;
@@ -14,6 +15,7 @@ export interface ISessionModel {
   deleted_at: string;
 }
 const SessionSchema = new Schema({
+  session_id: { type: String, unique: true },
   user_id: { type: String },
   is_expired: { type: Boolean, default: false },
   access_token: { type: String },

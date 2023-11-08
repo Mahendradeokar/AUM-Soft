@@ -9,8 +9,7 @@ export async function GET(request: NextRequest) {
   try {
     await mongooseConnection();
     const { user_id: userId } = await getAuthUser();
-    const response: any = await User.findOne({ user_id: userId, is_deleted: false }).lean();
-    delete response.password;
+    const response: any = await User.findOne({ user_id: userId, is_deleted: false }, { password: 0 });
     return NextResponse.json({ message: 'data get successfully', data: response }, { status: StatusCodes.OK });
   } catch (error: any) {
     return NextResponse.json({ error: error.message, status: StatusCodes.INTERNAL_SERVER_ERROR });
