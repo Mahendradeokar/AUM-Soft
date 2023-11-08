@@ -2,7 +2,7 @@ import User from '@/model/user.model';
 import Session from '@/model/session.model';
 import { NextRequest, NextResponse } from 'next/server';
 import { StatusCodes } from 'http-status-codes';
-import { comparePassword, setTimesTamp } from '@/common/common-function';
+import { comparePassword, generatePublicId, setTimesTamp } from '@/common/common-function';
 import { createJwtToken } from '@/helper/jwt.helper';
 import { mongooseConnection } from '@/config/database';
 import { expiredValidSession } from '@/helper/session.helper';
@@ -55,9 +55,11 @@ export async function POST(request: NextRequest) {
     //   email: user.email,
     //   created_by: user.user_id,
     // });
-    expiredValidSession({ userId: user.user_id });
+    await expiredValidSession({ userId: user.user_id });
     // created user session
+
     await Session.create({
+      session_id: generatePublicId(),
       user_id: user.user_id,
       access_token: jwtToken,
       // refresh_token: refreshToken,
@@ -65,7 +67,6 @@ export async function POST(request: NextRequest) {
       is_expired: false,
       created_at: setTimesTamp(),
     });
-
     const userData = {
       user_id: user.user_id,
       email: user.email,

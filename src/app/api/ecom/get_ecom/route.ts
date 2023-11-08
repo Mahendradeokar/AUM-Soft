@@ -9,7 +9,7 @@ export async function GET() {
     await mongooseConnection();
     const { user_id: userId } = await getAuthUser();
     const credentialDetails = await UserCredential.find({ user_id: userId, is_deleted: false });
-    if (!credentialDetails) {
+    if (credentialDetails.length > 0) {
       return NextResponse.json(
         {
           success: 'Credential not found',
