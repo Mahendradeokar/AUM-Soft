@@ -2,10 +2,10 @@ import User from '@/model/user.model';
 import Session from '@/model/session.model';
 import { NextRequest, NextResponse } from 'next/server';
 import { StatusCodes } from 'http-status-codes';
-import { comparePassword, generatePublicId, setTimesTamp } from '@/common/common-function';
+import { comparePassword, setTimesTamp } from '@/common/common-function';
 import { createJwtToken } from '@/helper/jwt.helper';
 import { mongooseConnection } from '@/config/database';
-import { expiredValidSession } from '@/helper/session.helper';
+// import { expiredValidSession } from '@/helper/session.helper';
 import { cookies } from 'next/headers';
 
 const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
@@ -49,29 +49,38 @@ export async function POST(request: NextRequest) {
       created_by: user.user_id,
     });
 
-    // create jwt refresh token
-    // const refreshToken = await createRefreshToken({
-    //   user_id: user.user_id,
-    //   email: user.email,
-    //   created_by: user.user_id,
-    // });
-    await expiredValidSession({ userId: user.user_id });
-    // created user session
+    // expiredValidSession({ userId: user.user_id });
 
-    await Session.create({
-      session_id: generatePublicId(),
-      user_id: user.user_id,
-      access_token: jwtToken,
-      // refresh_token: refreshToken,
-      created_by: user.user_id,
-      is_expired: false,
-      created_at: setTimesTamp(),
-    });
+    // created user session,
+    // public id (session_id) is being added in the pre save middleware.
+
+    // await Session.create({
+    //   user_id: user.user_id,
+    //   access_token: jwtToken,
+    //   created_by: user.user_id,
+    //   is_expired: false,
+    //   created_at: setTimesTamp(),
+    // });
+
+    await Session.findOneAndUpdate(
+      { user_id: user.user_id },
+      {
+        $set: {
+          user_id: user.user_id,
+          access_token: jwtToken,
+          created_by: user.user_id,
+          is_expired: false,
+          created_at: setTimesTamp(),
+        },
+      },
+      {
+        upsert: true,
+      },
+    );
+
     const userData = {
       user_id: user.user_id,
       email: user.email,
-      // token: jwtToken,
-      // refreshToken,
     };
 
     cookies().set('token', jwtToken, {
@@ -82,15 +91,6 @@ export async function POST(request: NextRequest) {
       // secure: true,
       // sameSite: true,
     });
-
-    // cookies().set('refreshToken', refreshToken, {
-    //   maxAge: fifteenDaysInMilliseconds,
-    //   expires: fifteenDayExpirationDate,
-    //   httpOnly: true,
-    //   path: '/',
-    //   // secure: true,
-    //   // sameSite: true,
-    // });
 
     return NextResponse.json(
       {

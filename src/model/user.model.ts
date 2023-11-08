@@ -13,7 +13,7 @@ export interface IUserModel {
   deleted_by: string;
 }
 const userSchema = new Schema({
-  user_id: { type: String },
+  user_id: { type: String, unique: true },
   user_name: { type: String },
   email: { type: String },
   password: { type: String },

@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import bcrypt from 'bcrypt';
 
 const salt = bcrypt.genSaltSync(10);
-export const generatePublicId = () => {
+export const generatePublicId = (): string => {
   return uuid();
 };
 

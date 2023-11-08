@@ -1,17 +1,10 @@
-import { Metadata } from 'next';
-
 import { ThemeToggle } from '@/components/Theme';
-
-export const metadata: Metadata = {
-  title: 'Singup',
-  description: 'Singup',
-};
 
 interface AuthLayoutProps {
   children: React.ReactNode;
 }
 
-export default function AuthLayout({ children }: AuthLayoutProps) {
+export default async function AuthLayout({ children }: AuthLayoutProps) {
   return (
     <div className="container relative h-screen flex flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
       <div className="absolute left-4 top-4 md:left-8 md:top-8 z-20 items-center text-lg font-medium flex lg:hidden">
@@ -54,11 +47,9 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
             <p className="text-lg">
-              &ldquo;Our software streamlines profit and loss calculations for
-              e-commerce sellers, presenting the easiest and most efficient
-              way to track financial gains and losses. It offers a
-              user-friendly interface for comprehensive insights into business
-              finances, empowering sellers to make informed decisions and
+              &ldquo;Our software streamlines profit and loss calculations for e-commerce sellers, presenting the
+              easiest and most efficient way to track financial gains and losses. It offers a user-friendly interface
+              for comprehensive insights into business finances, empowering sellers to make informed decisions and
               optimize profitability.&rdquo;
             </p>
             {/* <footer className="text-sm">Ecom Soft</footer> */}
@@ -66,9 +57,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         </div>
       </div>
       <div className="lg:p-8">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-          {children}
-        </div>
+        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">{children}</div>
       </div>
     </div>
   );
