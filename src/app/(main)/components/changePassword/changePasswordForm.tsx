@@ -12,6 +12,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useForm } from 'react-hook-form';
 import { commonAPICallHandler } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import { StatusCodes } from 'http-status-codes';
 
 const changePasswordSchema = z
   .object({
@@ -21,7 +22,9 @@ const changePasswordSchema = z
     newPwd: z.string().min(6, {
       message: 'Password must be at least 6 characters.',
     }),
-    confirmPwd: z.string(),
+    confirmPwd: z.string().min(6, {
+      message: 'Password must be at least 6 characters.',
+    }),
   })
   .refine((value) => value.confirmPwd === value.newPwd, {
     message: 'Passwords do not match',
@@ -58,14 +61,13 @@ export default function ChangePassword() {
       });
       form.reset();
     } catch (error: any) {
-      if (error.error === 'ERR_JWT_EXPIRED') {
+      if (error.statusCode === StatusCodes.UNAUTHORIZED) {
         router.push('/login');
         return;
       }
       toast({
         variant: 'destructive',
-        title: 'Whoops!!',
-        description: 'Something went wrong, Please try again later!',
+        description: error.message ?? 'Something went wrong, Please try again later!',
       });
     }
   }
@@ -82,8 +84,11 @@ export default function ChangePassword() {
               <FormControl>
                 <Input placeholder="Old Password" {...field} />
               </FormControl>
-              <FormDescription>Enter your old password.</FormDescription>
-              <FormMessage />
+              {form.formState.errors.oldPwd ? (
+                <FormMessage />
+              ) : (
+                <FormDescription>Enter your old password.</FormDescription>
+              )}
             </FormItem>
           )}
         />
@@ -97,9 +102,12 @@ export default function ChangePassword() {
                 {/* eslint-disable-next-line react/jsx-props-no-spreading */}
                 <Input placeholder="New Password" {...field} />
               </FormControl>
-              <FormMessage />
-              <FormDescription>Please enter new Password.</FormDescription>
-              <FormMessage />
+
+              {form.formState.errors.newPwd ? (
+                <FormMessage />
+              ) : (
+                <FormDescription>Please enter new Password.</FormDescription>
+              )}
             </FormItem>
           )}
         />
@@ -113,9 +121,12 @@ export default function ChangePassword() {
                 {/* eslint-disable-next-line react/jsx-props-no-spreading */}
                 <Input placeholder="Confirm Password" {...field} />
               </FormControl>
-              <FormMessage />
-              <FormDescription>Please confirm your new password.</FormDescription>
-              <FormMessage />
+
+              {form.formState.errors.confirmPwd ? (
+                <FormMessage />
+              ) : (
+                <FormDescription>Please confirm your new password.</FormDescription>
+              )}
             </FormItem>
           )}
         />

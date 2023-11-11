@@ -12,7 +12,7 @@ export async function GET() {
     if (credentialDetails.length > 0) {
       return NextResponse.json(
         {
-          success: 'Credential not found',
+          error: 'Credential not found',
         },
         { status: StatusCodes.NOT_FOUND },
       );

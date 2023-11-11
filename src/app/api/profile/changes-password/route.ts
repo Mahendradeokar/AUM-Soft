@@ -14,13 +14,13 @@ export async function PUT(request: NextRequest) {
     const { old_password: oldPassword, new_password: newPassword } = reqBody;
     const userData = await User.findOne({ user_id: userId, is_deleted: false });
     if (!userData) {
-      return NextResponse.json({ message: 'User not found' });
+      return NextResponse.json({ error: 'User not found' }, { status: StatusCodes.NOT_FOUND });
     }
     const isMatch = await comparePassword(oldPassword, userData.password);
     if (!isMatch) {
       return NextResponse.json(
         {
-          message: 'old password is incorrect please try again',
+          error: 'Old password is incorrect. Please enter the right password!',
         },
         {
           status: StatusCodes.BAD_REQUEST,

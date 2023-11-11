@@ -15,13 +15,13 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.next();
   } catch (error: any) {
     let response: {
-      message: string;
       error: string;
+      errorCode: string;
       redirect?: string;
     } = {
-      message: 'Something went wrong!',
-      error: error.message,
-      redirect: '/un',
+      error: error.message ?? 'Something went wrong!',
+      errorCode: error.code ?? 'UNKNOWN',
+      redirect: '/login',
     };
 
     let status = {
@@ -31,8 +31,8 @@ export default async function middleware(request: NextRequest) {
     switch (error.code ?? error.message) {
       case 'ERR_JWT_EXPIRED':
         response = {
-          message: 'Token expired',
-          error: 'ERR_JWT_EXPIRED',
+          error: 'Token expired',
+          errorCode: 'ERR_JWT_EXPIRED',
           redirect: '/login',
         };
         status = {
@@ -42,14 +42,15 @@ export default async function middleware(request: NextRequest) {
 
       case 'unauthorized':
         response = {
-          message: 'Unauthorized request........',
-          error: 'unauthorized',
+          error: 'Unauthorized request........',
+          errorCode: 'unauthorized',
           redirect: '/login',
         };
 
         status = {
           status: StatusCodes.UNAUTHORIZED,
         };
+
         break;
 
       default:

@@ -18,13 +18,16 @@ axiosInstance.interceptors.response.use(
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError<any>;
       const statusCode = axiosError.response?.status || 500;
-      const errorCode = axiosError.response?.data?.error || 'Unknown';
+      const errorCode = axiosError.response?.data?.errorCode || 'UNKNOWN';
       const responseData = axiosError.response?.data;
-      if (responseData) {
-        const resData: { error?: string } = responseData as { error?: string };
+      if (!responseData) {
+        return Promise.reject(new APIError(statusCode, 'Unknown API error!!', errorCode));
+      }
+      const resData: { error?: string } = responseData as { error?: string };
+      if (errorCode === 'ERR_JWT_EXPIRED') {
         return Promise.reject(new APIError(statusCode, resData.error || 'An error occurred.', errorCode));
       }
-      return Promise.reject(new APIError(statusCode, 'Unknown API error!!', errorCode));
+      return Promise.reject(new APIError(statusCode, resData.error || 'An error occurred.', errorCode));
     }
     return Promise.reject(new Error('An unexpected error occurred.'));
   },

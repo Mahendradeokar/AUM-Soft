@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         userData,
-        success: 'user successfully login',
+        message: 'user successfully login',
       },
       {
         status: StatusCodes.OK,

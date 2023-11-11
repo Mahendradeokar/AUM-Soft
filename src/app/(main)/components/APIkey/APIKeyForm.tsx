@@ -12,6 +12,8 @@ import { useForm } from 'react-hook-form';
 import { MARKETPLACE_TYPE } from '@/common/common';
 import { toast } from '@/components/ui/use-toast';
 import { commonAPICallHandler } from '@/lib/utils';
+import { StatusCodes } from 'http-status-codes';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   marketPlace: z.string().min(1, 'Please select the marketplace.'),
@@ -45,6 +47,7 @@ interface IAPIKeyFormProps {
 }
 
 function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = null }: IAPIKeyFormProps) {
+  const router = useRouter();
   const defaultValues = {
     apiKey: mode === 'edit' ? apiKey : '',
     apiSecret: mode === 'edit' ? secret : '',
@@ -83,12 +86,15 @@ function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = n
       form.reset();
       return null;
     } catch (error: any) {
+      if (error.statusCode === StatusCodes.UNAUTHORIZED) {
+        return router.push('/login');
+      }
       toast({
         variant: 'destructive',
         title: 'Whoops!!',
         description: error.message,
       });
-      return error;
+      return null;
     }
   };
 
