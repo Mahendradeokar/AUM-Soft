@@ -1,16 +1,153 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
+
+type TCommission = {
+  min_item_val: number;
+  max_item_val: number;
+  percentage: number;
+};
+
+type TFixedFees = {
+  min_item_val: number;
+  max_item_val: number;
+  fees: number;
+};
+
+type TCollectionFee = {
+  min_item_val: number;
+  max_item_val: number;
+  prepaid: {
+    type: 'percentage' | 'fixed';
+    value: number;
+  };
+  postpaid: {
+    type: 'percentage' | 'fixed';
+    value: number;
+  };
+};
+
+type TShippingFee = {
+  min_weight: number;
+  max_weight: number;
+  fees_for_every: number;
+  local: number;
+  zonal: number;
+  national: number;
+};
 
 export interface IRateCardModel {
   fsn_code: string;
-  fulfillment_profile: ['NO_FBF', 'FBF'];
-  commission: object;
-  fixed_fee: object;
-  collection_fee: object;
-  shipping_fee: object;
-  reverse_shipping_fee: object;
+  commission: {
+    NO_FBF: [TCommission];
+    FBF: [TCommission];
+  };
+  fixed_fee: {
+    No_FBF: [TFixedFees];
+    FBF: [TFixedFees];
+  };
+  collection_fee: TCollectionFee[];
+  shipping_fee: {
+    NO_FBF: {
+      platinum: [TShippingFee];
+      gold: [TShippingFee];
+      silver: [TShippingFee];
+      bronze: [TShippingFee];
+      wood: [TShippingFee];
+    };
+    FBF: {
+      platinum: [TShippingFee];
+      gold: [TShippingFee];
+      silver: [TShippingFee];
+      bronze: [TShippingFee];
+      wood: [TShippingFee];
+    };
+  };
+  reverse_shipping_fee: {
+    NO_FBF: [TShippingFee];
+    FBF: [TShippingFee];
+  };
 }
-const RateCardSchema = new Schema({});
 
-const RateCard = mongoose.models.session || mongoose.model<IRateCardModel>('rate_card', RateCardSchema);
+const CommissionSchema = new mongoose.Schema({
+  min_item_val: Number,
+  max_item_val: Number,
+  percentage: Number,
+});
+
+const FixedFeesSchema = new mongoose.Schema({
+  min_item_val: Number,
+  max_item_val: Number,
+  fees: Number,
+});
+
+const CollectionFeeSchema = new mongoose.Schema({
+  min_item_val: Number,
+  max_item_val: Number,
+  postpaid: {
+    type: {
+      type: String,
+      required: true,
+      enum: ['percentage', 'fixed'], // Adjust based on your requirements
+    },
+    value: {
+      type: Number,
+      required: true,
+    },
+  },
+  prepaid: {
+    type: {
+      type: String,
+      required: true,
+      enum: ['percentage', 'fixed'], // Adjust based on your requirements
+    },
+    value: {
+      type: Number,
+      required: true,
+    },
+  },
+});
+
+const ShippingFeeSchema = new mongoose.Schema({
+  min_weight: Number,
+  max_weight: Number,
+  fees_for_every: Number,
+  local: Number,
+  zonal: Number,
+  national: Number,
+});
+
+const RateCardSchema = new mongoose.Schema({
+  fsnCode: String,
+  commission: {
+    NON_FBF: [CommissionSchema],
+    FBF: [CommissionSchema],
+  },
+  fixedFee: {
+    NON_FBF: [FixedFeesSchema],
+    FBF: [FixedFeesSchema],
+  },
+  collectionFee: [CollectionFeeSchema],
+  shippingFee: {
+    NON_FBF: {
+      platinum: [ShippingFeeSchema],
+      gold: [ShippingFeeSchema],
+      silver: [ShippingFeeSchema],
+      bronze: [ShippingFeeSchema],
+      wood: [ShippingFeeSchema],
+    },
+    FBF: {
+      platinum: [ShippingFeeSchema],
+      gold: [ShippingFeeSchema],
+      silver: [ShippingFeeSchema],
+      bronze: [ShippingFeeSchema],
+      wood: [ShippingFeeSchema],
+    },
+  },
+  reverseShippingFee: {
+    NON_FBF: [ShippingFeeSchema],
+    FBF: [ShippingFeeSchema],
+  },
+});
+
+const RateCard = mongoose.models.rate_card || mongoose.model<IRateCardModel>('rate_card', RateCardSchema);
 
 export default RateCard;
