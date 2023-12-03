@@ -2,6 +2,9 @@
 // import { NextApiRequest } from 'next';
 /* eslint-disable no-console */
 // import { OrderApi } from '@/services/flipkart/flipkart-api';
+import { mongooseConnection } from '@/config/database';
+import UserCredential from '@/model/user_credential.model';
+import { randomUUID } from 'crypto';
 import { NextResponse } from 'next/server';
 // import cron from 'node-cron';
 
@@ -22,12 +25,17 @@ import { NextResponse } from 'next/server';
 
 // Define a cron schedule (runs every minute in this example)
 
+mongooseConnection();
 export async function GET() {
   try {
     // cron.schedule('* * * * * *', scheduledTask);
     console.log('Log before starting the cron');
     // cron.schedule('* * * * * *', scheduledTask1);
     // const orderData = await OrderApi();
+    await UserCredential.findOneAndUpdate(
+      { user_id: '75336827-f95e-4fb5-b4a9-ea7d9b6e957f' },
+      { $set: { is_deleted: randomUUID() } },
+    );
 
     return NextResponse.json({ msg: 'Okay, GOt it.' });
   } catch (error) {
