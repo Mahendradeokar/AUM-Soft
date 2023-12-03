@@ -20,7 +20,7 @@ const userCredentialSchema = new Schema({
   api_key: { type: String },
   secret: { type: String },
   account_name: { type: String },
-  is_deleted: { type: Boolean, default: false },
+  is_deleted: { type: String, default: false },
   created_at: { type: String },
   updated_at: { type: String },
   deleted_at: { type: String },

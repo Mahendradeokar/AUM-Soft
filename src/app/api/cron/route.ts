@@ -33,8 +33,10 @@ export async function GET() {
     // cron.schedule('* * * * * *', scheduledTask1);
     // const orderData = await OrderApi();
     await UserCredential.findOneAndUpdate(
-      { user_id: '75336827-f95e-4fb5-b4a9-ea7d9b6e957f' },
-      { $set: { is_deleted: randomUUID() } },
+      {
+        user_id: '75336827-f95e-4fb5-b4a9-ea7d9b6e957f',
+      },
+      { is_deleted: randomUUID() },
     );
 
     return NextResponse.json({ msg: 'Okay, GOt it.' });
