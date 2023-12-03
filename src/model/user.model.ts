@@ -26,5 +26,5 @@ const userSchema = new Schema({
   deleted_by: { type: String },
 });
 const User = mongoose.models.User || mongoose.model<IUserModel>('User', userSchema);
-
+// change for commiting please remove it later.
 export default User;
