@@ -14,6 +14,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     await mongooseConnection();
+
     const { fsnCode, rateCard } = await request.json();
     const mergeRate = rateCard;
     const commission = extractCommissionFees(mergeRate.platformFee);
@@ -24,13 +25,13 @@ export async function POST(request: NextRequest) {
     const rateCardFinalData = {
       fsn_code: fsnCode,
       commission,
-      fixedFee: fixedFess,
+      fixed_fees: fixedFess,
       collection_fees: collectionFess,
-      shippingFee: shippingFees,
-      reverseShippingFee: reverseShippingFees,
+      shipping_fee: shippingFees,
+      reverse_shipping_fee: reverseShippingFees,
     };
 
-    const doc = await RateCard.create(rateCardFinalData);
+    const doc = await RateCard.findOneAndUpdate({ fsn_code: fsnCode }, rateCardFinalData, { upsert: true });
     return NextResponse.json(
       { message: 'data get successfully', data: doc, rateCardFinalData },
       { status: StatusCodes.OK },

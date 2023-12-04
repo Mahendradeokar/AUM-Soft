@@ -150,7 +150,7 @@ type TShippingFee = {
 export function extractShippingFees(shippingFeeData: ShippingFeeData): {
   [fulfillmentProfileKey: string]: { [badge: string]: TShippingFee[] };
 } {
-  const result: { [fulfillmentProfileKey: string]: any[] } = {};
+  const result: { [fulfillmentProfileKey: string]: { [badge: string]: TShippingFee[] } } = {};
   Object.keys(shippingFeeData.response).forEach((badge: any) => {
     Object.keys(shippingFeeData.response[badge]).forEach((fulfillmentProfileKey) => {
       const shippingFees: TShippingFee[] = Object.entries(shippingFeeData.response[badge][fulfillmentProfileKey]).map(
@@ -201,3 +201,63 @@ export function mergeObjects(obj1: Record<string, any>, obj2: Record<string, any
     }
   }
 }
+
+// export async function returnTheRateCardData(fnsCode) {
+//   function mergeObjects(obj1, obj2) {
+//     for (const key in obj2) {
+//       if (key in obj2) {
+//         if (key in obj1 && typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
+//           obj1[key] = mergeObjects(obj1[key], obj2[key]);
+//         } else if (obj1[key] !== obj2[key]) {
+//           obj1[key] = obj2[key];
+//         }
+//       }
+//     }
+//     return obj1;
+//   }
+
+//   function getFormattedDate() {
+//     const today = new Date();
+//     const year = today.getFullYear();
+//     const month = String(today.getMonth() + 1).padStart(2, '0');
+//     const day = String(today.getDate()).padStart(2, '0');
+//     return `${year}-${month}-${day}`;
+//   }
+
+//   const returnUrl = (fsnCode, FType, badge, isShipping = false) => {
+//     return `https://seller.flipkart.com/napi/rate-card/fetchRateCardFees?service_profile=${FType}&date=${getFormattedDate()}&fsn=${fsnCode}&partner_context=flipkart&is_seller_dashboard=true&darwin_tier=${badge}&shipping=${isShipping}&sellerId=bbce0103039547c2`;
+//   };
+
+//   const badge = ['wood', 'bronze', 'silver', 'gold', 'platinum'];
+//   const fulfillmentTypes = ['NON_FBF', 'FBF'];
+
+//   const data = { NON_FBF: {}, FBF: [] };
+
+//   let wait = true;
+//   for (let fulfillmentType of fulfillmentTypes) {
+//     for (let [index, bdg] of Object.entries(badge)) {
+//       const rateCardData = await fetch(returnUrl(fnsCode, fulfillmentType, bdg, index != 0)).then((res) => res.json());
+//       console.log(index != 0, rateCardData);
+//       if (index == 0) {
+//         data[fulfillmentType] = rateCardData;
+//       } else {
+//         data[fulfillmentType].shippingFee.response[bdg] = rateCardData.shippingFee.response[bdg];
+//       }
+//     }
+//     if (wait) {
+//       await new Promise((resolve) => {
+//         setTimeout(() => {
+//           resolve();
+//         }, 60000);
+//       });
+//       wait = false;
+//     }
+//   }
+
+//   const result = mergeObjects(data.NON_FBF, data.FBF);
+
+//   await fetch('localhost:3000/api/internal/rateCard', { method: 'POST', body: JSON.stringify({ fnsCode }) }).then(
+//     (res) => res.json(),
+//   );
+//   return result;
+// }
