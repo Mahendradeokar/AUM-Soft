@@ -2,7 +2,8 @@
 
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
-import { commonAPICallHandler } from '@/lib/utils';
+import { auth } from '@/lib/api.services';
+import { deleteCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -12,7 +13,9 @@ export default function Logout() {
   const handleLogOut = async () => {
     try {
       setLoading(true);
-      await commonAPICallHandler({ url: 'auth/logout', method: 'GET' });
+      await auth.logout();
+      deleteCookie('token');
+      deleteCookie('refreshToken');
       router.push('/login');
     } catch (error) {
       toast({

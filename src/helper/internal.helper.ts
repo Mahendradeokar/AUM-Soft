@@ -255,9 +255,6 @@ export function mergeObjects(obj1: Record<string, any>, obj2: Record<string, any
 //   }
 
 //   const result = mergeObjects(data.NON_FBF, data.FBF);
-
-//   await fetch('localhost:3000/api/internal/rateCard', { method: 'POST', body: JSON.stringify({ fnsCode }) }).then(
-//     (res) => res.json(),
-//   );
+//   console.log(result)
 //   return result;
 // }

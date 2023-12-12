@@ -10,9 +10,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { useForm } from 'react-hook-form';
-import { commonAPICallHandler } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { StatusCodes } from 'http-status-codes';
+import { user } from '@/lib/api.services';
 
 const changePasswordSchema = z
   .object({
@@ -53,7 +53,7 @@ export default function ChangePassword() {
         old_password: values.oldPwd,
         new_password: values.newPwd,
       };
-      await commonAPICallHandler({ url: '/profile/changes-password', data: reqData, method: 'PUT' });
+      await user.changePassword(reqData);
       toast({
         variant: 'default',
         title: 'New Password Update!',

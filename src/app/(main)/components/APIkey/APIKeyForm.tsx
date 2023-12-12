@@ -11,9 +11,9 @@ import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { MARKETPLACE_TYPE } from '@/common/common';
 import { toast } from '@/components/ui/use-toast';
-import { commonAPICallHandler } from '@/lib/utils';
 import { StatusCodes } from 'http-status-codes';
 import { useRouter } from 'next/navigation';
+import { marketplace } from '@/lib/api.services';
 
 const formSchema = z.object({
   marketPlace: z.string().min(1, 'Please select the marketplace.'),
@@ -76,7 +76,7 @@ function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = n
           description: 'No api is available for edit',
         });
       }
-      await commonAPICallHandler({ url: 'ecom/add_ecom', method: 'POST', data: reqData });
+      await marketplace.addMarketplace(reqData);
 
       toast({
         variant: 'default',

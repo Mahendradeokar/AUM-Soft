@@ -11,8 +11,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { useEffect } from 'react';
-import { commonAPICallHandler } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import { user } from '@/lib/api.services';
+import { StatusCodes } from 'http-status-codes';
 
 const profileFormSchema = z.object({
   username: z.string().min(2, {
@@ -42,14 +43,11 @@ export function ProfileForm() {
   useEffect(() => {
     (async () => {
       try {
-        const response = (await commonAPICallHandler({
-          url: '/profile',
-          method: 'GET',
-        })) as { message: string; data: any };
+        const { data: response } = await user.getProfile();
         form.setValue('email', response.data.email);
         form.setValue('username', response.data.user_name);
       } catch (error: any) {
-        if (error.error === 'ERR_JWT_EXPIRED') {
+        if (error.statusCode === StatusCodes.UNAUTHORIZED) {
           router.push('/login');
           return;
         }
