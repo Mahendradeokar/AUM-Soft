@@ -14,10 +14,11 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
-import { commonAPICallHandler } from '@/lib/utils';
 import { toast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
 import { Loader } from '@/components/ui/loader';
+import { marketplace } from '@/lib/api.services';
+import { StatusCodes } from 'http-status-codes';
 import APIModel from './APIModel';
 
 export type MarketPlaceCred = {
@@ -131,13 +132,10 @@ export default function DataTableDemo() {
     }
     (async () => {
       try {
-        const response = (await commonAPICallHandler({
-          url: '/ecom/get_ecom',
-          method: 'GET',
-        })) as { message: string; data: any[] };
+        const { data: response } = await marketplace.getMarketplace();
         setMarketplaceData(response.data);
       } catch (error: any) {
-        if (error.error === 'ERR_JWT_EXPIRED') {
+        if (error.statusCode === StatusCodes.UNAUTHORIZED) {
           router.push('/login');
           return;
         }

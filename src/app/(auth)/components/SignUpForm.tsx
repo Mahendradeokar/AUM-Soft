@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
-import { commonAPICallHandler } from '@/lib/utils';
+import { auth } from '@/lib/api.services';
 import { Button } from '../../../components/ui/button';
 
 const formSchema = z.object({
@@ -43,13 +43,13 @@ function SignUpForm() {
         email: values.email,
         password: values.pwd,
       };
-      await commonAPICallHandler({ url: 'auth/signup', data: reqData, method: 'POST' });
+      await auth.signup(reqData);
       router.push('/login');
     } catch (error: any) {
       toast({
         variant: 'destructive',
         title: 'Whoops!!',
-        description: error.message,
+        description: error.message || 'Something went wrong!',
       });
     }
   };

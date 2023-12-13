@@ -9,7 +9,8 @@ import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
-import { commonAPICallHandler } from '@/lib/utils';
+import { auth } from '@/lib/api.services';
+import { setCookie } from 'cookies-next';
 
 const formSchema = z.object({
   email: z.string().email({
@@ -37,13 +38,16 @@ function LoginForm() {
         email: values.email,
         password: values.pwd,
       };
-      await commonAPICallHandler({ url: 'auth/login', data: reqData, method: 'POST' });
+      const { data: responseData } = await auth.login(reqData);
+      localStorage.setItem('token', responseData.data.token);
+      setCookie('token', responseData.data.token);
+      setCookie('refreshToken', responseData.data.refreshToken);
       router.push('/');
     } catch (error: any) {
       toast({
         variant: 'destructive',
         title: 'Whoops!!',
-        description: error.message,
+        description: error.message || 'Something went wrong!',
       });
     }
   };
