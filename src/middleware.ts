@@ -1,9 +1,10 @@
 import { StatusCodes } from 'http-status-codes';
 import { NextRequest, NextResponse } from 'next/server';
+import { TOKEN } from './common/constants';
 
 export default async function middleware(request: NextRequest) {
   try {
-    const token = request.cookies.get('token')?.value;
+    const token = request.cookies.get(TOKEN)?.value;
     // login & register routes
     if (['/login', '/signUp'].includes(request.nextUrl.pathname)) {
       if (token) {

@@ -9,7 +9,6 @@ export const metadata: Metadata = {
 
 export default function KeyConfig() {
   return (
-    // <div className="">
     <div className="space-y-6 mx-1">
       <div>
         <h3 className="text-lg font-medium mb-2">Marketplace Setting</h3>
@@ -18,6 +17,5 @@ export default function KeyConfig() {
       <Separator />
       <APIKeyTable />
     </div>
-    // </div>
   );
 }

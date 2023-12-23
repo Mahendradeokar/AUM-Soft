@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@/components/Theme';
-import './globals.css';
+import '../styles/global.css';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';

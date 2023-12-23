@@ -1,7 +1,5 @@
-import { APIError } from '@/common/ApiError';
-import { TCommonAPIResponse } from '@/lib/lib.types';
-import axios, { AxiosError, AxiosResponse } from 'axios';
-import { getCookie } from 'cookies-next';
+import { getToken } from '@/lib/utils';
+import axios from 'axios';
 
 const configs: any = {
   development: {
@@ -25,25 +23,8 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((request) => {
-  request.headers.Authorization = `Bearer ${getCookie('token')}`;
+  request.headers.Authorization = `Bearer ${getToken()}`;
   return request;
 });
-
-// Response interceptor to handle errors
-axiosInstance.interceptors.response.use(
-  (response: AxiosResponse<any, any>) => {
-    // Handle successful response here
-    return response;
-  },
-  (error) => {
-    if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError<TCommonAPIResponse>;
-      const statusCode = axiosError.response?.status || 500;
-      const errorCode = axiosError.response?.data?.status_message || 'UNKNOWN';
-      return Promise.reject(new APIError(statusCode, errorCode || 'An error occurred.'));
-    }
-    return Promise.reject(new Error('An unexpected error occurred.'));
-  },
-);
 
 export default axiosInstance;
