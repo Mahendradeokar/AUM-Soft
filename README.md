@@ -22,4 +22,3 @@ add icons in some component
 - related to token
   - Login page does not have the field validations.
   - Can we update the existing session (if exists) with the new token and refresh token rather then creating a new one
-- change for testing ignore build
