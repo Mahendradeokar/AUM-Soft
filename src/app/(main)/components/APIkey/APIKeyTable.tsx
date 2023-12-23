@@ -14,10 +14,9 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
-import { commonAPICallHandler } from '@/lib/utils';
-import { toast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
 import { Loader } from '@/components/ui/loader';
+import { marketplace } from '@/requests';
 import APIModel from './APIModel';
 
 export type MarketPlaceCred = {
@@ -130,25 +129,11 @@ export default function DataTableDemo() {
       return;
     }
     (async () => {
-      try {
-        const response = (await commonAPICallHandler({
-          url: '/ecom/get_ecom',
-          method: 'GET',
-        })) as { message: string; data: any[] };
+      const response = await marketplace.getMarketplace();
+      if (response.isSuccess) {
         setMarketplaceData(response.data);
-      } catch (error: any) {
-        if (error.error === 'ERR_JWT_EXPIRED') {
-          router.push('/login');
-          return;
-        }
-        toast({
-          variant: 'destructive',
-          title: 'Whoops!!',
-          description: 'Something went wrong, Please try again later!',
-        });
-      } finally {
-        setLoading(false);
       }
+      setLoading(false);
     })();
   }, [router, model.open]);
 

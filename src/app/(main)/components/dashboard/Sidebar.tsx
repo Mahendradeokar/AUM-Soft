@@ -6,22 +6,6 @@ import { KeyRoundIcon, Lock } from 'lucide-react';
 import Link from 'next/link';
 import Logout from './logout';
 
-// import { Playlist } from "../data/playlists";
-export const playlist = [
-  'Recently Added',
-  'Recently Played',
-  'Top Songs',
-  'Top Albums',
-  'Top Artists',
-  'Logic Discography',
-  'Bedtime Beats',
-  'Feeling Happy',
-  'I miss Y2K Pop',
-  'Runtober',
-  'Mellow Days',
-  'Eminem Essentials',
-];
-
 const links = [
   {
     label: 'Dashboard',
@@ -42,11 +26,6 @@ const links = [
     label: 'Marketplace settings',
     Icon: KeyRoundIcon,
     link: '/mpsetting',
-  },
-  {
-    label: 'Sign up',
-    Icon: KeyRoundIcon,
-    link: '/singup',
   },
 ];
 
@@ -86,13 +65,11 @@ export default function Sidebar({ className }: SidebarProps) {
             ))}
           </div>
           <div className="flex gap-4">
-            {/* <UserNav /> */}
             <Logout />
             <ThemeToggle />
           </div>
         </div>
       </div>
     </div>
-    // </div>
   );
 }

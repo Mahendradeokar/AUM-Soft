@@ -36,7 +36,7 @@
     ".next/types/**/*.ts",
     ".prettierrc",
     "postcss.config.js" ,
-    "/.eslintrc.json"
+    "/.eslintrc.json",
    ],
   "exclude": [
     "node_modules"

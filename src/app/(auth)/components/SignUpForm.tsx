@@ -7,9 +7,8 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
-import { useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
-import { commonAPICallHandler } from '@/lib/utils';
+import { auth } from '@/requests';
 import { Button } from '../../../components/ui/button';
 
 const formSchema = z.object({
@@ -26,7 +25,6 @@ const formSchema = z.object({
 
 function SignUpForm() {
   const router = useRouter();
-  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,20 +35,14 @@ function SignUpForm() {
   });
 
   const onSubmit = async function (values: z.infer<typeof formSchema>) {
-    try {
-      const reqData = {
-        username: values.name,
-        email: values.email,
-        password: values.pwd,
-      };
-      await commonAPICallHandler({ url: 'auth/signup', data: reqData, method: 'POST' });
+    const reqData = {
+      username: values.name,
+      email: values.email,
+      password: values.pwd,
+    };
+    const response = await auth.signUp(reqData);
+    if (response.isSuccess) {
       router.push('/login');
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Whoops!!',
-        description: error.message,
-      });
     }
   };
 

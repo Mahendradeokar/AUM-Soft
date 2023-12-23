@@ -9,11 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
-import { MARKETPLACE_TYPE } from '@/common/common';
 import { toast } from '@/components/ui/use-toast';
-import { commonAPICallHandler } from '@/lib/utils';
-import { StatusCodes } from 'http-status-codes';
-import { useRouter } from 'next/navigation';
+import { MARKETPLACE_TYPE } from '@/common/constants';
+import { marketplace } from '@/requests';
 
 const formSchema = z.object({
   marketPlace: z.string().min(1, 'Please select the marketplace.'),
@@ -47,7 +45,6 @@ interface IAPIKeyFormProps {
 }
 
 function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = null }: IAPIKeyFormProps) {
-  const router = useRouter();
   const defaultValues = {
     apiKey: mode === 'edit' ? apiKey : '',
     apiSecret: mode === 'edit' ? secret : '',
@@ -61,41 +58,25 @@ function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = n
   });
 
   const onSubmit = async function (values: z.infer<typeof formSchema>) {
-    try {
-      const reqData = {
-        api_key: values.apiKey,
-        secret: values.apiSecret,
-        market_place_name: values.marketPlace,
-        account_name: values.accountName,
-      };
+    const reqData = {
+      api_key: values.apiKey,
+      secret: values.apiSecret,
+      market_place_name: values.marketPlace,
+      account_name: values.accountName,
+    };
 
-      if (mode === 'edit') {
-        return toast({
-          variant: 'destructive',
-          title: 'Contact Support',
-          description: 'No api is available for edit',
-        });
-      }
-      await commonAPICallHandler({ url: 'ecom/add_ecom', method: 'POST', data: reqData });
-
-      toast({
-        variant: 'default',
-        description: 'Credentials added!',
-      });
-
-      form.reset();
-      return null;
-    } catch (error: any) {
-      if (error.statusCode === StatusCodes.UNAUTHORIZED) {
-        return router.push('/login');
-      }
-      toast({
+    if (mode === 'edit') {
+      return toast({
         variant: 'destructive',
-        title: 'Whoops!!',
-        description: error.message,
+        title: 'Contact Support',
+        description: 'This is not available now. We are working hard on it.',
       });
-      return null;
     }
+    const response = await marketplace.addMarketplace(reqData);
+    if (response.isSuccess) {
+      form.reset();
+    }
+    return null;
   };
 
   return (
