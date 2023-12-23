@@ -8,11 +8,8 @@ import * as z from 'zod';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import { StatusCodes } from 'http-status-codes';
-import { user } from '@/lib/api.services';
+import { profile } from '@/requests';
 
 const changePasswordSchema = z
   .object({
@@ -40,7 +37,6 @@ const defaultValues: Partial<TChangePasswordValues> = {
 };
 
 export default function ChangePassword() {
-  const router = useRouter();
   const form = useForm<TChangePasswordValues>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues,
@@ -48,27 +44,13 @@ export default function ChangePassword() {
   });
 
   async function onSubmit(values: TChangePasswordValues) {
-    try {
-      const reqData = {
-        old_password: values.oldPwd,
-        new_password: values.newPwd,
-      };
-      await user.changePassword(reqData);
-      toast({
-        variant: 'default',
-        title: 'New Password Update!',
-        description: 'Your password is changed',
-      });
+    const reqData = {
+      old_password: values.oldPwd,
+      new_password: values.newPwd,
+    };
+    const response = await profile.changePassword(reqData);
+    if (response.isSuccess) {
       form.reset();
-    } catch (error: any) {
-      if (error.statusCode === StatusCodes.UNAUTHORIZED) {
-        router.push('/login');
-        return;
-      }
-      toast({
-        variant: 'destructive',
-        description: error.message ?? 'Something went wrong, Please try again later!',
-      });
     }
   }
 

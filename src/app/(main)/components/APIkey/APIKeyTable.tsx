@@ -14,11 +14,9 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
 import { Loader } from '@/components/ui/loader';
-import { marketplace } from '@/lib/api.services';
-import { StatusCodes } from 'http-status-codes';
+import { marketplace } from '@/requests';
 import APIModel from './APIModel';
 
 export type MarketPlaceCred = {
@@ -131,22 +129,11 @@ export default function DataTableDemo() {
       return;
     }
     (async () => {
-      try {
-        const { data: response } = await marketplace.getMarketplace();
+      const response = await marketplace.getMarketplace();
+      if (response.isSuccess) {
         setMarketplaceData(response.data);
-      } catch (error: any) {
-        if (error.statusCode === StatusCodes.UNAUTHORIZED) {
-          router.push('/login');
-          return;
-        }
-        toast({
-          variant: 'destructive',
-          title: 'Whoops!!',
-          description: 'Something went wrong, Please try again later!',
-        });
-      } finally {
-        setLoading(false);
       }
+      setLoading(false);
     })();
   }, [router, model.open]);
 

@@ -7,10 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
-import { useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
-import { auth } from '@/lib/api.services';
-import { setCookie } from 'cookies-next';
+import { auth } from '@/requests';
 
 const formSchema = z.object({
   email: z.string().email({
@@ -22,7 +20,6 @@ const formSchema = z.object({
 });
 
 function LoginForm() {
-  const { toast } = useToast();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -33,22 +30,13 @@ function LoginForm() {
   });
 
   const onSubmit = async function (values: z.infer<typeof formSchema>) {
-    try {
-      const reqData = {
-        email: values.email,
-        password: values.pwd,
-      };
-      const { data: responseData } = await auth.login(reqData);
-      localStorage.setItem('token', responseData.data.token);
-      setCookie('token', responseData.data.token);
-      setCookie('refreshToken', responseData.data.refreshToken);
+    const reqData = {
+      email: values.email,
+      password: values.pwd,
+    };
+    const response = await auth.login(reqData);
+    if (response.isSuccess) {
       router.push('/');
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Whoops!!',
-        description: error.message || 'Something went wrong!',
-      });
     }
   };
   return (

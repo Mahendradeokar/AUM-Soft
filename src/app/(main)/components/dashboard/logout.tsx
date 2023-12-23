@@ -1,8 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
-import { auth } from '@/lib/api.services';
+import { auth } from '@/requests';
 import { deleteCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -11,21 +10,14 @@ export default function Logout() {
   const router = useRouter();
   const [isLoading, setLoading] = useState(false);
   const handleLogOut = async () => {
-    try {
-      setLoading(true);
-      await auth.logout();
+    setLoading(true);
+    const response = await auth.logout();
+    if (response.isSuccess) {
       deleteCookie('token');
       deleteCookie('refreshToken');
       router.push('/login');
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Whoops!',
-        description: 'Something went wrong! Please try again later',
-      });
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
   return (
     <Button variant="outline" className="w-full justify-start flex-1" onClick={handleLogOut} isLoading={isLoading}>

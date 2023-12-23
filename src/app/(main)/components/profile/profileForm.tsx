@@ -12,8 +12,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { user } from '@/lib/api.services';
-import { StatusCodes } from 'http-status-codes';
+import { profile } from '@/requests';
 
 const profileFormSchema = z.object({
   username: z.string().min(2, {
@@ -42,20 +41,10 @@ export function ProfileForm() {
 
   useEffect(() => {
     (async () => {
-      try {
-        const { data: response } = await user.getProfile();
+      const response = await profile.getProfile();
+      if (response.isSuccess) {
         form.setValue('email', response.data.email);
         form.setValue('username', response.data.user_name);
-      } catch (error: any) {
-        if (error.statusCode === StatusCodes.UNAUTHORIZED) {
-          router.push('/login');
-          return;
-        }
-        toast({
-          variant: 'destructive',
-          title: 'Whoops!!',
-          description: 'Something went wrong, Please try again later!',
-        });
       }
     })();
   }, [router, form]);
