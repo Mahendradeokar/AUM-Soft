@@ -6,7 +6,7 @@ const configs: any = {
     baseURL: process.env.NEXT_PUBLIC_SERVER_URL_DEV,
   },
 
-  test: {
+  production: {
     baseURL: process.env.NEXT_PUBLIC_SERVER_URL_PROD,
   },
 
