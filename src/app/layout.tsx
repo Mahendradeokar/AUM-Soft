@@ -22,19 +22,19 @@ export const viewPort: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <Script src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`} />
-      <Script id="google-analytics">
-        {`
+      <head />
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <Script src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`} />
+          <Script id="google-analytics">
+            {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
  
-          gtag('config', 'GA_MEASUREMENT_ID');
+          gtag('config', ${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS});
         `}
-      </Script>
-      <head />
-      <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          </Script>
           {children}
         </ThemeProvider>
         <Toaster />
