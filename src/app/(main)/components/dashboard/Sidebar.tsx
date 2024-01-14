@@ -51,7 +51,7 @@ export default function Sidebar({ className }: SidebarProps) {
               <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
             </svg>
           </div>
-          <span>Ecom Soft</span>
+          <span>AUM</span>
         </div>
         <div className="flex flex-col flex-1 justify-center">
           <div className="space-y-1 flex-1">

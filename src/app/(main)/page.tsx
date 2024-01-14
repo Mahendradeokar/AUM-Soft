@@ -18,7 +18,7 @@ const cardData: {
     id: 1,
     title: 'Profit/Loss',
     icon: 'svg-for-total-revenue',
-    totalValue: '$45,231.89',
+    totalValue: '₹1,50,068',
     percentageChange: '+20.1% from last month',
   },
   {
@@ -32,14 +32,14 @@ const cardData: {
     id: 3,
     title: 'Customer Return',
     icon: 'svg-for-sales',
-    totalValue: '+12,234',
+    totalValue: '+34',
     percentageChange: '+19% from last month',
   },
   {
     id: 4,
     title: 'Courier Return',
     icon: 'svg-for-active-now',
-    totalValue: '+573',
+    totalValue: '+53',
     percentageChange: '+201 since last hour',
   },
 ];

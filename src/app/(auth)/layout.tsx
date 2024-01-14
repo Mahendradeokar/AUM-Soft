@@ -22,7 +22,7 @@ export default async function AuthLayout({ children }: AuthLayoutProps) {
             <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
           </svg>
         </div>
-        Ecom Soft
+        AUM
       </div>
       <div className="absolute right-4 top-4 md:right-8 md:top-8">
         <ThemeToggle />
@@ -42,7 +42,7 @@ export default async function AuthLayout({ children }: AuthLayoutProps) {
           >
             <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
           </svg>
-          Ecom Soft
+          AUM
         </div>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
