@@ -6,7 +6,7 @@ import { deleteCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function Logout() {
+export default function Logout({ children }: any) {
   const router = useRouter();
   const [isLoading, setLoading] = useState(false);
   const handleLogOut = async () => {
@@ -20,7 +20,12 @@ export default function Logout() {
     setLoading(false);
   };
   return (
-    <Button variant="outline" className="w-full justify-start flex-1" onClick={handleLogOut} isLoading={isLoading}>
+    <Button
+      variant="outline"
+      className="w-full justify-center items-center flex-1"
+      onClick={handleLogOut}
+      isLoading={isLoading}
+    >
       <svg
         width="15"
         height="15"
@@ -37,7 +42,7 @@ export default function Logout() {
           clipRule="evenodd"
         />
       </svg>
-      Log Out
+      {children}
     </Button>
   );
 }
