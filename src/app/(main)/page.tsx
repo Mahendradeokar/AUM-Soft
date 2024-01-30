@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
-import { Button } from '@/components/ui/button';
-import { CalendarDateRangePicker, DashCart, DataTable, MarketPlaceSwitcher } from './components/dashboard';
+import { DashCart, DataTable, MarketPlaceSwitcher } from './components/dashboard';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -47,12 +46,9 @@ const cardData: {
 export default function Dashboard() {
   return (
     <>
-      <div className="flex h-16 items-center">
+      <div className="flex justify-between h-16 items-center">
+        <h2 className="text-3xl font-bold tracking-normal">Dashboard</h2>
         <MarketPlaceSwitcher />
-        <div className="ml-auto flex items-center space-x-4">
-          <CalendarDateRangePicker />
-          <Button>Select</Button>
-        </div>
       </div>
       <div className="flex-1 space-y-4 py-8 pt-6">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

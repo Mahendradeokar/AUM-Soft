@@ -15,7 +15,7 @@ const configs: any = {
   },
 };
 
-const axiosInstance = axios.create({
+export const axiosInstance = axios.create({
   baseURL: configs[process.env.NODE_ENV || 'development'].baseURL,
   headers: {
     'Content-Type': 'application/json',
@@ -26,5 +26,3 @@ axiosInstance.interceptors.request.use((request) => {
   request.headers.Authorization = `Bearer ${getToken()}`;
   return request;
 });
-
-export default axiosInstance;

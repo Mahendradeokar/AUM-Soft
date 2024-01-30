@@ -13,20 +13,14 @@ interface IDashboardLayout {
 
 export default function DashboardLayout({ children }: IDashboardLayout) {
   return (
-    <div className="hidden md:block">
-      <div className="bg-background">
-        <div className="flex flex-col lg:flex-row h-screen box-border">
-          <Sidebar className="hidden lg:block sticky h-screen" />
-          <ScrollArea className="px-4 grow-[1] lg:px-8 lg:border-l box-border">
-            {/* <div className=""> */}
-            <div className="h-full py-6">
-              <div className="hidden flex-col md:flex">
-                {/* nav bar */}
-                {children}
-              </div>
-            </div>
-          </ScrollArea>
-        </div>
+    <div className="bg-background">
+      <div className="flex flex-col lg:flex-row h-screen box-border">
+        <Sidebar className="sticky h-screen" />
+        <ScrollArea className="px-4 grow-[1] lg:px-8 lg:border-l box-border">
+          <div className="h-full py-6">
+            <div className="flex-col md:flex">{children}</div>
+          </div>
+        </ScrollArea>
       </div>
     </div>
   );

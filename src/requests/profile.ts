@@ -1,4 +1,4 @@
-import axiosInstance from '@/config/axios';
+import { axiosInstance } from '@/config';
 import successHandler from './success';
 import errorHandler from './error';
 
@@ -16,7 +16,7 @@ export const changePassword = async (data: { old_password: string; new_password:
 export const getProfile = async () => {
   try {
     const { data: resData } = await axiosInstance.get('seller');
-    return successHandler(resData, { showNotification: true });
+    return successHandler(resData, { showNotification: false });
   } catch (error: any) {
     // eslint-disable-next-line no-console
     console.error('Error while calling get profile API....', error);

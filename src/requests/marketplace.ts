@@ -1,4 +1,4 @@
-import axiosInstance from '@/config/axios';
+import { axiosInstance } from '@/config';
 import successHandler from './success';
 import errorHandler from './error';
 
