@@ -26,28 +26,38 @@ export const labels = [
 
 export const statuses = [
   {
-    value: 'backlog',
+    value: 'COURIER_RETURN',
     label: 'Courier Returned',
     icon: QuestionMarkCircledIcon,
   },
   {
-    value: 'todo',
+    value: 'DELIVERED',
     label: 'Delivered',
     icon: CircleIcon,
   },
   {
-    value: 'in progress',
+    value: 'ON_GOING',
     label: 'In Progress',
     icon: StopwatchIcon,
   },
   {
-    value: 'done',
+    value: 'COMPLETED',
     label: 'Completed',
     icon: CheckCircledIcon,
   },
   {
-    value: 'canceled',
+    value: 'CANCELED',
     label: 'Canceled',
+    icon: CrossCircledIcon,
+  },
+  {
+    value: 'CUSTOMER_RETURN',
+    label: 'Returned',
+    icon: CrossCircledIcon,
+  },
+  {
+    value: 'RETURNED',
+    label: 'Returned',
     icon: CrossCircledIcon,
   },
 ];

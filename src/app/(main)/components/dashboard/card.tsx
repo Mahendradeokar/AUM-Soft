@@ -7,8 +7,8 @@ import React from 'react';
 
 interface DashCartProps {
   title: string;
-  content: string;
-  description: string;
+  content?: string;
+  description?: string;
   Icon?: React.FC | null;
 }
 
