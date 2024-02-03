@@ -7,8 +7,8 @@ import React from 'react';
 
 interface DashCartProps {
   title: string;
-  content: string;
-  description: string;
+  content?: string;
+  description?: string;
   Icon?: React.FC | null;
 }
 
@@ -18,7 +18,7 @@ export default function DashCart({ title, content, description, Icon = null }: D
   };
 
   return (
-    <Card onClick={handleClick} className="cursor-pointer">
+    <Card onClick={handleClick} className="cursor-pointer border border-spacing-3">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         {Icon && <Icon />}
