@@ -15,8 +15,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { Loader } from '@/components/ui/loader';
 import { marketplace } from '@/requests';
+import { Loader } from '@/components/common';
 import APIModel from './APIModel';
 
 export type MarketPlaceCred = {
@@ -198,7 +198,7 @@ export default function DataTableDemo() {
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  {isLoading ? <Loader /> : 'No results.'}
+                  {isLoading ? <Loader className="h-auto" /> : 'No results.'}
                 </TableCell>
               </TableRow>
             )}

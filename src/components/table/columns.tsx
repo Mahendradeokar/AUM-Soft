@@ -33,14 +33,14 @@ export const columns: ColumnDef<Task>[] = [
   },
   {
     accessorKey: 'order_item_id',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Order Id" />,
+    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-[20ch]" title="Order Id" />,
     cell: ({ row }) => <div className="main-content">{row.getValue('order_item_id')}</div>,
     enableSorting: false,
     enableHiding: false,
   },
   {
     accessorKey: 'sku',
-    header: ({ column }) => <DataTableColumnHeader className="max-w-max w-[500px]" column={column} title="SKU" />,
+    header: ({ column }) => <DataTableColumnHeader className="max-w-max min-w-[25ch]" column={column} title="SKU" />,
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
@@ -51,7 +51,9 @@ export const columns: ColumnDef<Task>[] = [
   },
   {
     accessorKey: 'flipkart_status',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="marketplace Status" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} className="min-w-[20ch]" title="marketplace Status" />
+    ),
     cell: ({ row }) => {
       const status = statuses.find((status) => status.value.toUpperCase() === row.getValue('flipkart_status'));
 
@@ -72,7 +74,7 @@ export const columns: ColumnDef<Task>[] = [
   },
   {
     accessorKey: 'status',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-[13ch]" title="Status" />,
     cell: ({ row }) => {
       const status = statuses.find((status) => status.value === row.getValue('status'));
 
@@ -93,7 +95,7 @@ export const columns: ColumnDef<Task>[] = [
   },
   {
     accessorKey: 'order_date',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Order Date" />,
+    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-[20ch]" title="Order Date" />,
     cell: ({ row }) => {
       const date: number = row.getValue('order_date');
       return <div>{convertUnixToDate(date)}</div>;
@@ -101,7 +103,7 @@ export const columns: ColumnDef<Task>[] = [
   },
   {
     accessorKey: 'quantity',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Quantity" />,
+    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-[8ch]" title="Quantity" />,
     cell: ({ row }) => {
       return <div>{row.getValue('quantity')}</div>;
     },

@@ -55,7 +55,7 @@ export const getStatisticData = async () => {
     }
     const statsData = convertIntoStatisticsData(data.data.orderDetailList);
     data.data = statsData;
-    return successHandler(data, { showNotification: true });
+    return successHandler(data, { showNotification: false });
   } catch (error: any) {
     return errorHandler({ status_message: error.message }, { showNotification: true });
   }
@@ -75,7 +75,7 @@ export const getOrdersData = async ({
     const { data: resData } = await axiosInstance.get('dashboard/get-order', {
       params: { status, order_id, sku_id, start_date, end_date, limit, flipkart_status },
     });
-    return successHandler(resData, { showNotification: true });
+    return successHandler(resData, { showNotification: false });
   } catch (error: any) {
     // eslint-disable-next-line no-console
     console.error('Error while calling the get market place API....', error);

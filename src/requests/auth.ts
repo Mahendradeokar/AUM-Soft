@@ -19,7 +19,7 @@ export const login = async (data: { email: string; password: string }) => {
 export const signUp = async (data: { username: string; email: string; password: string }) => {
   try {
     const { data: resData } = await axiosInstance.post('seller', data);
-    return successHandler(resData, { showNotification: true });
+    return successHandler(resData, { showNotification: false });
   } catch (error: any) {
     // eslint-disable-next-line no-console
     console.error('Error while calling the signup api....', error);

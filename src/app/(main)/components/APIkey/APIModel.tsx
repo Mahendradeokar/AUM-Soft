@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Modal } from '@/components/common';
 import APIKeyForm, { Mode } from './APIKeyForm';
 
 interface IAPIModel {
@@ -6,7 +6,7 @@ interface IAPIModel {
   apiKey?: string;
   secret?: string;
   open: boolean;
-  marketPlace: string;
+  marketPlace?: string | null;
   setOpen: (isOpen: boolean) => void;
 }
 
@@ -21,17 +21,18 @@ const texts = {
   },
 };
 
-export default function APIModel({ mode = 'create', apiKey = '', secret = '', open, setOpen, marketPlace }: IAPIModel) {
+export default function APIModel({
+  mode = 'create',
+  apiKey = '',
+  secret = '',
+  open,
+  setOpen,
+  marketPlace = null,
+}: IAPIModel) {
   const content = mode === 'edit' ? texts.edit : texts.add;
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>{content.title}</DialogTitle>
-          <DialogDescription>{content.description}</DialogDescription>
-        </DialogHeader>
-        <APIKeyForm mode={mode} apiKey={apiKey} secret={secret} marketPlace={marketPlace} />
-      </DialogContent>
-    </Dialog>
+    <Modal open={open} setOpen={setOpen} title={content.title} description={content.description}>
+      <APIKeyForm mode={mode} apiKey={apiKey} secret={secret} marketPlace={marketPlace} />
+    </Modal>
   );
 }
