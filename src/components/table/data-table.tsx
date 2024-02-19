@@ -5,7 +5,6 @@ import {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
@@ -21,6 +20,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { dashboard } from '@/requests';
 import { DataTablePagination } from './data-table-pagination';
 import { DataTableToolbar } from './data-table-toolbar';
+import { ScrollArea, ScrollBar } from '../ui/scroll-area';
+import { Loader } from '../common';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -28,8 +29,8 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrdersData, TValue>) {
   const [orders, setOrders] = React.useState<IOrdersData[]>([]);
+  const [isLoading, setLoading] = React.useState<boolean>(true);
   const [rowSelection, setRowSelection] = React.useState({});
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
@@ -38,7 +39,6 @@ export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrde
     columns,
     state: {
       sorting,
-      columnVisibility,
       rowSelection,
       columnFilters,
     },
@@ -46,7 +46,6 @@ export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrde
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -57,49 +56,55 @@ export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrde
 
   React.useEffect(() => {
     (async () => {
+      setLoading(true);
       const { data, isSuccess } = await dashboard.getOrdersData({});
       if (isSuccess) {
         setOrders(data.orderDetailList);
       }
+      setLoading(false);
     })();
   }, []);
 
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />
-      <div className="rounded-md border">
-        <Table className="overflow-auto">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                  ))}
+      <div className="rounded-md border relative">
+        <ScrollArea>
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="h-24 text-center" />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+        <div className="absolute top-[50%] left-[50%]">
+          {isLoading ? <Loader className="h-auto" /> : table.getRowModel().rows?.length > 0 || <div>No results</div>}
+        </div>
       </div>
       <DataTablePagination table={table} />
     </div>

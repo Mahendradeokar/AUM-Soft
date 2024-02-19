@@ -57,3 +57,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Done this to solve the table overflow issue, Table is getting overflow out of page  */
+.table-overflow-fix > [data-radix-scroll-area-viewport] > div {
+  display: block !important;
+}

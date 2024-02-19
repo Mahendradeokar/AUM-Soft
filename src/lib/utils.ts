@@ -18,3 +18,23 @@ export function setToken(token: string) {
 export function deleteToken() {
   deleteCookie(TOKEN);
 }
+
+type LocalStoredData = Record<string, unknown> | Array<unknown>;
+
+export const getLocalStoredData = (id: string): LocalStoredData | null => {
+  const preVal: string | null = localStorage.getItem(id);
+  if (preVal) {
+    return JSON.parse(preVal);
+  }
+  return null;
+};
+
+export const storeDataLocally = (id: string, value: LocalStoredData) => {
+  const preVal = getLocalStoredData(id);
+  const dataToBeStore = {
+    ...(preVal ?? {}),
+    ...value,
+  };
+  localStorage.setItem(id, JSON.stringify(dataToBeStore));
+  return dataToBeStore;
+};

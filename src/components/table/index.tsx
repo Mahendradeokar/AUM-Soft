@@ -3,7 +3,7 @@ import { DataTable as Table } from './data-table';
 
 export default async function DataTable() {
   return (
-    <div className="hidden h-full flex-1 flex-col space-y-8 py-8 md:flex">
+    <div className="hidden h-full flex-1 flex-col space-y-8 py-8 md:flex outline outline-[red] outline-2">
       <div className="flex items-center justify-between space-y-2">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Order&apos;s list!</h2>
