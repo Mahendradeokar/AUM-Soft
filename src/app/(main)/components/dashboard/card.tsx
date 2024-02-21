@@ -23,7 +23,7 @@ export default function DashCart({ title, content, description, Icon = null }: D
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         {Icon && <Icon />}
       </CardHeader>
-      <CardContent>
+      <CardContent className="grid gap-2">
         <div className="text-2xl font-bold">{content}</div>
         <p className="text-xs text-muted-foreground">{description}</p>
       </CardContent>

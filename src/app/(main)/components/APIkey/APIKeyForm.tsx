@@ -1,3 +1,6 @@
+/* eslint-disable no-debugger */
+/* eslint-disable no-console */
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,7 +14,8 @@ import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { toast } from '@/components/ui/use-toast';
 import { MARKETPLACE_TYPE } from '@/common/constants';
-import { marketplace } from '@/requests';
+// import { marketplace } from '@/requests';
+import axios from 'axios';
 
 const formSchema = z.object({
   marketPlace: z.string().min(1, 'Please select the marketplace.'),
@@ -65,6 +69,7 @@ function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = n
       account_name: values.accountName,
     };
 
+    console.log(reqData);
     if (mode === 'edit') {
       return toast({
         variant: 'destructive',
@@ -72,8 +77,12 @@ function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = n
         description: 'This is not available now. We are working hard on it.',
       });
     }
-    const response = await marketplace.addMarketplace(reqData);
-    if (response.isSuccess) {
+    // const response = await marketplace.addMarketplace(reqData);
+    const response = await axios.get(
+      'https://api.flipkart.net/oauth-service/oauth/authorize?client_id=522457b7048bb49786ab5946b06862084038&redirect_uri=https://aumsoft.vercel.app/&response_type=code&scope=Seller_Api&state=fb-seller',
+    );
+    debugger;
+    if (response.data) {
       form.reset();
     }
     return null;

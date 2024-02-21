@@ -27,7 +27,7 @@ export default function Statistics() {
   return statisticData.map((stats: any) => (
     <DashCart
       key={stats.title}
-      // description={stats.percentageChange}
+      description={stats.percentageChange}
       title={stats.title}
       content={stats.totalValue}
       Icon={stats.icon}
