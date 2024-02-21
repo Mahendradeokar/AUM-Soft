@@ -1,21 +1,22 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { StatusCodes } from 'http-status-codes';
 import { NextRequest, NextResponse } from 'next/server';
-import { TOKEN } from './common/constants';
+// import { TOKEN } from './common/constants';
 
 export default async function middleware(request: NextRequest) {
   try {
-    const token = request.cookies.get(TOKEN)?.value;
+    // const token = request.cookies.get(TOKEN)?.value;
     // login & register routes
-    if (['/login', '/signUp'].includes(request.nextUrl.pathname)) {
-      if (token) {
-        return NextResponse.redirect(new URL('/', request.url));
-      }
-      return NextResponse.next();
-    }
+    // if (['/login', '/signUp'].includes(request.nextUrl.pathname)) {
+    //   if (token) {
+    //     return NextResponse.redirect(new URL('/', request.url));
+    //   }
+    //   return NextResponse.next();
+    // }
 
-    if (!token) {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
+    // if (!token) {
+    //   return NextResponse.redirect(new URL('/login', request.url));
+    // }
     return NextResponse.next();
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: StatusCodes.INTERNAL_SERVER_ERROR });
