@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import DataTable from '@/components/table';
-import { MarketPlaceSwitcher, Statistics } from './components/dashboard';
+import { FbFlow, MarketPlaceSwitcher, Statistics } from './components/dashboard';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 export default function Dashboard() {
   return (
     <>
+      <FbFlow />
       <div className="flex justify-between h-16 items-center">
         <h2 className="text-3xl font-bold tracking-normal">Dashboard</h2>
         <MarketPlaceSwitcher />

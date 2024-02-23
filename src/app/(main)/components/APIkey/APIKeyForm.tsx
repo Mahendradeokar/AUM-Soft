@@ -1,6 +1,3 @@
-/* eslint-disable no-debugger */
-/* eslint-disable no-console */
-
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,13 +11,13 @@ import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { toast } from '@/components/ui/use-toast';
 import { MARKETPLACE_TYPE } from '@/common/constants';
-// import { marketplace } from '@/requests';
-import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import { getFbOauthUrl } from '@/config/flipkart';
 
 const formSchema = z.object({
   marketPlace: z.string().min(1, 'Please select the marketplace.'),
-  apiKey: z.string().min(3, 'Please enter the valid API Key!'),
-  apiSecret: z.string().min(3, 'Please enter the valid API Secret!'),
+  apiKey: z.string().min(3, 'Please enter the valid API Key!').optional(),
+  apiSecret: z.string().min(3, 'Please enter the valid API Secret!').optional(),
   accountName: z.string().min(4, 'Please entry the account name'),
 });
 
@@ -48,10 +45,11 @@ interface IAPIKeyFormProps {
   marketPlace?: string | null;
 }
 
-function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = null }: IAPIKeyFormProps) {
+function APIKeyForm({ mode = 'create', marketPlace = null }: IAPIKeyFormProps) {
+  const router = useRouter();
   const defaultValues = {
-    apiKey: mode === 'edit' ? apiKey : '',
-    apiSecret: mode === 'edit' ? secret : '',
+    // apiKey: mode === 'edit' ? apiKey : '',
+    // apiSecret: mode === 'edit' ? secret : '',
     accountName: '',
     marketPlace: '',
   };
@@ -63,13 +61,10 @@ function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = n
 
   const onSubmit = async function (values: z.infer<typeof formSchema>) {
     const reqData = {
-      api_key: values.apiKey,
-      secret: values.apiSecret,
       market_place_name: values.marketPlace,
       account_name: values.accountName,
     };
 
-    console.log(reqData);
     if (mode === 'edit') {
       return toast({
         variant: 'destructive',
@@ -77,14 +72,16 @@ function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = n
         description: 'This is not available now. We are working hard on it.',
       });
     }
-    // const response = await marketplace.addMarketplace(reqData);
-    const response = await axios.get(
-      'https://api.flipkart.net/oauth-service/oauth/authorize?client_id=522457b7048bb49786ab5946b06862084038&redirect_uri=https://aumsoft.vercel.app/&response_type=code&scope=Seller_Api&state=fb-seller',
-    );
-    debugger;
-    if (response.data) {
-      form.reset();
+
+    const jsonString = JSON.stringify(reqData);
+    const redirectURL = getFbOauthUrl(encodeURIComponent(jsonString));
+    if (redirectURL) {
+      router.push(redirectURL);
     }
+    // const response = await marketplace.addMarketplace(reqData);
+    // if (response.data) {
+    //   form.reset();
+    // }
     return null;
   };
 
@@ -137,35 +134,31 @@ function APIKeyForm({ mode = 'create', apiKey = '', secret = '', marketPlace = n
           )}
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="apiKey"
           render={({ field }) => (
             <FormItem>
-              {/* <FormLabel>API Key</FormLabel> */}
               <FormControl>
-                {/* eslint-disable-next-line react/jsx-props-no-spreading */}
                 <Input placeholder="API Key" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="apiSecret"
           render={({ field }) => (
             <FormItem>
-              {/* <FormLabel>API Secret</FormLabel> */}
               <FormControl>
-                {/* eslint-disable-next-line react/jsx-props-no-spreading */}
                 <Input placeholder="API Secret" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <Button className="w-full" type="submit" isLoading={form.formState.isSubmitting}>
           {mode === 'edit' ? 'Update' : 'Add'}
         </Button>

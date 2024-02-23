@@ -1,16 +1,16 @@
 'use client';
 
 import * as React from 'react';
-import { DotsHorizontalIcon } from '@radix-ui/react-icons';
+// import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuLabel,
+//   DropdownMenuSeparator,
+//   DropdownMenuTrigger,
+// } from '@/components/ui/dropdown-menu';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
@@ -67,58 +67,58 @@ export const columns: ColumnDef<MarketPlaceCred>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: 'api_key',
-    header: () => <div className="text-start">Api key</div>,
-    cell: ({ row }) => (
-      <div className="text-start truncate max-w-[200px]" title={row.getValue('api_key')}>
-        {row.getValue('api_key')}
-      </div>
-    ),
-  },
-  {
-    accessorKey: 'secret',
-    header: () => <div className="text-start">Api Secret</div>,
-    cell: ({ row }) => (
-      <div className="text-start truncate max-w-[200px]" title={row.getValue('secret')}>
-        {row.getValue('secret')}
-      </div>
-    ),
-  },
-  {
-    id: 'actions',
-    enableHiding: false,
-    // { row, table }
-    cell: () => {
-      // const payment = row.original;
-      // const { showModel } = table.options.meta;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {/* <DropdownMenuItem
-              onClick={() =>
-                showModel({ key: payment.apiKey, secret: payment.apiSecret, marketPlace: payment.marketPlace })
-              }
-            >
-              Edit
-            </DropdownMenuItem> */}
-            <DropdownMenuItem>Delete (Coming Soon)</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
+  // {
+  //   accessorKey: 'api_key',
+  //   header: () => <div className="text-start">Api key</div>,
+  //   cell: ({ row }) => (
+  //     <div className="text-start truncate max-w-[200px]" title={row.getValue('api_key')}>
+  //       {row.getValue('api_key')}
+  //     </div>
+  //   ),
+  // },
+  // {
+  //   accessorKey: 'secret',
+  //   header: () => <div className="text-start">Api Secret</div>,
+  //   cell: ({ row }) => (
+  //     <div className="text-start truncate max-w-[200px]" title={row.getValue('secret')}>
+  //       {row.getValue('secret')}
+  //     </div>
+  //   ),
+  // },
+  // {
+  //   id: 'actions',
+  //   enableHiding: false,
+  //   // { row, table }
+  //   cell: () => {
+  //     // const payment = row.original;
+  //     // const { showModel } = table.options.meta;
+  //     return (
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="ghost" className="h-8 w-8 p-0">
+  //             <span className="sr-only">Open menu</span>
+  //             <DotsHorizontalIcon className="h-4 w-4" />
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+  //           <DropdownMenuSeparator />
+  //           {/* <DropdownMenuItem
+  //             onClick={() =>
+  //               showModel({ key: payment.apiKey, secret: payment.apiSecret, marketPlace: payment.marketPlace })
+  //             }
+  //           >
+  //             Edit
+  //           </DropdownMenuItem> */}
+  //           <DropdownMenuItem>Delete (Coming Soon)</DropdownMenuItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //     );
+  //   },
+  // },
 ];
 
-export default function DataTableDemo() {
+export default function MarketPlaceTable() {
   const router = useRouter();
   const [model, setModel] = React.useState({ open: false, key: '', secret: '', marketPlace: '' });
   const [marketPlaceData, setMarketplaceData] = React.useState<MarketPlaceCred[]>([]);
@@ -160,59 +160,61 @@ export default function DataTableDemo() {
   });
 
   return (
-    <div className="w-full">
-      <div className="flex items-center justify-between py-4">
-        <h1 className="text-sm text-muted-foreground">Available Marketplace</h1>
-        <Button
-          onClick={() => {
-            setModel({ open: true, key: '', secret: '', marketPlace: '' });
-          }}
-        >
-          Add Marketplace
-        </Button>
-      </div>
-      <div className="rounded-md border w-full overflow-hidden">
-        <Table className="w-full overflow-hidden">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                  ))}
+    <div className="grid grid-cols-5">
+      <div className="col-span-3">
+        <div className="flex items-center justify-between py-4">
+          <h1 className="text-sm text-muted-foreground">Available Marketplace</h1>
+          <Button
+            onClick={() => {
+              setModel({ open: true, key: '', secret: '', marketPlace: '' });
+            }}
+          >
+            Add Marketplace
+          </Button>
+        </div>
+        <div className="rounded-md border w-full overflow-hidden">
+          <Table className="w-full overflow-hidden">
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  {isLoading ? <Loader className="h-auto" /> : 'No results.'}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                    {isLoading ? <Loader className="h-auto" /> : 'No results.'}
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+        <APIModel
+          mode={model.key ? 'edit' : 'create'}
+          apiKey={model.key}
+          secret={model.secret}
+          open={model.open}
+          marketPlace={model.marketPlace}
+          setOpen={handleModelOpen}
+        />
       </div>
-      <APIModel
-        mode={model.key ? 'edit' : 'create'}
-        apiKey={model.key}
-        secret={model.secret}
-        open={model.open}
-        marketPlace={model.marketPlace}
-        setOpen={handleModelOpen}
-      />
     </div>
   );
 }
