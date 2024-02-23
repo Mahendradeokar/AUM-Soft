@@ -3,10 +3,11 @@ import successHandler from './success';
 import errorHandler from './error';
 
 export const addMarketplace = async (marketplaceData: {
-  api_key: string;
+  api_key?: string;
+  secret?: string;
   market_place_name: string;
-  secret: string;
   account_name: string;
+  code: string;
 }) => {
   try {
     const { data: resData } = await axiosInstance.post('marketplace/add', marketplaceData);
