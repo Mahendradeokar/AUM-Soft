@@ -16,10 +16,8 @@ import {
 } from '@/components/ui/command';
 import { CheckIcon } from 'lucide-react';
 import { CaretSortIcon, PlusCircledIcon } from '@radix-ui/react-icons';
-import Link from 'next/link';
-import { navigationLinks } from '@/config';
 import { marketplace } from '@/requests';
-import { APIModel } from '../APIkey';
+import AddMarketPlace from './AddMarketPlace';
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
@@ -125,20 +123,18 @@ export default function MarketPlaceSwitcher({ className }: MarketPlaceSwitcherPr
             <CommandSeparator />
             <CommandList>
               <CommandGroup>
-                <Button variant="link" asChild className="w-full hover:none">
-                  <Link href={navigationLinks.marketplaceSettings.link} className="w-full">
-                    <CommandItem>
-                      <PlusCircledIcon className="mr-2 h-5 w-5" />
-                      Add New
-                    </CommandItem>
-                  </Link>
+                <Button variant="link" asChild className="w-full" onSelect={() => setModalOpen(true)}>
+                  <CommandItem>
+                    <PlusCircledIcon className="mr-2 h-5 w-5" />
+                    Add New
+                  </CommandItem>
                 </Button>
               </CommandGroup>
             </CommandList>
           </Command>
         </PopoverContent>
       </Popover>
-      <APIModel open={modalOpen} setOpen={setModalOpen} />
+      <AddMarketPlace open={modalOpen} setOpen={setModalOpen} />
     </>
   );
 }

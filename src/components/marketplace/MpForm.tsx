@@ -43,6 +43,7 @@ interface IAPIKeyFormProps {
   apiKey?: string;
   secret?: string;
   marketPlace?: string | null;
+  close?: () => void;
 }
 
 function APIKeyForm({ mode = 'create', marketPlace = null }: IAPIKeyFormProps) {
@@ -78,9 +79,11 @@ function APIKeyForm({ mode = 'create', marketPlace = null }: IAPIKeyFormProps) {
     if (redirectURL) {
       router.push(redirectURL);
     }
-    // const response = await marketplace.addMarketplace(reqData);
-    // if (response.data) {
+    // const { isSuccess } = await marketplace.addMarketplace(reqData);
+    // if (isSuccess) {
     //   form.reset();
+    //   // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    //   close && close();
     // }
     return null;
   };

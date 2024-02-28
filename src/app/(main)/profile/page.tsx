@@ -1,6 +1,6 @@
 import { Separator } from '@/components/ui/separator';
 import { Metadata } from 'next';
-import { ProfileForm } from '../components/profile/profileForm';
+import { ProfileForm } from '@/components/profile';
 
 export const metadata: Metadata = {
   title: 'Profile',

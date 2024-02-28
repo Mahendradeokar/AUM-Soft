@@ -1,6 +1,6 @@
+import { ChangePassword } from '@/components/changePassword';
 import { Separator } from '@/components/ui/separator';
 import { Metadata } from 'next';
-import ChangePassword from '../components/changePassword/changePasswordForm';
 
 export const metadata: Metadata = {
   title: 'Change Password',

@@ -2,7 +2,7 @@
 
 import { dashboard } from '@/requests';
 import { useEffect, useState } from 'react';
-import { Loader } from '@/components/common';
+import { Loader } from '@/components/shared';
 import DashCart from './card';
 
 export default function Statistics() {

@@ -18,10 +18,10 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 import { dashboard } from '@/requests';
+import { Loader } from '@/components/shared';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { DataTablePagination } from './data-table-pagination';
 import { DataTableToolbar } from './data-table-toolbar';
-import { ScrollArea, ScrollBar } from '../ui/scroll-area';
-import { Loader } from '../common';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

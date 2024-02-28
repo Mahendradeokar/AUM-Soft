@@ -7,7 +7,7 @@ export const addMarketplace = async (marketplaceData: {
   secret?: string;
   market_place_name: string;
   account_name: string;
-  code: string;
+  code?: string;
 }) => {
   try {
     const { data: resData } = await axiosInstance.post('marketplace/add', marketplaceData);

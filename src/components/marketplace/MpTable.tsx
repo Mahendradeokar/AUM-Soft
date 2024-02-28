@@ -16,8 +16,10 @@ import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { marketplace } from '@/requests';
-import { Loader } from '@/components/common';
-import APIModel from './APIModel';
+import { Loader } from '@/components/shared';
+import { PlusCircledIcon, UploadIcon } from '@radix-ui/react-icons';
+import APIModel from './MpModel';
+import { UploadModal } from '../Sheets';
 
 export type MarketPlaceCred = {
   _id: string;
@@ -121,6 +123,7 @@ export const columns: ColumnDef<MarketPlaceCred>[] = [
 export default function MarketPlaceTable() {
   const router = useRouter();
   const [model, setModel] = React.useState({ open: false, key: '', secret: '', marketPlace: '' });
+  const [isUploadModelOpen, setUploadModelOpen] = React.useState(false);
   const [marketPlaceData, setMarketplaceData] = React.useState<MarketPlaceCred[]>([]);
   const [isLoading, setLoading] = React.useState(true);
 
@@ -164,13 +167,28 @@ export default function MarketPlaceTable() {
       <div className="col-span-3">
         <div className="flex items-center justify-between py-4">
           <h1 className="text-sm text-muted-foreground">Available Marketplace</h1>
-          <Button
-            onClick={() => {
-              setModel({ open: true, key: '', secret: '', marketPlace: '' });
-            }}
-          >
-            Add Marketplace
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              size="sm"
+              className="ml-auto h-8"
+              onClick={() => {
+                setModel({ open: true, key: '', secret: '', marketPlace: '' });
+              }}
+            >
+              <PlusCircledIcon className="mr-2 h-4 w-4" />
+              Add Marketplace
+            </Button>
+            <Button
+              size="sm"
+              className="ml-auto h-8"
+              onClick={() => {
+                setUploadModelOpen(true);
+              }}
+            >
+              <UploadIcon className="mr-2 h-4 w-4" />
+              Upload Sheets
+            </Button>
+          </div>
         </div>
         <div className="rounded-md border w-full overflow-hidden">
           <Table className="w-full overflow-hidden">
@@ -206,14 +224,17 @@ export default function MarketPlaceTable() {
             </TableBody>
           </Table>
         </div>
-        <APIModel
-          mode={model.key ? 'edit' : 'create'}
-          apiKey={model.key}
-          secret={model.secret}
-          open={model.open}
-          marketPlace={model.marketPlace}
-          setOpen={handleModelOpen}
-        />
+        {model.open && (
+          <APIModel
+            mode={model.key ? 'edit' : 'create'}
+            apiKey={model.key}
+            secret={model.secret}
+            open={model.open}
+            marketPlace={model.marketPlace}
+            setOpen={handleModelOpen}
+          />
+        )}
+        {isUploadModelOpen && <UploadModal open={isUploadModelOpen} setOpen={setUploadModelOpen} />}
       </div>
     </div>
   );

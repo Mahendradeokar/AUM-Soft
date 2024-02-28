@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Sidebar } from './components/dashboard';
+import { Sidebar } from '@/components/dashboard';
 
 export const metadata: Metadata = {
   title: 'Music App',

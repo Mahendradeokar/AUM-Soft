@@ -1,5 +1,5 @@
-import { Modal } from '@/components/common';
-import APIKeyForm, { Mode } from './APIKeyForm';
+import { Modal } from '@/components/shared';
+import APIKeyForm, { Mode } from './MpForm';
 
 interface IAPIModel {
   mode?: Mode;
@@ -12,12 +12,12 @@ interface IAPIModel {
 
 const texts = {
   add: {
-    title: 'Add API Credentials',
-    description: 'Enter new API key and secret.',
+    title: 'Add Marketplace account!',
+    description: 'Enter new Marketplace details.',
   },
   edit: {
-    title: 'Edit API Credentials',
-    description: 'Update API key and secret',
+    title: 'Edit Marketplace account!',
+    description: 'Update Marketplace details',
   },
 };
 

@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/requests';
-import { Button } from '../../../components/ui/button';
+import { Button } from '@/components/ui/button';
 
 const formSchema = z.object({
   name: z.string().min(2, {

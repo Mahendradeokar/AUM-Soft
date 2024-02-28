@@ -7,8 +7,8 @@ export default function successHandler(res: any, options = { showNotification: f
 
   if (options.showNotification) {
     toast({
-      description: message,
-      title: 'Success Handler',
+      description: message ?? 'Marketplace Added!',
+      title: 'Hurry...',
       variant: 'success',
     });
   }

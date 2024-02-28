@@ -9,7 +9,7 @@ export default async function DataTable() {
           <h2 className="text-2xl font-bold tracking-tight">Order&apos;s list!</h2>
           <p className="text-muted-foreground">Here&apos;s a list of your orders for this month!</p>
         </div>
-        <div className="flex items-center space-x-2">{/* <UserNav /> */}</div>
+        <div className="flex items-center space-x-2" />
       </div>
       <Table columns={columns} />
     </div>

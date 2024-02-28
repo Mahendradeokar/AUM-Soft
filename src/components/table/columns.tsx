@@ -6,7 +6,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { convertUnixToDate } from '@/common/common';
 import { Task } from './data/schema';
 import { DataTableColumnHeader } from './data-table-column-header';
-import { DataTableRowActions } from './data-table-row-actions';
 import { statuses } from './data/data';
 
 export const columns: ColumnDef<Task>[] = [
@@ -186,8 +185,8 @@ export const columns: ColumnDef<Task>[] = [
   //     return value.includes(row.getValue(id));
   //   },
   // },
-  {
-    id: 'actions',
-    cell: ({ row }) => <DataTableRowActions row={row} />,
-  },
+  // {
+  //   id: 'actions',
+  //   cell: ({ row }) => <DataTableRowActions row={row} />,
+  // },
 ];
