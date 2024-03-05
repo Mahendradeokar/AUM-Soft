@@ -2,18 +2,16 @@
 
 import { toast } from '@/components/ui/use-toast';
 import { marketplace } from '@/requests';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function FbFlow() {
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   useEffect(() => {
     const code = searchParams.get('code');
     let state: any = searchParams.get('state');
     if (state && code) {
-      router.push(window.location.pathname);
       try {
         state = JSON.parse(state);
       } catch (error) {
@@ -37,6 +35,7 @@ export default function FbFlow() {
           title: 'Marketplace Added!',
           variant: 'success',
         });
+        window.location.href = window.location.pathname;
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

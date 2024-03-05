@@ -50,12 +50,6 @@
     "no-shadow": "off",
     "no-await-in-loop": "off",
     "no-restricted-syntax": "off",
-    "typescript-eslint/no-unused-expressions": [
-      "error",
-      {
-        "allowShortCircuit": true
-      }
-    ],
     "func-names": [
       "error",
       "never"

@@ -38,3 +38,9 @@ export const storeDataLocally = (id: string, value: LocalStoredData) => {
   localStorage.setItem(id, JSON.stringify(dataToBeStore));
   return dataToBeStore;
 };
+
+export const getFileFromUrl = async (url: string) => {
+  const res = await fetch(url);
+  const blob = await res.blob();
+  return new File([blob], 'image', { type: blob.type });
+};

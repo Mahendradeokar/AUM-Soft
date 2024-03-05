@@ -10,7 +10,6 @@ import {
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
@@ -30,40 +29,49 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrdersData, TValue>) {
   const [orders, setOrders] = React.useState<IOrdersData[]>([]);
   const [isLoading, setLoading] = React.useState<boolean>(true);
-  const [rowSelection, setRowSelection] = React.useState({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [totalOrders, setTotalOrder] = React.useState(0);
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 1,
+  });
 
   const table = useReactTable({
     data: orders,
     columns,
+    manualPagination: true,
     state: {
       sorting,
-      rowSelection,
       columnFilters,
+      pagination,
     },
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
+    pageCount: totalOrders,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    onPaginationChange: setPagination,
   });
 
   React.useEffect(() => {
     (async () => {
       setLoading(true);
-      const { data, isSuccess } = await dashboard.getOrdersData({});
+      const { data, isSuccess } = await dashboard.getOrdersData({
+        limit: pagination.pageSize,
+        offset: pagination.pageIndex,
+      });
       if (isSuccess) {
         setOrders(data.orderDetailList);
+        const pageCount = Math.round(data.dataCount / pagination.pageSize);
+        setTotalOrder(pageCount);
       }
       setLoading(false);
     })();
-  }, []);
+  }, [pagination.pageIndex, pagination.pageSize, table]);
 
   return (
     <div className="space-y-4">
@@ -106,7 +114,7 @@ export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrde
           {isLoading ? <Loader className="h-auto" /> : table.getRowModel().rows?.length > 0 || <div>No results</div>}
         </div>
       </div>
-      <DataTablePagination table={table} />
+      {!isLoading && <DataTablePagination table={table} />}
     </div>
   );
 }

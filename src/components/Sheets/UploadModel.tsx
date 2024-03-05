@@ -1,3 +1,5 @@
+'use client';
+
 import { Modal } from '@/components/shared';
 import { useState } from 'react';
 import UploadSheet from './Upload';
@@ -31,7 +33,7 @@ export default function UploadModal({ open, setOpen }: IUploadModal) {
           }}
         />
       ) : (
-        <UploadSheet openMp={() => setAddMpOpen(true)} />
+        <UploadSheet openMp={() => setAddMpOpen(true)} closeModal={() => setOpen(false)} />
       )}
     </Modal>
   );

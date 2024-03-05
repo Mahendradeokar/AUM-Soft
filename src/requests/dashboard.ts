@@ -67,13 +67,27 @@ export const getOrdersData = async ({
   sku_id = null,
   start_date = null,
   end_date = null,
-  limit = null,
   // is_analytics = false,
   flipkart_status = null,
+  // sort_column = 'created_at',
+  // sort_order = 'asc',
+  limit = 10,
+  offset = 1,
 }) => {
   try {
     const { data: resData } = await axiosInstance.get('dashboard/get-order', {
-      params: { status, order_id, sku_id, start_date, end_date, limit, flipkart_status },
+      params: {
+        status,
+        order_id,
+        sku_id,
+        start_date,
+        end_date,
+        flipkart_status,
+        // sort_column,
+        // sort_order,
+        limit,
+        offset,
+      },
     });
     return successHandler(resData, { showNotification: false });
   } catch (error: any) {

@@ -1,41 +1,67 @@
+'use client';
+
 import { MONTH_LIST } from '@/common/constants';
 import { Loader } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { marketplace } from '@/requests';
+import { marketplace, sheets } from '@/requests';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { toast } from '../ui/use-toast';
 
 const formSchema = z.object({
   marketplaceName: z.string(),
   month: z.string(),
-  file: z.string().refine(
-    (path) => {
-      const parts = path.split('.');
-      const fileExtension = parts[parts.length - 1];
-      return ['xlsx', 'xls'].includes(fileExtension.toLowerCase());
-    },
-    {
-      message: 'Invalid file extension. Supported extensions are xlsx, xls',
-    },
-  ),
+  file: z.any().refine(() => {
+    return true;
+  }, 'File is required with a valid extension'),
 });
 
-export default function UploadSheet({ openMp }: { openMp: () => void }) {
+// TODO - Add validation for file upload.
+
+export default function UploadSheet({ openMp, closeModal }: { openMp: () => void; closeModal: () => void }) {
   const [existingMarketPlaces, setExistingMarketplaces] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  const [sheet, setSheet] = useState(new File([], 'demo'));
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
+  const onSubmit = useCallback(
+    async (value: z.infer<typeof formSchema>) => {
+      const formData = new FormData();
+      formData.append('order_sheet', sheet);
+      formData.append('account_name', value.marketplaceName);
+      const { isSuccess } = await sheets.upload({ formData });
+      if (isSuccess) {
+        toast({
+          description: 'Sheet Uploaded successfully!',
+          title: 'Sheet Upload!',
+          variant: 'success',
+        });
+        closeModal();
+      }
+    },
+    [sheet, closeModal],
+  );
+
+  const onFileUpload = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files?.[0]) {
+        setSheet(e.target.files?.[0]);
+        form.register('file').onChange(e);
+      }
+    },
+    [form],
+  );
+
   useEffect(() => {
     (async () => {
       const { isSuccess, data } = await marketplace.getMarketplace();
-
       if (isSuccess) {
         setExistingMarketplaces(data);
       }
@@ -45,7 +71,7 @@ export default function UploadSheet({ openMp }: { openMp: () => void }) {
   }, []);
   return (
     <Form {...form}>
-      <form className="space-y-5">
+      <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
         {isLoading ? (
           <Loader className="h-auto" />
         ) : (
@@ -63,7 +89,7 @@ export default function UploadSheet({ openMp }: { openMp: () => void }) {
                     </FormControl>
                     <SelectContent>
                       {existingMarketPlaces.map(({ account_name: accountName, platform_id: platformId }) => (
-                        <SelectItem key={platformId} value={platformId}>
+                        <SelectItem key={platformId} value={accountName}>
                           {accountName}
                         </SelectItem>
                       ))}
@@ -114,10 +140,10 @@ export default function UploadSheet({ openMp }: { openMp: () => void }) {
             <FormField
               control={form.control}
               name="file"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormControl>
-                    <Input type="file" id="sheetFile" {...field} />
+                    <Input type="file" ref={form.register('file').ref} onChange={onFileUpload} id="sheetFile" />
                   </FormControl>
                   <div className="flex justify-between">
                     <FormMessage />
@@ -131,10 +157,17 @@ export default function UploadSheet({ openMp }: { openMp: () => void }) {
           </>
         )}
 
-        <Button disabled={isLoading} className="w-full" type="submit">
+        <Button
+          disabled={isLoading || form.formState.isSubmitting || form.formState.isSubmitted}
+          isLoading={form.formState.isSubmitting}
+          className="w-full"
+          type="submit"
+        >
           Submit
         </Button>
       </form>
     </Form>
   );
 }
+
+// TODO - refresh on marketplace added create page
