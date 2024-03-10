@@ -78,7 +78,15 @@ function APIKeyForm({ mode = 'create', marketPlace = null }: IAPIKeyFormProps) {
       const popup: any = window.open(redirectURL, reqData.account_name.trim(), 'popup');
       const checkPopup = setInterval(() => {
         try {
-          if (popup.window.location.href.includes('aumsoft')) {
+          if (popup.window.location.href.includes(process.env.NEXT_PUBLIC_FLIPKART_REDIRECT_URL)) {
+            const currentURl = window.location.href;
+            if (currentURl.includes(redirectURL!)) {
+              const { searchParams } = new URL(currentURl);
+              const code = searchParams.get('code');
+              const state = searchParams.get('state');
+              // eslint-disable-next-line no-console
+              console.log('code and state', code, JSON.parse(state!));
+            }
             popup.close();
           }
           if (!popup || !popup.closed) return;
