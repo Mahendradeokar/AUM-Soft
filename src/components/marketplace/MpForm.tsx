@@ -78,8 +78,10 @@ function APIKeyForm({ mode = 'create', marketPlace = null }: IAPIKeyFormProps) {
       const popup: any = window.open(redirectURL, reqData.account_name.trim(), 'popup');
       const checkPopup = setInterval(() => {
         try {
-          if (popup.window.location.href.includes(process.env.NEXT_PUBLIC_FLIPKART_REDIRECT_URL)) {
+          if (popup.window.location.href) {
             const currentURl = window.location.href;
+            // eslint-disable-next-line no-console
+            console.log('I am accessing it....', currentURl);
             if (currentURl.includes(redirectURL!)) {
               const { searchParams } = new URL(currentURl);
               const code = searchParams.get('code');
