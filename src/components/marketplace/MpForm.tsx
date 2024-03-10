@@ -11,7 +11,6 @@ import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { toast } from '@/components/ui/use-toast';
 import { MARKETPLACE_TYPE } from '@/common/constants';
-import { useRouter } from 'next/navigation';
 import { getFbOauthUrl } from '@/config/flipkart';
 
 const formSchema = z.object({
@@ -47,7 +46,6 @@ interface IAPIKeyFormProps {
 }
 
 function APIKeyForm({ mode = 'create', marketPlace = null }: IAPIKeyFormProps) {
-  const router = useRouter();
   const defaultValues = {
     // apiKey: mode === 'edit' ? apiKey : '',
     // apiSecret: mode === 'edit' ? secret : '',
@@ -77,7 +75,25 @@ function APIKeyForm({ mode = 'create', marketPlace = null }: IAPIKeyFormProps) {
     const jsonString = JSON.stringify(reqData);
     const redirectURL = getFbOauthUrl(encodeURIComponent(jsonString));
     if (redirectURL) {
-      router.push(redirectURL);
+      const popup: any = window.open(redirectURL, reqData.account_name.trim(), 'popup');
+      const checkPopup = setInterval(() => {
+        try {
+          if (popup.window.location.href.includes('aumsoft')) {
+            popup.close();
+          }
+          if (!popup || !popup.closed) return;
+          clearInterval(checkPopup);
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.log(error);
+        }
+      }, 1000);
+      // window.open(
+      //   '/',
+      //   'testing',
+      //   `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=600,height=300,left=100,top=100`,
+      // );
+      // router.push(redirectURL);
     }
     // const { isSuccess } = await marketplace.addMarketplace(reqData);
     // if (isSuccess) {
