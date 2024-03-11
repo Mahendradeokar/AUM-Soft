@@ -11,7 +11,7 @@ const FB_OAUTH_CONFIG = {
 export const getFbOauthUrl = (metaData: string) => {
   if (!FB_OAUTH_CONFIG.CLIENT_ID || !FB_OAUTH_CONFIG.REDIRECT_URL) {
     toast({
-      description: 'Something went wrong.',
+      description: 'Something went wrong. Please check console.',
       title: 'Whoop......!',
       variant: 'destructive',
     });
