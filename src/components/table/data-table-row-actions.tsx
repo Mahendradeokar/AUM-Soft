@@ -1,14 +1,14 @@
 'use client';
 
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
-import { Row } from '@tanstack/react-table';
+// import { Row } from '@tanstack/react-table';
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
+  // DropdownMenuRadioGroup,
+  // DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuSub,
@@ -18,14 +18,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 
-import { labels } from './data/data';
+// import { labels } from './data/data';
 
-interface DataTableRowActionsProps<TData> {
-  row: Row<TData>;
-}
+// interface DataTableRowActionsProps<TData> {
+//   row: Row<TData>;
+// }
 
-export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TData>) {
-  const task = row.original;
+export function DataTableRowActions() {
+  // const task = row.original;
 
   return (
     <DropdownMenu>
@@ -43,13 +43,13 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={task.order_item_id}>
+            {/* <DropdownMenuRadioGroup value={task}>
               {labels.map((label) => (
                 <DropdownMenuRadioItem key={label.value} value={label.value}>
                   {label.label}
                 </DropdownMenuRadioItem>
               ))}
-            </DropdownMenuRadioGroup>
+            </DropdownMenuRadioGroup> */}
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
