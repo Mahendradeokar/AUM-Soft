@@ -5,21 +5,19 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 import { DateRange } from 'react-day-picker';
-import { addDays, format } from 'date-fns';
+import { format } from 'date-fns';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
+import { CalendarIcon } from 'lucide-react';
 
 interface CalendarDateRangePickerProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
+  date: DateRange;
+  onSelect: any;
 }
 
-export default function CalendarDateRangePicker({ className }: CalendarDateRangePickerProps) {
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2023, 0, 20),
-    to: addDays(new Date(2023, 0, 20), 20),
-  });
-
+export default function CalendarDateRangePicker({ className, date, onSelect }: CalendarDateRangePickerProps) {
   let dateFormat = null;
   if (date?.from) {
     if (date.to) {
@@ -40,10 +38,10 @@ export default function CalendarDateRangePicker({ className }: CalendarDateRange
           <Button
             id="date"
             variant="outline"
-            className={cn('w-[260px] justify-start text-left font-normal', !date && 'text-muted-foreground')}
+            className={cn('justify-start text-left font-normal', !date && 'text-muted-foreground')}
           >
-            {/* <CalendarIcon className="mr-2 h-4 w-4" /> */}
-            {dateFormat && <span>Pick a date</span>}
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {dateFormat || <span>Pick a date</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="end">
@@ -52,7 +50,7 @@ export default function CalendarDateRangePicker({ className }: CalendarDateRange
             mode="range"
             defaultMonth={date?.from}
             selected={date}
-            onSelect={setDate}
+            onSelect={onSelect}
             numberOfMonths={2}
           />
         </PopoverContent>

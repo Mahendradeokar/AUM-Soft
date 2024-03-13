@@ -1,7 +1,7 @@
 'use client';
 
-import { MONTH_LIST } from '@/common/constants';
-import { Loader } from '@/components/shared';
+import { convertDateToUnix } from '@/common/common';
+import { CalendarDateRangePicker, Loader } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -14,8 +14,14 @@ import { z } from 'zod';
 import { toast } from '../ui/use-toast';
 
 const formSchema = z.object({
-  marketplaceName: z.string(),
-  month: z.string(),
+  marketplaceName: z.string({
+    required_error: 'Please select the marketplace',
+  }),
+  dateRange: z.object({
+    from: z.date({ required_error: 'Please select a date and time', invalid_type_error: "That's not a date!" }),
+    to: z.date({ required_error: 'Please select a date and time', invalid_type_error: "That's not a date!" }),
+  }),
+  // month: z.string(),
   file: z.any().refine(() => {
     return true;
   }, 'File is required with a valid extension'),
@@ -34,10 +40,14 @@ export default function UploadSheet({ openMp, closeModal }: { openMp: () => void
   const onSubmit = useCallback(
     async (value: z.infer<typeof formSchema>) => {
       const formData = new FormData();
+      const startDate = convertDateToUnix(value?.dateRange?.from);
+      const endDate = convertDateToUnix(value?.dateRange?.to);
       formData.append('order_sheet', sheet);
       formData.append('account_name', value.marketplaceName);
       formData.append('startDate', '1701369000');
       formData.append('endDate', '1704047400');
+      formData.append('sheet_start_date', String(startDate));
+      formData.append('sheet_end_date', String(endDate));
       const { isSuccess } = await sheets.upload({ formData });
       if (isSuccess) {
         toast({
@@ -115,7 +125,7 @@ export default function UploadSheet({ openMp, closeModal }: { openMp: () => void
               )}
             />
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="month"
               render={({ field }) => (
@@ -134,6 +144,17 @@ export default function UploadSheet({ openMp, closeModal }: { openMp: () => void
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            /> */}
+
+            <FormField
+              control={form.control}
+              name="dateRange"
+              render={({ field }) => (
+                <FormItem>
+                  <CalendarDateRangePicker date={field.value} onSelect={field.onChange} />
                   <FormMessage />
                 </FormItem>
               )}
