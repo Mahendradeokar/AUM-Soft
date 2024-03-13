@@ -1,4 +1,4 @@
-import { axiosInstance, serverURL } from '@/config';
+import { axiosInstance } from '@/config';
 import successHandler from './success';
 import errorHandler from './error';
 
@@ -48,34 +48,46 @@ const convertIntoStatisticsData = (stats: {
 
 export const getStatisticData = async () => {
   try {
-    const res = await fetch(`${serverURL}dashboard/get-order?is_analytics=true`, { next: { revalidate: 100 } });
-    const data = await res.json();
-    if (data.response_error) {
-      return errorHandler(data, { showNotification: true });
-    }
-    const statsData = convertIntoStatisticsData(data.data.orderDetailList);
-    data.data = statsData;
-    return successHandler(data, { showNotification: false });
+    const { data: resData } = await axiosInstance.get('/sheet-order?is_analytics=true');
+    const statsData = convertIntoStatisticsData(resData.data.orderDetailList);
+    resData.data = statsData;
+    return successHandler(resData, { showNotification: false });
   } catch (error: any) {
     return errorHandler({ status_message: error.message }, { showNotification: true });
   }
 };
 
+interface IGetOrder {
+  status?: string;
+  order_id?: string;
+  sku_id?: string;
+  start_date?: number;
+  end_date?: number;
+  is_analytics?: boolean;
+  flipkart_status?: string;
+  sort_column?: string;
+  sort_order?: string;
+  flipkart_by?: string;
+  limit?: number;
+  offset?: number;
+}
+
 export const getOrdersData = async ({
-  status = null,
-  order_id = null,
-  sku_id = null,
-  start_date = null,
-  end_date = null,
+  status,
+  order_id,
+  sku_id,
+  start_date,
+  end_date,
   // is_analytics = false,
-  flipkart_status = null,
+  flipkart_status,
   // sort_column = 'created_at',
   // sort_order = 'asc',
-  limit = 10,
-  offset = 1,
-}) => {
+  flipkart_by = 'All',
+  limit,
+  offset,
+}: IGetOrder) => {
   try {
-    const { data: resData } = await axiosInstance.get('dashboard/get-order', {
+    const { data: resData } = await axiosInstance.get('/sheet-order', {
       params: {
         status,
         order_id,
@@ -87,6 +99,7 @@ export const getOrdersData = async ({
         // sort_order,
         limit,
         offset,
+        flipkart_by,
       },
     });
     return successHandler(resData, { showNotification: false });
@@ -96,5 +109,3 @@ export const getOrdersData = async ({
     return errorHandler(error?.response?.data ?? error, { showNotification: true });
   }
 };
-
-// TODO - Flipkart caching the credentials on marketplace add.

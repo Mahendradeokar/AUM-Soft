@@ -3,6 +3,7 @@
 import * as React from 'react';
 import {
   ColumnDef,
+  ColumnFilter,
   ColumnFiltersState,
   SortingState,
   flexRender,
@@ -26,21 +27,28 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
 }
 
+const getFilterVal = (filter: ColumnFiltersState, id: string): ColumnFilter | null => {
+  return filter.find((item) => id === item.id) ?? null;
+};
+
 export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrdersData, TValue>) {
   const [orders, setOrders] = React.useState<IOrdersData[]>([]);
   const [isLoading, setLoading] = React.useState<boolean>(true);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [totalOrders, setTotalOrder] = React.useState(0);
+  // const []
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 1,
+    pageSize: 10,
   });
 
   const table = useReactTable({
     data: orders,
     columns,
     manualPagination: true,
+    manualSorting: false,
+    manualFiltering: true,
     state: {
       sorting,
       columnFilters,
@@ -60,9 +68,14 @@ export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrde
   React.useEffect(() => {
     (async () => {
       setLoading(true);
+      const skuId = getFilterVal(columnFilters, 'skuId')?.value as string;
+      const orderItemId = getFilterVal(columnFilters, 'orderItemId')?.value as string;
+
       const { data, isSuccess } = await dashboard.getOrdersData({
         limit: pagination.pageSize,
         offset: pagination.pageIndex,
+        sku_id: skuId,
+        order_id: orderItemId,
       });
       if (isSuccess) {
         setOrders(data.orderDetailList);
@@ -71,7 +84,7 @@ export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrde
       }
       setLoading(false);
     })();
-  }, [pagination.pageIndex, pagination.pageSize, table]);
+  }, [pagination.pageIndex, pagination.pageSize, table, columnFilters]);
 
   return (
     <div className="space-y-4">

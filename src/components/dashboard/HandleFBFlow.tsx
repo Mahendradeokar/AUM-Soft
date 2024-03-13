@@ -35,7 +35,7 @@ export default function FbFlow() {
           title: 'Marketplace Added!',
           variant: 'success',
         });
-        // window.location.href = window.location.pathname;
+        window.location.href = window.location.pathname;
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

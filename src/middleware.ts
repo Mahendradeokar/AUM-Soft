@@ -6,7 +6,7 @@ import { TOKEN } from './common/constants';
 export default async function middleware(request: NextRequest) {
   try {
     const token = request.cookies.get(TOKEN)?.value;
-    // login & register route
+    // login & register routes
     if (['/login', '/signUp'].includes(request.nextUrl.pathname)) {
       if (token) {
         return NextResponse.redirect(new URL('/', request.url));
