@@ -59,7 +59,6 @@ export default function MarketPlaceSwitcher({ className }: MarketPlaceSwitcherPr
   React.useEffect(() => {
     (async () => {
       const { data, isSuccess } = await marketplace.getMarketplace();
-
       if (isSuccess) {
         if (!data.length) {
           setModalOpen(true);

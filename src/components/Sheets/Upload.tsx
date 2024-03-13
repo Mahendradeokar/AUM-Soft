@@ -36,6 +36,8 @@ export default function UploadSheet({ openMp, closeModal }: { openMp: () => void
       const formData = new FormData();
       formData.append('order_sheet', sheet);
       formData.append('account_name', value.marketplaceName);
+      formData.append('startDate', '1701369000');
+      formData.append('endDate', '1704047400');
       const { isSuccess } = await sheets.upload({ formData });
       if (isSuccess) {
         toast({

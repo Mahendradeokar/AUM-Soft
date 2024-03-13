@@ -3,11 +3,12 @@
 import { ColumnDef } from '@tanstack/react-table';
 
 import { convertUnixToDate } from '@/common/common';
-import { Task } from './data/schema';
+import { cn, isNegative } from '@/lib/utils';
+import { Order } from './data/schema';
 import { DataTableColumnHeader } from './data-table-column-header';
-import { statuses } from './data/data';
+// import { statuses } from './data/data';
 
-export const columns: ColumnDef<Task>[] = [
+export const columns: ColumnDef<Order>[] = [
   // {
   //   id: 'select',
   //   header: ({ table }) => (
@@ -31,137 +32,192 @@ export const columns: ColumnDef<Task>[] = [
   // },
   {
     accessorKey: 'order_item_id',
-    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-[20ch]" title="Order Id" />,
-    cell: ({ row }) => <div className="main-content">{row.getValue('order_item_id')}</div>,
+    id: 'orderItemId',
+    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-max" title="Order Id" />,
+    cell: ({ row }) => <div className="main-content">{row.getValue('orderItemId')}</div>,
     enableSorting: false,
     enableHiding: false,
+    enableColumnFilter: true,
   },
   {
-    accessorKey: 'sku',
-    header: ({ column }) => <DataTableColumnHeader className="max-w-max min-w-[25ch]" column={column} title="SKU" />,
+    id: 'skuId',
+    accessorKey: 'seller_sku',
+    header: ({ column }) => <DataTableColumnHeader className="min-w-max" column={column} title="SKU" />,
     cell: ({ row }) => {
+      const sku: string = row.getValue('skuId');
+      return (
+        <div className="flex space-x-2" title={sku}>
+          <span className="max-w-[25ch] truncate font-medium">{sku}</span>
+        </div>
+      );
+    },
+    enableSorting: false,
+    enableColumnFilter: true,
+  },
+  {
+    accessorKey: 'sale_amount_rs',
+    header: ({ column }) => <DataTableColumnHeader className="min-w-max" column={column} title="Selling Price" />,
+    cell: ({ row }) => {
+      const value: number | string = row.getValue('sale_amount_rs');
       return (
         <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">{row.getValue('sku')}</span>
+          <span className={cn('max-w-[500px] truncate font-medium text-green-400', { 'text-red': isNegative(value) })}>
+            {value}
+          </span>
         </div>
       );
     },
+    enableColumnFilter: false,
   },
   {
-    accessorKey: 'flipkart_status',
+    accessorKey: 'bank_settlement_value_rs_sum',
+    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-max" title="Net Profit" />,
+    cell: ({ row }) => {
+      const value: string = row.getValue('bank_settlement_value_rs_sum');
+      return (
+        <div className="flex items-center">
+          <span className={cn(isNegative(value) ? 'text-red-400' : 'text-green-400')}>{value}</span>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  },
+  {
+    accessorKey: 'protection_fund_rs',
+    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-max" title="Order Claim" />,
+    cell: ({ row }) => {
+      const value: string = row.getValue('protection_fund_rs');
+      return (
+        <div className="flex items-center">
+          <span
+            className={cn('max-w-[500px] truncate font-medium', isNegative(value) ? 'text-red-400' : 'text-green-400')}
+          >
+            {value}
+          </span>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  },
+  {
+    accessorKey: 'refund_rs',
+    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-max" title="Refund" />,
+    cell: ({ row }) => {
+      const value: string = row.getValue('refund_rs');
+      return (
+        <div className="flex items-center">
+          <span
+            className={cn('max-w-[500px] truncate font-medium', isNegative(value) ? 'text-red-400' : 'text-green-400')}
+          >
+            {value}
+          </span>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  },
+  {
+    accessorKey: 'commission_rs',
+    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-max" title="Commission Fee" />,
+    cell: ({ row }) => {
+      const value: string = row.getValue('commission_rs');
+      return (
+        <div className="flex items-center">
+          <span
+            className={cn('max-w-[500px] truncate font-medium', isNegative(value) ? 'text-red-400' : 'text-green-400')}
+          >
+            {value}
+          </span>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  },
+  {
+    accessorKey: 'fixed_fee_rs',
+    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-max" title="Fixed Fee" />,
+    cell: ({ row }) => {
+      const value: string = row.getValue('fixed_fee_rs');
+      return <div className={cn(isNegative(value) ? 'text-red-400' : 'text-green-400')}>{value}</div>;
+    },
+    enableColumnFilter: false,
+  },
+  {
+    accessorKey: 'collection_fee_rs',
+    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-max" title="Collection Fee" />,
+    cell: ({ row }) => {
+      const value: string = row.getValue('collection_fee_rs');
+      return <div className={cn(isNegative(value) ? 'text-red-400' : 'text-green-400')}>{value}</div>;
+    },
+    enableColumnFilter: false,
+  },
+  {
+    accessorKey: 'shipping_fee_rs',
+    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-max" title="Shipping Fee" />,
+    cell: ({ row }) => {
+      const value: string = row.getValue('shipping_fee_rs');
+      return <div className={cn(isNegative(value) ? 'text-red-400' : 'text-green-400')}>{value}</div>;
+    },
+    enableColumnFilter: false,
+  },
+  {
+    accessorKey: 'reverse_shipping_fee_rs',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} className="min-w-[20ch]" title="marketplace Status" />
+      <DataTableColumnHeader column={column} className="min-w-max" title="Reverse Shipping Fee" />
     ),
     cell: ({ row }) => {
-      const status = statuses.find((status) => status.value.toUpperCase() === row.getValue('flipkart_status'));
-
-      if (!status) {
-        return null;
-      }
-
-      return (
-        <div className="flex items-center">
-          {status.icon && <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />}
-          <span>{status.label}</span>
-        </div>
-      );
+      const value: string = row.getValue('reverse_shipping_fee_rs');
+      return <div className={cn(isNegative(value) ? 'text-red-400' : 'text-green-400')}>{value}</div>;
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-  },
-  {
-    accessorKey: 'status',
-    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-[13ch]" title="Status" />,
-    cell: ({ row }) => {
-      const status = statuses.find((status) => status.value === row.getValue('status'));
-
-      if (!status) {
-        return null;
-      }
-
-      return (
-        <div className="flex items-center">
-          {status.icon && <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />}
-          <span>{status.label}</span>
-        </div>
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
+    enableColumnFilter: false,
   },
   {
     accessorKey: 'order_date',
-    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-[20ch]" title="Order Date" />,
+    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-max" title="Order Date" />,
     cell: ({ row }) => {
-      const date: number = row.getValue('order_date');
-      return <div>{convertUnixToDate(date)}</div>;
+      const unixDate: number = row.getValue('order_date');
+      const date = convertUnixToDate(unixDate);
+      return (
+        <div title={date} className="min-w-max">
+          {date}
+        </div>
+      );
     },
+    enableColumnFilter: false,
   },
   {
     accessorKey: 'quantity',
-    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-[8ch]" title="Quantity" />,
+    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-max" title="Quantity" />,
     cell: ({ row }) => {
-      return <div>{row.getValue('quantity')}</div>;
+      return <div className="max-w-max">{row.getValue('quantity')}</div>;
     },
+    enableColumnFilter: false,
   },
   {
-    accessorKey: 'paymentType',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Payment Type" />,
-    cell: ({ row }) => {
-      return <div>{row.getValue('paymentType')}</div>;
-    },
-  },
-  {
-    accessorKey: 'commission',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Commission" />,
-    cell: ({ row }) => {
-      return <div>{row.getValue('commission')}</div>;
-    },
-  },
-  {
-    accessorKey: 'shippingFee',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Shipping Fee" />,
-    cell: ({ row }) => {
-      return <div>{row.getValue('shippingFee')}</div>;
-    },
-  },
-  {
-    accessorKey: 'fixedFee',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="fixed Fee" />,
-    cell: ({ row }) => {
-      return <div>{row.getValue('fixedFee')}</div>;
-    },
-  },
-  {
-    accessorKey: 'reverseShippingFee',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Reverse Shipping Fee" />,
-    cell: ({ row }) => {
-      return <div className="max-w-max">{row.getValue('reverseShippingFee')}</div>;
-    },
-  },
-  {
-    accessorKey: 'collectionFee',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Collection Fee" />,
+    accessorKey: 'return_type',
+    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-max" title="Return Type" />,
     cell: ({ row }) => {
       return (
         <div className="flex items-center">
-          <span>{row.getValue('collectionFee')}</span>
+          <span>{row.getValue('return_type')}</span>
         </div>
       );
     },
+    enableSorting: false,
+    enableColumnFilter: false,
   },
   {
-    accessorKey: 'net_profit',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Profit" />,
+    accessorKey: 'shopsy_order',
+    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-max" title="Shopsy Order" />,
     cell: ({ row }) => {
       return (
         <div className="flex items-center">
-          <span>{row.getValue('net_profit')}</span>
+          <span>{row.getValue('shopsy_order')}</span>
         </div>
       );
     },
+    enableSorting: false,
+    enableColumnFilter: false,
   },
   // {
   //   accessorKey: 'priority',

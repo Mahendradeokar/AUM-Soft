@@ -44,3 +44,16 @@ export const getFileFromUrl = async (url: string) => {
   const blob = await res.blob();
   return new File([blob], 'image', { type: blob.type });
 };
+
+export const isNegative = (value: string | number) => {
+  const type = typeof value;
+  if (type === 'string') {
+    return (value as string).includes('-');
+  }
+
+  if (type === 'number') {
+    return (value as number) < 0;
+  }
+
+  return value;
+};
