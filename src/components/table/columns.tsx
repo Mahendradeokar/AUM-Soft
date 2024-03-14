@@ -72,7 +72,7 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: 'return_type',
     header: ({ column }) => <DataTableColumnHeader className="min-w-max" column={column} title="Status" />,
     cell: ({ row }) => {
-      const value: string = row.getValue('return_type');
+      const value: keyof typeof FLIPKART_STATUS = row.getValue('return_type');
       return (
         <div className="flex space-x-2">
           <span className={cn('max-w-[500px] truncate font-medium')}>{FLIPKART_STATUS[value].value}</span>
