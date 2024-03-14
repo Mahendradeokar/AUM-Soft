@@ -20,6 +20,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { dashboard } from '@/requests';
 import { Loader } from '@/components/shared';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { convertDateToUnix } from '@/common/common';
 import { DataTablePagination } from './data-table-pagination';
 import { DataTableToolbar } from './data-table-toolbar';
 
@@ -70,13 +71,22 @@ export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrde
       setLoading(true);
       const skuId = getFilterVal(columnFilters, 'skuId')?.value as string;
       const orderItemId = getFilterVal(columnFilters, 'orderItemId')?.value as string;
+      const { from = null, to = null }: { from?: Date | null; to?: Date | null } =
+        getFilterVal(columnFilters, 'order_date')?.value ?? {};
+
+      const startDate = convertDateToUnix(from);
+      const endDate = convertDateToUnix(to);
 
       const { data, isSuccess } = await dashboard.getOrdersData({
         limit: pagination.pageSize,
         offset: pagination.pageIndex,
         sku_id: skuId,
         order_id: orderItemId,
+        flipkart_status: getFilterVal(columnFilters, 'return_type')?.value as string,
+        start_date: startDate,
+        end_date: endDate,
       });
+
       if (isSuccess) {
         setOrders(data.orderDetailList);
         const pageCount = Math.round(data.dataCount / pagination.pageSize);

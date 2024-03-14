@@ -4,6 +4,7 @@ import { ColumnDef } from '@tanstack/react-table';
 
 import { convertUnixToDate } from '@/common/common';
 import { cn, isNegative } from '@/lib/utils';
+import { FLIPKART_STATUS } from '@/common/constants';
 import { Order } from './data/schema';
 import { DataTableColumnHeader } from './data-table-column-header';
 // import { statuses } from './data/data';
@@ -61,9 +62,20 @@ export const columns: ColumnDef<Order>[] = [
       const value: number | string = row.getValue('sale_amount_rs');
       return (
         <div className="flex space-x-2">
-          <span className={cn('max-w-[500px] truncate font-medium text-green-400', { 'text-red': isNegative(value) })}>
-            {value}
-          </span>
+          <span className={cn('max-w-[500px] truncate font-medium')}>{value}</span>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  },
+  {
+    accessorKey: 'return_type',
+    header: ({ column }) => <DataTableColumnHeader className="min-w-max" column={column} title="Status" />,
+    cell: ({ row }) => {
+      const value: string = row.getValue('return_type');
+      return (
+        <div className="flex space-x-2">
+          <span className={cn('max-w-[500px] truncate font-medium')}>{FLIPKART_STATUS[value].value}</span>
         </div>
       );
     },

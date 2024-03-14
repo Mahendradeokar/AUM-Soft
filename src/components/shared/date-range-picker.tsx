@@ -15,9 +15,15 @@ interface CalendarDateRangePickerProps extends React.HTMLAttributes<HTMLDivEleme
   className?: string;
   date: DateRange;
   onSelect: any;
+  size?: 'default' | 'sm' | 'lg' | 'icon' | 'xs';
 }
 
-export default function CalendarDateRangePicker({ className, date, onSelect }: CalendarDateRangePickerProps) {
+export default function CalendarDateRangePicker({
+  className,
+  date,
+  onSelect,
+  size = 'default',
+}: CalendarDateRangePickerProps) {
   let dateFormat = null;
   if (date?.from) {
     if (date.to) {
@@ -36,6 +42,7 @@ export default function CalendarDateRangePicker({ className, date, onSelect }: C
       <Popover>
         <PopoverTrigger asChild>
           <Button
+            size={size}
             id="date"
             variant="outline"
             className={cn('justify-start text-left font-normal', !date && 'text-muted-foreground')}

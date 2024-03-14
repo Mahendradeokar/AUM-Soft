@@ -61,8 +61,8 @@ interface IGetOrder {
   status?: string;
   order_id?: string;
   sku_id?: string;
-  start_date?: number;
-  end_date?: number;
+  start_date?: number | null;
+  end_date?: number | null;
   is_analytics?: boolean;
   flipkart_status?: string;
   sort_column?: string;

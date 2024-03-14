@@ -1,9 +1,34 @@
+import { CheckCircledIcon, CrossCircledIcon, QuestionMarkCircledIcon } from '@radix-ui/react-icons';
+
 export const TOKEN = 'ST'; // session token
 
 export const MARKETPLACE_TYPE = {
   flipkart: 'Flipkart',
   amazon: 'Amazon',
   meesho: 'Meesho',
+};
+
+export const FLIPKART_STATUS = {
+  courier_return: {
+    value: 'COURIER_RETURN',
+    label: 'Courier Returned',
+    icon: QuestionMarkCircledIcon,
+  },
+  completed: {
+    value: 'COMPLETED',
+    label: 'Completed',
+    icon: CheckCircledIcon,
+  },
+  customer_return: {
+    value: 'CUSTOMER_RETURN',
+    label: 'Returned',
+    icon: CrossCircledIcon,
+  },
+  replacement: {
+    value: 'Replacement',
+    label: 'Replacement',
+    icon: CrossCircledIcon,
+  },
 };
 
 export const MONTH_LIST = [
