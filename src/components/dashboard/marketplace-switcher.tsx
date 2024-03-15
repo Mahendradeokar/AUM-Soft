@@ -26,7 +26,7 @@ interface MarketPlaceSwitcherProps extends PopoverTriggerProps {}
 
 const extractMPData = (data: any) => {
   const mpData = [
-    { label: 'All', value: 'ALL' },
+    { label: 'All', value: 'All' },
     ...data.map((mp: any) => {
       return {
         label: mp.account_name,
@@ -43,7 +43,7 @@ export default function MarketPlaceSwitcher({ className }: MarketPlaceSwitcherPr
   const router = useRouter();
   const [selectedAccount, setSelectedAccount] = React.useState<{ label: string; value: string }>({
     label: 'All',
-    value: 'ALL',
+    value: 'All',
   });
   const [marketPlaceData, setMarketPlaceData] = React.useState([
     {
@@ -51,7 +51,7 @@ export default function MarketPlaceSwitcher({ className }: MarketPlaceSwitcherPr
       marketplaces: [
         {
           label: 'All',
-          value: 'ALL',
+          value: 'All',
         },
       ],
     },

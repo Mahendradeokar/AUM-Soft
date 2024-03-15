@@ -75,7 +75,7 @@ export const columns: ColumnDef<Order>[] = [
       const value: keyof typeof FLIPKART_STATUS = row.getValue('return_type');
       return (
         <div className="flex space-x-2">
-          <span className={cn('max-w-[500px] truncate font-medium')}>{FLIPKART_STATUS[value].value}</span>
+          <span className={cn('max-w-[500px] truncate font-medium')}>{FLIPKART_STATUS[value].label}</span>
         </div>
       );
     },
@@ -203,19 +203,6 @@ export const columns: ColumnDef<Order>[] = [
     cell: ({ row }) => {
       return <div className="max-w-max">{row.getValue('quantity')}</div>;
     },
-    enableColumnFilter: false,
-  },
-  {
-    accessorKey: 'return_type',
-    header: ({ column }) => <DataTableColumnHeader column={column} className="min-w-max" title="Return Type" />,
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center">
-          <span>{row.getValue('return_type')}</span>
-        </div>
-      );
-    },
-    enableSorting: false,
     enableColumnFilter: false,
   },
   {

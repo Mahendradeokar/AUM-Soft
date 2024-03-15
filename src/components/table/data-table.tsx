@@ -87,7 +87,7 @@ export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrde
         flipkart_status: getFilterVal(columnFilters, 'return_type')?.value as string,
         start_date: startDate,
         end_date: endDate,
-        flipkart_by: searchParam.has('mp') ? searchParam.get('mp')! : 'ALL',
+        flipkart_by: searchParam.has('mp') ? searchParam.get('mp')! : 'All',
       });
 
       if (isSuccess) {

@@ -49,9 +49,9 @@ const convertIntoStatisticsData = (stats: {
   ];
 };
 
-export const getStatisticData = async () => {
+export const getStatisticData = async ({ flipkart_by }: { flipkart_by: string }) => {
   try {
-    const { data: resData } = await axiosInstance.get('/sheet-order?is_analytics=true');
+    const { data: resData } = await axiosInstance.get('/sheet-order', { params: { is_analytics: true, flipkart_by } });
     const statsData = convertIntoStatisticsData(resData.data[0]);
     resData.data = statsData;
     return successHandler(resData, { showNotification: false });
