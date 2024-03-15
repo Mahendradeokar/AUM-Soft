@@ -17,7 +17,7 @@ import {
 import { CheckIcon } from 'lucide-react';
 import { CaretSortIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 import { marketplace } from '@/requests';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import AddMarketPlace from './AddMarketPlace';
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
@@ -41,6 +41,7 @@ const extractMPData = (data: any) => {
 export default function MarketPlaceSwitcher({ className }: MarketPlaceSwitcherProps) {
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
+  const searchParam = useSearchParams();
   const [selectedAccount, setSelectedAccount] = React.useState<{ label: string; value: string }>({
     label: 'All',
     value: 'All',
@@ -57,6 +58,14 @@ export default function MarketPlaceSwitcher({ className }: MarketPlaceSwitcherPr
     },
   ]);
   const [modalOpen, setModalOpen] = React.useState(false);
+
+  const mp = searchParam.has('mp') ? searchParam.get('mp') : null;
+  React.useEffect(() => {
+    if (mp !== selectedAccount.value) {
+      router.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   React.useEffect(() => {
     (async () => {
