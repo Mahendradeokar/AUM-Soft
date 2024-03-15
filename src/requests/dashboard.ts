@@ -1,9 +1,10 @@
 import { axiosInstance } from '@/config';
+import { isNegative } from '@/lib/utils';
 import successHandler from './success';
 import errorHandler from './error';
 
 const convertIntoStatisticsData = (stats: {
-  net_profit: number;
+  profit_loss: number;
   total_order: number;
   Customer_return: number;
   Courier_return: number;
@@ -19,29 +20,31 @@ const convertIntoStatisticsData = (stats: {
       id: 1,
       title: 'Profit/Loss',
       icon: 'svg-for-total-revenue',
-      totalValue: `₹${stats.net_profit.toFixed(2)}`,
-      percentageChange: '+20.1% from last month',
+      totalValue: `₹${stats.profit_loss.toFixed(2)}`,
+      percentageChange: isNegative(stats.profit_loss.toFixed(2))
+        ? `You loss is ${stats.profit_loss.toFixed(2)} till now.`
+        : `You Profit is ${stats.profit_loss.toFixed(2)} till now.`,
     },
     {
       id: 2,
       title: 'Total Orders',
       icon: 'svg-for-subscriptions',
       totalValue: stats.total_order,
-      percentageChange: '+180.1% from last month',
+      percentageChange: `Your total order are ${stats.total_order} till now`,
     },
     {
       id: 3,
       title: 'Customer Return',
       icon: 'svg-for-sales',
-      totalValue: stats.Courier_return,
-      percentageChange: '+19% from last month',
+      totalValue: stats.Customer_return,
+      percentageChange: `Your total customer return are ${stats.Customer_return} till now`,
     },
     {
       id: 4,
       title: 'Courier Return',
       icon: 'svg-for-active-now',
-      totalValue: stats.Customer_return,
-      percentageChange: '+201 since last hour',
+      totalValue: stats.Courier_return,
+      percentageChange: `Your total courier return are ${stats.Courier_return} till now`,
     },
   ];
 };
@@ -49,7 +52,7 @@ const convertIntoStatisticsData = (stats: {
 export const getStatisticData = async () => {
   try {
     const { data: resData } = await axiosInstance.get('/sheet-order?is_analytics=true');
-    const statsData = convertIntoStatisticsData(resData.data.orderDetailList);
+    const statsData = convertIntoStatisticsData(resData.data[0]);
     resData.data = statsData;
     return successHandler(resData, { showNotification: false });
   } catch (error: any) {

@@ -17,13 +17,22 @@ const formSchema = z.object({
   marketplaceName: z.string({
     required_error: 'Please select the marketplace',
   }),
-  dateRange: z.object({
-    from: z.date({ required_error: 'Please select a date and time', invalid_type_error: "That's not a date!" }),
-    to: z.date({ required_error: 'Please select a date and time', invalid_type_error: "That's not a date!" }),
-  }),
-  // month: z.string(),
-  file: z.any().refine(() => {
-    return true;
+  dateRange: z
+    .object(
+      {
+        from: z.date(),
+        to: z.date(),
+      },
+      { required_error: 'Please select the date', invalid_type_error: "That's not a date!" },
+    )
+    .refine(
+      ({ from }) => {
+        return from.getDate() === 1;
+      },
+      { message: 'Start date should be 1 (Please upload sheet from day 1)' },
+    ),
+  file: z.any().refine((val) => {
+    return val;
   }, 'File is required with a valid extension'),
 });
 
@@ -44,8 +53,6 @@ export default function UploadSheet({ openMp, closeModal }: { openMp: () => void
       const endDate = convertDateToUnix(value?.dateRange?.to);
       formData.append('order_sheet', sheet);
       formData.append('account_name', value.marketplaceName);
-      formData.append('startDate', '1701369000');
-      formData.append('endDate', '1704047400');
       formData.append('sheet_start_date', String(startDate));
       formData.append('sheet_end_date', String(endDate));
       const { isSuccess } = await sheets.upload({ formData });
@@ -63,10 +70,23 @@ export default function UploadSheet({ openMp, closeModal }: { openMp: () => void
 
   const onFileUpload = useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
+      const allowedExtensions = ['xls', 'xlsx', 'csv'];
+
       if (e.target.files?.[0]) {
-        setSheet(e.target.files?.[0]);
-        form.register('file').onChange(e);
+        const file = e.target.files[0];
+        const fileExtension = file.name.split('.').at(-1)?.toLowerCase();
+
+        if (fileExtension && allowedExtensions.includes(fileExtension)) {
+          setSheet(file);
+          return;
+        }
+        form.setError('file', {
+          message: `Please upload the sheet with a valid extension.`,
+          type: 'invalid_type_error',
+        });
+        return;
       }
+      form.setError('file', { message: `Please upload sheet.`, type: 'required' });
     },
     [form],
   );
@@ -166,7 +186,7 @@ export default function UploadSheet({ openMp, closeModal }: { openMp: () => void
               render={() => (
                 <FormItem>
                   <FormControl>
-                    <Input type="file" ref={form.register('file').ref} onChange={onFileUpload} id="sheetFile" />
+                    <Input type="file" onChange={onFileUpload} id="sheetFile" />
                   </FormControl>
                   <div className="flex justify-between">
                     <FormMessage />

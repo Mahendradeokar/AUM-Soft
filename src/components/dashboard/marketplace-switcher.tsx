@@ -17,6 +17,7 @@ import {
 import { CheckIcon } from 'lucide-react';
 import { CaretSortIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 import { marketplace } from '@/requests';
+import { useRouter } from 'next/navigation';
 import AddMarketPlace from './AddMarketPlace';
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
@@ -39,6 +40,7 @@ const extractMPData = (data: any) => {
 
 export default function MarketPlaceSwitcher({ className }: MarketPlaceSwitcherProps) {
   const [open, setOpen] = React.useState(false);
+  const router = useRouter();
   const [selectedAccount, setSelectedAccount] = React.useState<{ label: string; value: string }>({
     label: 'All',
     value: 'ALL',
@@ -104,6 +106,7 @@ export default function MarketPlaceSwitcher({ className }: MarketPlaceSwitcherPr
                       onSelect={() => {
                         setSelectedAccount(marketplace);
                         setOpen(false);
+                        router.push(`/?mp=${marketplace.value}`);
                       }}
                       className="text-sm"
                     >

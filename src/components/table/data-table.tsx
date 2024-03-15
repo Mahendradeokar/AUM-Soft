@@ -21,6 +21,7 @@ import { dashboard } from '@/requests';
 import { Loader } from '@/components/shared';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { convertDateToUnix } from '@/common/common';
+import { useSearchParams } from 'next/navigation';
 import { DataTablePagination } from './data-table-pagination';
 import { DataTableToolbar } from './data-table-toolbar';
 
@@ -38,6 +39,7 @@ export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrde
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [totalOrders, setTotalOrder] = React.useState(0);
+  const searchParam = useSearchParams();
   // const []
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
@@ -85,6 +87,7 @@ export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrde
         flipkart_status: getFilterVal(columnFilters, 'return_type')?.value as string,
         start_date: startDate,
         end_date: endDate,
+        flipkart_by: searchParam.has('mp') ? searchParam.get('mp')! : 'ALL',
       });
 
       if (isSuccess) {
@@ -94,7 +97,7 @@ export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrde
       }
       setLoading(false);
     })();
-  }, [pagination.pageIndex, pagination.pageSize, table, columnFilters]);
+  }, [pagination.pageIndex, pagination.pageSize, table, columnFilters, searchParam]);
 
   return (
     <div className="space-y-4">
