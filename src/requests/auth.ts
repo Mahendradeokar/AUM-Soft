@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import { deleteToken, setToken } from '@/lib/utils';
 import { axiosInstance } from '@/config';
 import successHandler from './success';
@@ -7,7 +8,8 @@ export const login = async (data: { email: string; password: string }) => {
   try {
     const { data: resData } = await axiosInstance.post('auth/login', data);
     const rc = successHandler(resData, { showNotification: false });
-    setToken(resData.data.token);
+    const decode: any = jwt.decode(resData.data.token);
+    setToken(resData.data.token, { maxAge: Number(decode.exp) });
     return rc;
   } catch (error: any) {
     // eslint-disable-next-line no-console

@@ -31,8 +31,8 @@ const formSchema = z.object({
       },
       { message: 'Start date should be 1 (Please upload sheet from day 1)' },
     ),
-  file: z.any().refine((val) => {
-    return val;
+  file: z.any().refine(() => {
+    return true;
   }, 'File is required with a valid extension'),
 });
 
@@ -75,7 +75,6 @@ export default function UploadSheet({ openMp, closeModal }: { openMp: () => void
       if (e.target.files?.[0]) {
         const file = e.target.files[0];
         const fileExtension = file.name.split('.').at(-1)?.toLowerCase();
-
         if (fileExtension && allowedExtensions.includes(fileExtension)) {
           setSheet(file);
           return;

@@ -11,8 +11,8 @@ export function getToken() {
   return getCookie(TOKEN);
 }
 
-export function setToken(token: string) {
-  setCookie(TOKEN, token);
+export function setToken(token: string, { maxAge }: { maxAge: number }) {
+  setCookie(TOKEN, token, { maxAge });
 }
 
 export function deleteToken() {
