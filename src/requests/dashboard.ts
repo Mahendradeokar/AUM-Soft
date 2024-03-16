@@ -52,7 +52,13 @@ const convertIntoStatisticsData = (stats: {
 export const getStatisticData = async ({ flipkart_by }: { flipkart_by: string }) => {
   try {
     const { data: resData } = await axiosInstance.get('/sheet-order', { params: { is_analytics: true, flipkart_by } });
-    const statsData = convertIntoStatisticsData(resData.data[0]);
+    const isDataAvailable = resData.data.orderDetailList.length;
+    let statsData = null;
+    if (isDataAvailable) {
+      statsData = convertIntoStatisticsData(resData.data.orderDetailList[0]);
+    } else {
+      statsData = convertIntoStatisticsData({ profit_loss: 0, total_order: 0, Customer_return: 0, Courier_return: 0 });
+    }
     resData.data = statsData;
     return successHandler(resData, { showNotification: false });
   } catch (error: any) {
