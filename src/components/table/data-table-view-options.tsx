@@ -14,21 +14,22 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { getLocalStoredData, storeDataLocally } from '@/lib/utils';
 import { useEffect } from 'react';
+import { orderFields } from '@/common/constants';
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
 }
 
-const ORDER_TABLE_VISIBILITY_ID = 'order-table-visibility';
+const ORDER_LOCAL_STORAGE_ID = 'order-table-visibility';
 
 const handleToggleVisibility = (value: boolean, column: any) => {
-  storeDataLocally(ORDER_TABLE_VISIBILITY_ID, { [column.id]: value });
+  storeDataLocally(ORDER_LOCAL_STORAGE_ID, { [column.id]: value });
   column.toggleVisibility(value);
 };
 
 export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
   useEffect(() => {
-    const columnVisibility = getLocalStoredData(ORDER_TABLE_VISIBILITY_ID);
+    const columnVisibility = getLocalStoredData(ORDER_LOCAL_STORAGE_ID);
     table.setColumnVisibility((preVal) => ({
       ...preVal,
       ...columnVisibility,
@@ -56,7 +57,7 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => handleToggleVisibility(value, column)}
               >
-                {column.id}
+                {orderFields[column.id]?.name}
               </DropdownMenuCheckboxItem>
             );
           })}

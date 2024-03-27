@@ -22,6 +22,7 @@ import { Loader } from '@/components/shared';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { convertDateToUnix } from '@/common/common';
 import { useSearchParams } from 'next/navigation';
+import { orderFields } from '@/common/constants';
 import { DataTablePagination } from './data-table-pagination';
 import { DataTableToolbar } from './data-table-toolbar';
 
@@ -29,8 +30,8 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
 }
 
-const getFilterVal = (filter: ColumnFiltersState, id: string): ColumnFilter | null => {
-  return filter.find((item) => id === item.id) ?? null;
+const getFilterVal = (filter: ColumnFiltersState, id: keyof typeof orderFields): ColumnFilter | null => {
+  return filter.find((item) => orderFields[id]?.id === item.id) ?? null;
 };
 
 export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrdersData, TValue>) {
@@ -40,7 +41,6 @@ export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrde
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [totalOrders, setTotalOrder] = React.useState(0);
   const searchParam = useSearchParams();
-  // const []
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
@@ -71,10 +71,10 @@ export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrde
   React.useEffect(() => {
     (async () => {
       setLoading(true);
-      const skuId = getFilterVal(columnFilters, 'skuId')?.value as string;
-      const orderItemId = getFilterVal(columnFilters, 'orderItemId')?.value as string;
+      const skuId = getFilterVal(columnFilters, orderFields.seller_sku.id)?.value as string;
+      const orderItemId = getFilterVal(columnFilters, orderFields.order_item_id.id)?.value as string;
       const { from = null, to = null }: { from?: Date | null; to?: Date | null } =
-        getFilterVal(columnFilters, 'order_date')?.value ?? {};
+        getFilterVal(columnFilters, orderFields.order_date.id)?.value ?? {};
 
       const startDate = convertDateToUnix(from);
       const endDate = convertDateToUnix(to);
@@ -84,7 +84,7 @@ export function DataTable<IOrdersData, TValue>({ columns }: DataTableProps<IOrde
         offset: pagination.pageIndex,
         sku_id: skuId,
         order_id: orderItemId,
-        flipkart_status: getFilterVal(columnFilters, 'return_type')?.value as string,
+        flipkart_status: getFilterVal(columnFilters, orderFields.return_type.id)?.value as string,
         start_date: startDate,
         end_date: endDate,
         flipkart_by: searchParam.has('mp') ? searchParam.get('mp')! : 'All',
