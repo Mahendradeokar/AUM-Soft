@@ -1,24 +1,27 @@
-# TO change the linebreak setting in vscode
+**Project Name: E-commerce Profit/Loss Calculator**
 
-ctrl + ,
-type - files.eo
-select /n
+**Frontend Stack:**
+- Next.js 14
+- TypeScript
+- Shadcn
+- Tailwind CSS
+- Zod
+- React Hook Form
+- React Table
 
-# options
+**Backend Stack:**
+- Node.js
+- Express
+- MongoDB
+- TypeScript
 
-P/L
-flipkart comission
-total order
-return order
-courier return
--- coming soon
-total refundeable gst
-total TDS
+**Overview:**
+The E-commerce Profit/Loss Calculator is a web application designed to streamline profit and loss calculation for businesses by uploading previous month's order reports. Key functionalities include user authentication (Login/SignUp), report upload, authentication middleware using Next.js 14, marketplace management, and a user-friendly table data view with pagination.
 
--TODO
-add icons in some component
-
-- Discussion
-- related to token
-  - Login page does not have the field validations.
-  - Can we update the existing session (if exists) with the new token and refresh token rather then creating a new one
+**Features:**
+1. **User Authentication:** Secure Login and SignUp functionality.
+2. **Sheet Upload:** Capability to upload the previous month's order report.
+3. **Authentication Middleware:** Utilizes Next.js 14 middleware for secure authentication handling.
+4. **Marketplace Management:** Efficient management of marketplace data.
+5. **Table Data View:** Provides a clear and concise view of data with pagination support.
+6. **Enhanced UI/UX:** Developed using Next.js 14, Shadcn, and Tailwind CSS for an intuitive user experience.
