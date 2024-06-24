@@ -24,7 +24,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
         <CalendarDateRangePicker
           className="min-w-[15rem]"
           size="sm"
-          date={dateColumn?.getFilterValue() as { from: Date; to: Date }}
+          date={dateColumn?.getFilterValue() as Date}
           onSelect={dateColumn?.setFilterValue}
         />
 
