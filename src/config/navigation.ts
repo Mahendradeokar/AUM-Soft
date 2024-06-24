@@ -22,4 +22,9 @@ export const navigationLinks = {
     Icon: KeyRoundIcon,
     link: '/mpsetting',
   },
+  orderManagement: {
+    label: "Order's Management",
+    Icon: Lock,
+    link: '/order-management',
+  },
 };

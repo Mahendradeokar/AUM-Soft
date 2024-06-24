@@ -19,7 +19,8 @@ import { marketplace } from '@/requests';
 import { Loader } from '@/components/shared';
 import { PlusCircledIcon, UploadIcon } from '@radix-ui/react-icons';
 import APIModel from './MpModel';
-import { UploadModal } from '../Sheets';
+import { UploadModal } from '../Upload';
+import { ModalType } from '../types';
 
 export type MarketPlaceCred = {
   _id: string;
@@ -123,7 +124,7 @@ export const columns: ColumnDef<MarketPlaceCred>[] = [
 export default function MarketPlaceTable() {
   const router = useRouter();
   const [model, setModel] = React.useState({ open: false, key: '', secret: '', marketPlace: '' });
-  const [isUploadModelOpen, setUploadModelOpen] = React.useState(false);
+  const [isUploadModelOpen, setUploadModelOpen] = React.useState<Exclude<ModalType, 'marketplace'> | null>(null);
   const [marketPlaceData, setMarketplaceData] = React.useState<MarketPlaceCred[]>([]);
   const [isLoading, setLoading] = React.useState(true);
 
@@ -182,11 +183,22 @@ export default function MarketPlaceTable() {
               size="sm"
               className="ml-auto h-8"
               onClick={() => {
-                setUploadModelOpen(true);
+                setUploadModelOpen('order');
               }}
             >
               <UploadIcon className="mr-2 h-4 w-4" />
-              Upload Sheets
+              Upload Orders
+            </Button>
+
+            <Button
+              size="sm"
+              className="ml-auto h-8"
+              onClick={() => {
+                setUploadModelOpen('returns');
+              }}
+            >
+              <UploadIcon className="mr-2 h-4 w-4" />
+              Upload Returns
             </Button>
           </div>
         </div>
@@ -234,7 +246,9 @@ export default function MarketPlaceTable() {
             setOpen={handleModelOpen}
           />
         )}
-        {isUploadModelOpen && <UploadModal open={isUploadModelOpen} setOpen={setUploadModelOpen} />}
+        {isUploadModelOpen && (
+          <UploadModal name={isUploadModelOpen} open={Boolean(isUploadModelOpen)} setOpen={setUploadModelOpen} />
+        )}
       </div>
     </div>
   );
