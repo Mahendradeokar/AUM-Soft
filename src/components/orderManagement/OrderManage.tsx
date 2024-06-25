@@ -17,10 +17,13 @@ interface OrderManageProps {
   marketPlaceId: string | undefined;
 }
 
+type TabName = 'completeOrders' | 'pendingOrders' | 'scannedOrders';
+
 // TODO:- Refactor this in create seperate component for count and button and table. And place them in root component.
 export default function OrderManage({ selectedReturnType, setSelectedReturnType, marketPlaceId }: OrderManageProps) {
   const barcodeInputRef = useRef<HTMLInputElement>(null);
   const [scannedOrder, setScannedOrder] = useState<Order[]>([]);
+  const [activeTab, setActiveTab] = useState<TabName>('completeOrders');
   const handleOnScan = useCallback(
     async (barcode: string) => {
       const { isSuccess, data } = await returns.sendScanOrder({ orderId: barcode, returnType: selectedReturnType });
@@ -45,7 +48,14 @@ export default function OrderManage({ selectedReturnType, setSelectedReturnType,
               <Button size="lg" variant="ghost" className="grow-1 max-w-lg" onClick={() => setSelectedReturnType(null)}>
                 Back
               </Button>
-              <ScannerButton startScan={startScan} isInit={isInit} isScanning={isScanning} />
+              <ScannerButton
+                startScan={() => {
+                  startScan();
+                  setActiveTab('scannedOrders');
+                }}
+                isInit={isInit}
+                isScanning={isScanning}
+              />
             </>
           ) : (
             <>
@@ -63,16 +73,27 @@ export default function OrderManage({ selectedReturnType, setSelectedReturnType,
         <h2 className="text-xl font-bold tracking-tight">Orders&apos; List!</h2>
         <p className="text-muted-foreground">Here are the orders.</p>
       </div>
-      <Tabs defaultValue="completeOrders" className="w-full">
+      <Tabs
+        defaultValue="completeOrders"
+        className="w-full"
+        value={activeTab}
+        onValueChange={(value) => setActiveTab(value as TabName)}
+      >
         <TabsList>
           <TabsTrigger value="completeOrders">Complete Orders</TabsTrigger>
           <TabsTrigger value="pendingOrders">Pending Orders</TabsTrigger>
+          <TabsTrigger value="scannedOrders" disabled={!isInit && !isScanning}>
+            Scanned Orders
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="completeOrders">
           <CompleteOrderTable marketplaceId={marketPlaceId} />
         </TabsContent>
         <TabsContent value="pendingOrders">
-          <PendingOrderTable marketplaceId={marketPlaceId} scannedOrder={scannedOrder} />
+          <PendingOrderTable marketplaceId={marketPlaceId} />
+        </TabsContent>
+        <TabsContent value="scannedOrders">
+          <PendingOrderTable marketplaceId={marketPlaceId} scannedOrder={scannedOrder} isScannedOrder />
         </TabsContent>
       </Tabs>
     </div>

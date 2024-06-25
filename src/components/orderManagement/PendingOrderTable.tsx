@@ -9,10 +9,11 @@ import { orderColumns } from './tableColumn';
 
 type Props = {
   marketplaceId: string | undefined;
-  scannedOrder: Order[];
+  scannedOrder?: Order[];
+  isScannedOrder?: boolean;
 };
 
-function PendingOrderTable({ marketplaceId, scannedOrder }: Props) {
+function PendingOrderTable({ marketplaceId, scannedOrder, isScannedOrder = false }: Props) {
   // Use the useTable hook to create table instance
   const [completeOrder, setCompleteOrder] = useState<Order[]>([]);
 
@@ -31,8 +32,9 @@ function PendingOrderTable({ marketplaceId, scannedOrder }: Props) {
     }
   }, [marketplaceId]);
 
+  const tableData = isScannedOrder ? scannedOrder ?? [] : completeOrder;
   const table = useReactTable({
-    data: scannedOrder?.length ? scannedOrder : completeOrder,
+    data: tableData,
     columns: orderColumns,
     manualPagination: true,
     manualSorting: false,
