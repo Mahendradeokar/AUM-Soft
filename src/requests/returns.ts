@@ -28,7 +28,7 @@ export const getReturnOrders = async ({
 }) => {
   try {
     const { data: resData } = await axiosInstance.get(
-      `/sheet-order/return/?account_id=${accountId}&is_return_update=${orderType === ReturnOrderType.PENDING}`,
+      `/sheet-order/return/?account_id=${accountId}&is_return_update=${orderType === ReturnOrderType.COMPLETED}`,
     );
     return successHandler(resData, { showNotification: false });
   } catch (error: any) {

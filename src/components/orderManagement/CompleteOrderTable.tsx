@@ -6,6 +6,7 @@ import { returns } from '@/requests';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Order } from './type';
 import { orderColumns } from './tableColumn';
+import { Loader } from '../shared';
 
 // Define column interface
 
@@ -16,11 +17,12 @@ type Props = {
 function CompleteOrderTable({ marketplaceId }: Props) {
   // Use the useTable hook to create table instance
   const [completeOrder, setCompleteOrder] = useState<Order[]>([]);
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     if (marketplaceId) {
       (async () => {
-        // debugger;
+        setLoading(true);
         const { isSuccess, data } = await returns.getReturnOrders({
           accountId: marketplaceId,
           orderType: 'COMPLETED',
@@ -28,6 +30,8 @@ function CompleteOrderTable({ marketplaceId }: Props) {
         if (isSuccess) {
           setCompleteOrder(data);
         }
+
+        setLoading(false);
       })();
     }
   }, [marketplaceId]);
@@ -40,6 +44,10 @@ function CompleteOrderTable({ marketplaceId }: Props) {
     manualFiltering: true,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  if (isLoading) {
+    return <Loader className="h-16" />;
+  }
 
   return (
     <div style={{ padding: '20px' }}>

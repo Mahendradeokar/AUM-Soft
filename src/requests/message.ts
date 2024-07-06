@@ -1,4 +1,4 @@
-export const responseMessage: any = {
+export const responseMessage = {
   200: {
     title: 'Success',
     message: 'The request was successful.',
@@ -49,4 +49,4 @@ export const responseMessage: any = {
     title: 'Error',
     message: 'An unexpected error occurred. Please try again later.',
   },
-};
+} as const;

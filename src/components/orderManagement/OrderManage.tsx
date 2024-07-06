@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { returns } from '@/requests';
 import { Button } from '../ui/button';
 import CompleteOrderTable from './CompleteOrderTable';
@@ -10,6 +10,7 @@ import { Order, ReturnType, ReturnTypeUnion } from './type';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { useBarcodeScanner } from './hooks';
 import ScannerButton from './ScannerStatus';
+import { Loader } from '../shared';
 
 interface OrderManageProps {
   selectedReturnType: ReturnTypeUnion | undefined | null;
@@ -24,6 +25,9 @@ export default function OrderManage({ selectedReturnType, setSelectedReturnType,
   const barcodeInputRef = useRef<HTMLInputElement>(null);
   const [scannedOrder, setScannedOrder] = useState<Order[]>([]);
   const [activeTab, setActiveTab] = useState<TabName>('completeOrders');
+  const [orderCount, setOrderCont] = useState({ pendingOrders: 0, completeOrders: 0 });
+  const [isLoading, setLoading] = useState(true);
+
   const handleOnScan = useCallback(
     async (barcode: string) => {
       const { isSuccess, data } = await returns.sendScanOrder({ orderId: barcode, returnType: selectedReturnType });
@@ -31,23 +35,63 @@ export default function OrderManage({ selectedReturnType, setSelectedReturnType,
         setScannedOrder((prev) => {
           return [...prev, data];
         });
+        setOrderCont((prev) => {
+          return {
+            pendingOrders: prev.pendingOrders - 1,
+            completeOrders: prev.completeOrders + 1,
+          };
+        });
       }
     },
     [selectedReturnType],
   );
+
+  useEffect(() => {
+    if (marketPlaceId) {
+      (async () => {
+        setLoading(true);
+        const { isSuccess: pendingSuccess, data: pendingData } = await returns.getReturnOrders({
+          accountId: marketPlaceId,
+          orderType: 'PENDING',
+        });
+        const counts = { pendingOrders: 0, completeOrders: 0 };
+        if (pendingSuccess) {
+          counts.pendingOrders = pendingData.length;
+        }
+
+        const { isSuccess, data } = await returns.getReturnOrders({
+          accountId: marketPlaceId,
+          orderType: 'COMPLETED',
+        });
+        if (isSuccess) {
+          counts.completeOrders = data.length;
+        }
+        setOrderCont(counts);
+        setLoading(false);
+        return null;
+      })();
+    }
+  }, [marketPlaceId]);
+
+  const showScanner = true; // Don't need to show the order type.
+
   const { isScanning, startScan, isInit } = useBarcodeScanner(barcodeInputRef, handleOnScan);
   return (
     <div className="hidden h-full flex-1 flex-col space-y-8 py-8 md:flex">
       <input ref={barcodeInputRef} className="absolute left-[-99999999999px]" />
-      <ShowCounts />
+      {isLoading ? (
+        <Loader className="h-10" />
+      ) : (
+        <ShowCounts currentCount={orderCount.completeOrders} totalCount={orderCount.pendingOrders} />
+      )}
       <p className="text-foreground text-center">Please Select the Return type</p>
       <div className="flex items-center justify-between space-y-2">
         <div className="flex gap-4 justify-center flex-1">
-          {selectedReturnType ? (
+          {showScanner ? (
             <>
-              <Button size="lg" variant="ghost" className="grow-1 max-w-lg" onClick={() => setSelectedReturnType(null)}>
+              {/* <Button size="lg" variant="ghost" className="grow-1 max-w-lg" onClick={() => setSelectedReturnType(null)}>
                 Back
-              </Button>
+              </Button> */}
               <ScannerButton
                 startScan={() => {
                   startScan();

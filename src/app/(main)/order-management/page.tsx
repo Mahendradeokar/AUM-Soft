@@ -1,5 +1,8 @@
 'use client';
 
+import AddMarketPlaceBtn from '@/components/dashboard/AddMarketPlaceBtn';
+import UploadOrdersBtn from '@/components/dashboard/UploadOrdersBtn';
+import UploadReturnsBtn from '@/components/dashboard/UploadReturnBtn';
 import { OrderManage } from '@/components/orderManagement';
 import { ScanForm } from '@/components/orderManagement/ScanForm';
 import { ReturnTypeUnion } from '@/components/orderManagement/type';
@@ -51,14 +54,19 @@ export default function OrderManagement() {
       <div className="flex justify-between h-16 items-center">
         <h2 className="text-3xl font-bold tracking-normal">Return Orders Type</h2>
         {/* <ScannerStatus isScanning={isScannerConnected} /> */}
-        <Button variant="ghost" onClick={() => setIsModalOpen(true)}>
-          Scan Options
-        </Button>
+        <div className="flex gap-3">
+          <UploadOrdersBtn />
+          <UploadReturnsBtn />
+          <AddMarketPlaceBtn />
+          {/* <MarketPlaceSwitcher /> */}
+          <Button variant="outline" onClick={() => setIsModalOpen(true)}>
+            Change Marketplace
+          </Button>
+        </div>
       </div>
       <div className="flex-1 space-y-4 py-8 pt-6">
         <div className="overflow-auto w-[100%]" ref={scanEleRef}>
           <OrderManage
-            // isScanning={isScannerConnected}
             selectedReturnType={formData.returnType}
             setSelectedReturnType={(returnType) => setFormData({ ...formData, returnType })}
             marketPlaceId={formData.marketplaceName}

@@ -2,7 +2,7 @@
 
 import { Modal } from '@/components/shared';
 import { useState } from 'react';
-import { UploadOrders } from './Upload';
+import { UploadOrders, UploadReturns } from './Upload';
 import APIKeyForm from '../marketplace/MpForm';
 import type { ModalType } from '../types';
 
@@ -32,7 +32,7 @@ const renderModal = (name: ModalType, restProps: any) => {
     case 'ORDER':
       return <UploadOrders {...restProps} />;
     case 'RETURNS':
-      return <UploadOrders {...restProps} />;
+      return <UploadReturns {...restProps} />;
     case 'MARKETPLACE':
       return null;
     default:
@@ -45,7 +45,7 @@ export default function UploadModal({ open, setOpen, name = 'marketplace' }: IUp
   const { heading, description } = content[name];
   return (
     <Modal open={open} setOpen={setOpen} title={heading} description={description}>
-      {isAddMpOpen ? (
+      {isAddMpOpen || name === 'marketplace' ? (
         <APIKeyForm
           close={() => {
             setAddMpOpen(false);

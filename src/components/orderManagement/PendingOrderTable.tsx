@@ -6,6 +6,7 @@ import { returns } from '@/requests';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Order } from './type';
 import { orderColumns } from './tableColumn';
+import { Loader } from '../shared';
 
 type Props = {
   marketplaceId: string | undefined;
@@ -16,9 +17,11 @@ type Props = {
 function PendingOrderTable({ marketplaceId, scannedOrder, isScannedOrder = false }: Props) {
   // Use the useTable hook to create table instance
   const [completeOrder, setCompleteOrder] = useState<Order[]>([]);
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     if (marketplaceId) {
+      setLoading(true);
       (async () => {
         // debugger;
         const { isSuccess, data } = await returns.getReturnOrders({
@@ -28,6 +31,8 @@ function PendingOrderTable({ marketplaceId, scannedOrder, isScannedOrder = false
         if (isSuccess) {
           setCompleteOrder(data);
         }
+
+        setLoading(false);
       })();
     }
   }, [marketplaceId]);
@@ -41,6 +46,10 @@ function PendingOrderTable({ marketplaceId, scannedOrder, isScannedOrder = false
     manualFiltering: true,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  if (isLoading) {
+    return <Loader className="h-16" />;
+  }
 
   return (
     <div style={{ padding: '20px' }}>
