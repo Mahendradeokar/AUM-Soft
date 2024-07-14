@@ -100,7 +100,7 @@ export default function MarketPlaceSwitcher({ className, onSelectChange }: Marke
       }
     })();
   }, [onSelectChange]);
-
+  // TODO - Can combine this two use effect into one.
   React.useEffect(() => {
     if (isPopoverOpen) {
       (async () => {
