@@ -2,6 +2,7 @@ import { deleteCookie, getCookie, setCookie } from 'cookies-next';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { TOKEN } from '@/common/constants';
+import { forwardRef } from 'react';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -57,3 +58,9 @@ export const isNegative = (value: string | number) => {
 
   return value;
 };
+
+export function fixedForwardRef<T, P = Record<any, any>>(
+  render: (props: P, ref: React.Ref<T>) => React.ReactNode,
+): (props: P & React.RefAttributes<T>) => React.ReactNode {
+  return forwardRef(render) as any;
+}

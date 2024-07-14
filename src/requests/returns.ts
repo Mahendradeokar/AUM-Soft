@@ -1,5 +1,4 @@
 import { axiosInstance } from '@/config';
-import { ReturnTypeUnion } from '@/components/orderManagement/type';
 import successHandler from './success';
 import errorHandler from './error';
 import { ReturnOrderType, ReturnOrderUnionType } from '../../types';
@@ -39,15 +38,14 @@ export const getReturnOrders = async ({
 };
 
 export const sendScanOrder = async ({
-  orderId,
-  returnType,
+  orderId, // returnType,
 }: {
   orderId: string;
-  returnType: ReturnTypeUnion | null | undefined;
+  // returnType: ReturnTypeUnion | null | undefined;
 }) => {
   try {
     const { data: resData } = await axiosInstance.put(
-      `sheet-order/update?order_id=${orderId}&return_type=${returnType}`,
+      `sheet-order/update?order_id=${orderId}`, // &return_type=${returnType}
     );
     return successHandler(resData, { showNotification: false });
   } catch (error: any) {

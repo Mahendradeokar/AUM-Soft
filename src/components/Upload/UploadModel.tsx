@@ -2,7 +2,7 @@
 
 import { Modal } from '@/components/shared';
 import { useState } from 'react';
-import { UploadOrders, UploadReturns } from './Upload';
+import { UploadOrders, UploadPaymentSheet } from './Upload';
 import APIKeyForm from '../marketplace/MpForm';
 import type { ModalType } from '../types';
 
@@ -21,9 +21,9 @@ const content: Record<ModalType, Record<string, string>> = {
     heading: 'Upload Orders',
     description: 'Upload your Orders here!',
   },
-  returns: {
-    heading: 'Upload Returns',
-    description: 'Upload return orders here!',
+  payment: {
+    heading: 'Upload Payment Sheet',
+    description: 'Upload payment sheet here!',
   },
 };
 
@@ -31,8 +31,8 @@ const renderModal = (name: ModalType, restProps: any) => {
   switch (name.toUpperCase() as Uppercase<ModalType>) {
     case 'ORDER':
       return <UploadOrders {...restProps} />;
-    case 'RETURNS':
-      return <UploadReturns {...restProps} />;
+    case 'PAYMENT':
+      return <UploadPaymentSheet {...restProps} />;
     case 'MARKETPLACE':
       return null;
     default:

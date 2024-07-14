@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { marketplace } from '@/requests';
 import { Loader } from '@/components/shared';
-import { PlusCircledIcon, UploadIcon } from '@radix-ui/react-icons';
+import { PlusCircledIcon } from '@radix-ui/react-icons';
 import APIModel from './MpModel';
 import { UploadModal } from '../Upload';
 import { ModalType } from '../types';
@@ -179,7 +179,7 @@ export default function MarketPlaceTable() {
               <PlusCircledIcon className="mr-2 h-4 w-4" />
               Add Marketplace
             </Button>
-            <Button
+            {/* <Button
               size="sm"
               className="ml-auto h-8"
               onClick={() => {
@@ -188,18 +188,18 @@ export default function MarketPlaceTable() {
             >
               <UploadIcon className="mr-2 h-4 w-4" />
               Upload Orders
-            </Button>
+            </Button> */}
 
-            <Button
+            {/* <Button
               size="sm"
               className="ml-auto h-8"
               onClick={() => {
-                setUploadModelOpen('returns');
+                setUploadModelOpen('payment');
               }}
             >
               <UploadIcon className="mr-2 h-4 w-4" />
-              Upload Returns
-            </Button>
+              Upload Payment Sheet
+            </Button> */}
           </div>
         </div>
         <div className="rounded-md border w-full overflow-hidden">

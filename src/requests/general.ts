@@ -1,22 +1,14 @@
 import { axiosInstance } from '@/config';
 import successHandler from './success';
 import errorHandler from './error';
-/**
- *
- * No being used @notUsed
- *
- */
-export const uploadSheet = async ({ formData }: any) => {
+
+export const getOrderCounts = async () => {
   try {
-    const { data: resData } = await axiosInstance.post('sheet-order/upload', formData, {
-      headers: {
-        'Content-Type': `multipart/form-data`,
-      },
-    });
+    const { data: resData } = await axiosInstance.get('/sheet-order/order-report');
     return successHandler(resData, { showNotification: false });
   } catch (error: any) {
     // eslint-disable-next-line no-console
-    console.error('Error while calling the get market place API....', error);
+    console.error('Error while calling the login api....', error);
     return errorHandler(error?.response?.data ?? error, { showNotification: true });
   }
 };

@@ -6,7 +6,10 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
 
-// Define column interface
+type Props = {
+  marketplaceId: string | null;
+};
+
 export const orderColumns: ColumnDef<Order>[] = [
   {
     header: 'Sr No.',
@@ -20,24 +23,24 @@ export const orderColumns: ColumnDef<Order>[] = [
     header: 'Suborder Number',
     accessorKey: 'sub_order_no',
   },
+  {
+    header: 'Type of return',
+    accessorKey: 'type_of_return',
+  },
 ];
 
-type Props = {
-  marketplaceId: string | null;
-};
-
-function CompleteOrderTable({ marketplaceId }: Props) {
+function ReturnOrderTable({ marketplaceId }: Props) {
   // Use the useTable hook to create table instance
   const [completeOrder, setCompleteOrder] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     if (marketplaceId) {
+      setLoading(true);
       (async () => {
-        setLoading(true);
         const { isSuccess, data } = await returns.getReturnOrders({
           accountId: marketplaceId,
-          orderType: 'COMPLETED',
+          orderType: 'PENDING',
         });
         if (isSuccess) {
           setCompleteOrder(data);
@@ -53,4 +56,4 @@ function CompleteOrderTable({ marketplaceId }: Props) {
   return <HeadlessTable columns={orderColumns} data={completeOrder} isLoading={isLoading} />;
 }
 
-export default CompleteOrderTable;
+export default ReturnOrderTable;

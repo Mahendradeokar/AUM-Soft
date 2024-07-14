@@ -17,17 +17,24 @@ import {
 import { CheckIcon } from 'lucide-react';
 import { CaretSortIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 import { marketplace } from '@/requests';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import AddMarketPlace from './AddMarketPlace';
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
-interface MarketPlaceSwitcherProps extends PopoverTriggerProps {}
+interface MarketPlaceSwitcherProps extends PopoverTriggerProps {
+  onSelectChange?: (value: string | null) => void;
+}
 
-const extractMPData = (data: any) => {
+type Account = { label: string | null; value: string | null };
+interface MarketplaceAccount {
+  account_name: string;
+  platform_id: string;
+}
+
+const extractMPData = (data: MarketplaceAccount[]) => {
   const mpData = [
-    { label: 'All', value: 'All' },
-    ...data.map((mp: any) => {
+    ...data.map((mp) => {
       return {
         label: mp.account_name,
         value: mp.platform_id,
@@ -38,64 +45,91 @@ const extractMPData = (data: any) => {
   return mpData;
 };
 
-export default function MarketPlaceSwitcher({ className }: MarketPlaceSwitcherProps) {
-  const [open, setOpen] = React.useState(false);
+export default function MarketPlaceSwitcher({ className, onSelectChange }: MarketPlaceSwitcherProps) {
+  const [isPopoverOpen, setPopoverOpen] = React.useState(false);
   const router = useRouter();
-  const searchParam = useSearchParams();
-  const [selectedAccount, setSelectedAccount] = React.useState<{ label: string; value: string }>({
-    label: 'All',
-    value: 'All',
+  const pathname = usePathname();
+
+  const [selectedAccount, setSelectedAccount] = React.useState<Account>({
+    label: null,
+    value: null,
   });
-  const [marketPlaceData, setMarketPlaceData] = React.useState([
+
+  const [marketPlaceData, setMarketPlaceData] = React.useState<{ label: string; accounts: Account[] }[]>([
     {
       label: 'Marketplaces',
-      marketplaces: [
-        {
-          label: 'All',
-          value: 'All',
-        },
-      ],
+      accounts: [],
     },
   ]);
-  const [modalOpen, setModalOpen] = React.useState(false);
+  const [isMarketplaceOpen, setMarketplaceOpen] = React.useState(false);
 
-  const mp = searchParam.has('mp') ? searchParam.get('mp') : null;
-  React.useEffect(() => {
-    if (mp !== selectedAccount.value) {
-      router.push('/');
+  const onSelect = (account: Account) => {
+    setSelectedAccount(account);
+    setPopoverOpen(false);
+    if (onSelectChange) {
+      onSelectChange(account.value);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const searchParam = new URLSearchParams();
+    searchParam.set('mp', account.value ?? '');
+    const currentUrl = `${pathname}?${searchParam.toString()}`;
+    router.push(currentUrl);
+  };
 
   React.useEffect(() => {
     (async () => {
-      const { data, isSuccess } = await marketplace.getMarketplace();
-      if (isSuccess) {
-        if (!data.length) {
-          setModalOpen(true);
-          return;
-        }
-        setMarketPlaceData((pre: any) => {
-          const updated = [{ ...pre }];
-          updated[0].marketplaces = extractMPData(data);
-          return updated;
-        });
+      const { isSuccess, data } = await marketplace.getMarketplace();
+      if (!isSuccess) {
+        return;
+      }
+      if (!data.length) {
+        // Open marketplace modal
+        setMarketplaceOpen(true);
+        return;
+      }
+
+      const accounts = extractMPData(data);
+      setMarketPlaceData((prev) => {
+        const updated = [...prev];
+        updated[0].accounts = accounts;
+        return updated;
+      });
+      const defaultSelect = accounts[0];
+      setSelectedAccount(defaultSelect);
+      if (onSelectChange) {
+        onSelectChange(defaultSelect.value);
       }
     })();
-  }, []);
+  }, [onSelectChange]);
+
+  React.useEffect(() => {
+    if (isPopoverOpen) {
+      (async () => {
+        const { isSuccess, data } = await marketplace.getMarketplace();
+        if (!isSuccess) {
+          return;
+        }
+        const accounts = extractMPData(data);
+        setMarketPlaceData((pre: any) => {
+          const updated = [{ ...pre }];
+          updated[0].accounts = accounts;
+          return updated;
+        });
+      })();
+    }
+  }, [isPopoverOpen]);
 
   return (
     <>
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={isPopoverOpen} onOpenChange={setPopoverOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
-            aria-expanded={open}
+            aria-expanded={isPopoverOpen}
             aria-label="Select a account"
             className={cn('w-[250px] justify-between', className)}
           >
-            <span title={selectedAccount.label} className="whitespace-pre text-ellipsis overflow-hidden ">
+            <span title={selectedAccount.label ?? ''} className="whitespace-pre text-ellipsis overflow-hidden ">
               {selectedAccount.label}
             </span>
             <CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
@@ -108,15 +142,11 @@ export default function MarketPlaceSwitcher({ className }: MarketPlaceSwitcherPr
               <CommandEmpty>No account found.</CommandEmpty>
               {marketPlaceData.map((group) => (
                 <CommandGroup key={group.label} heading={group.label}>
-                  {group.marketplaces.map((marketplace) => (
+                  {group.accounts.map((marketplace) => (
                     <CommandItem
                       // disabled={marketplace.disable}
                       key={marketplace.value}
-                      onSelect={() => {
-                        setSelectedAccount(marketplace);
-                        setOpen(false);
-                        router.push(`/?mp=${marketplace.value}`);
-                      }}
+                      onSelect={() => onSelect(marketplace)}
                       className="text-sm"
                     >
                       {marketplace.label}
@@ -134,7 +164,7 @@ export default function MarketPlaceSwitcher({ className }: MarketPlaceSwitcherPr
             <CommandSeparator />
             <CommandList>
               <CommandGroup>
-                <Button variant="link" asChild className="w-full" onSelect={() => setModalOpen(true)}>
+                <Button variant="link" asChild className="w-full" onSelect={() => setMarketplaceOpen(true)}>
                   <CommandItem>
                     <PlusCircledIcon className="mr-2 h-5 w-5" />
                     Add New
@@ -145,7 +175,7 @@ export default function MarketPlaceSwitcher({ className }: MarketPlaceSwitcherPr
           </Command>
         </PopoverContent>
       </Popover>
-      <AddMarketPlace open={modalOpen} setOpen={setModalOpen} />
+      <AddMarketPlace open={isMarketplaceOpen} setOpen={setMarketplaceOpen} />
     </>
   );
 }
