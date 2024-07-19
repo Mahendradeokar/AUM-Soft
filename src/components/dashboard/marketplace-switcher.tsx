@@ -50,18 +50,30 @@ export default function MarketPlaceSwitcher({ className, onSelectChange }: Marke
   const router = useRouter();
   const pathname = usePathname();
 
-  const [selectedAccount, setSelectedAccount] = React.useState<Account>({
-    label: null,
-    value: null,
-  });
-
   const [marketPlaceData, setMarketPlaceData] = React.useState<{ label: string; accounts: Account[] }[]>([
     {
       label: 'Marketplaces',
       accounts: [],
     },
   ]);
+
+  const [selectedAccount, setSelectedAccount] = React.useState<Account>({
+    label: 'All',
+    value: 'all',
+  });
+
   const [isMarketplaceOpen, setMarketplaceOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (onSelectChange) {
+      onSelectChange(selectedAccount.value);
+      const searchParam = new URLSearchParams();
+      searchParam.set('mp', selectedAccount.value ?? '');
+      const currentUrl = `${pathname}?${searchParam.toString()}`;
+      router.push(currentUrl);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onSelectChange]);
 
   const onSelect = (account: Account) => {
     setSelectedAccount(account);
@@ -81,7 +93,7 @@ export default function MarketPlaceSwitcher({ className, onSelectChange }: Marke
       if (!isSuccess) {
         return;
       }
-      if (!data.length) {
+      if (!data?.length) {
         // Open marketplace modal
         setMarketplaceOpen(true);
         return;
@@ -90,14 +102,9 @@ export default function MarketPlaceSwitcher({ className, onSelectChange }: Marke
       const accounts = extractMPData(data);
       setMarketPlaceData((prev) => {
         const updated = [...prev];
-        updated[0].accounts = accounts;
+        updated[0].accounts = [...accounts];
         return updated;
       });
-      const defaultSelect = accounts[0];
-      setSelectedAccount(defaultSelect);
-      if (onSelectChange) {
-        onSelectChange(defaultSelect.value);
-      }
     })();
   }, [onSelectChange]);
   // TODO - Can combine this two use effect into one.
@@ -142,6 +149,20 @@ export default function MarketPlaceSwitcher({ className, onSelectChange }: Marke
               <CommandEmpty>No account found.</CommandEmpty>
               {marketPlaceData.map((group) => (
                 <CommandGroup key={group.label} heading={group.label}>
+                  <CommandItem
+                    // disabled={marketplace.disable}
+                    key="ALL"
+                    onSelect={() => onSelect({ label: 'All', value: 'all' })}
+                    className="text-sm"
+                  >
+                    All
+                    <CheckIcon
+                      className={cn(
+                        'ml-auto h-4 w-4 text-primary',
+                        selectedAccount.value === 'all' ? 'opacity-100' : 'opacity-0',
+                      )}
+                    />
+                  </CommandItem>
                   {group.accounts.map((marketplace) => (
                     <CommandItem
                       // disabled={marketplace.disable}

@@ -1,7 +1,7 @@
 import { axiosInstance } from '@/config';
 import successHandler from './success';
 import errorHandler from './error';
-import { ReturnOrderType, ReturnOrderUnionType } from '../../types';
+import { ReturnOrderUnionType } from '../../types';
 
 export const uploadReturns = async ({ formData }: { formData: any }) => {
   try {
@@ -18,17 +18,36 @@ export const uploadReturns = async ({ formData }: { formData: any }) => {
   }
 };
 
+const getReturnType = (status: Lowercase<ReturnOrderUnionType>) => {
+  switch (status) {
+    case 'completed':
+      return null;
+    case 'pending':
+      return false;
+    case 'return':
+      return true;
+    default:
+      return false;
+  }
+};
+
 export const getReturnOrders = async ({
   accountId,
-  orderType,
+  status,
 }: {
   accountId: string;
-  orderType: ReturnOrderUnionType;
+  status: Lowercase<ReturnOrderUnionType>;
 }) => {
   try {
-    const { data: resData } = await axiosInstance.get(
-      `/sheet-order/return/?account_id=${accountId}&is_return_update=${orderType === ReturnOrderType.COMPLETED}`,
-    );
+    const params = new URLSearchParams();
+    params.set('account_id', accountId);
+    const isReturnType = getReturnType(status)?.toString();
+
+    if (isReturnType) params.set('is_return_update', isReturnType);
+
+    if (status) params.set('status', status);
+
+    const { data: resData } = await axiosInstance.get(`/sheet-order/return/?${params.toString()}`);
     return successHandler(resData, { showNotification: false });
   } catch (error: any) {
     // eslint-disable-next-line no-console

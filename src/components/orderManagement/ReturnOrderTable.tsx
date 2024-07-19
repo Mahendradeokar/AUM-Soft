@@ -16,17 +16,21 @@ export const orderColumns: ColumnDef<Order>[] = [
     accessorFn: (_, index) => index + 1,
   },
   {
-    header: 'Order ID',
-    accessorKey: '_id',
-  },
-  {
     header: 'Suborder Number',
     accessorKey: 'sub_order_no',
   },
   {
     header: 'Type of return',
-    accessorKey: 'type_of_return',
+    accessorKey: 'order_status',
   },
+  {
+    header: 'SKU Name',
+    accessorKey: 'sku',
+  },
+  // {
+  //   header: 'Price',
+  //   accessorKey: 'order_price',
+  // },
 ];
 
 function ReturnOrderTable({ marketplaceId }: Props) {
@@ -40,7 +44,7 @@ function ReturnOrderTable({ marketplaceId }: Props) {
       (async () => {
         const { isSuccess, data } = await returns.getReturnOrders({
           accountId: marketplaceId,
-          orderType: 'PENDING',
+          status: 'return',
         });
         if (isSuccess) {
           setCompleteOrder(data);

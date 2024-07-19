@@ -31,8 +31,8 @@ export default function ScanReturns() {
       });
       setOrderCont((prev) => {
         return {
-          totalReturnOrders: prev.totalReturnOrders - 1,
-          totalOrders: prev.totalOrders + 1,
+          totalReturnOrders: prev.totalReturnOrders + 1,
+          totalOrders: prev.totalOrders - 1,
         };
       });
     }

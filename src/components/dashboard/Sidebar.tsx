@@ -9,7 +9,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export default function Sidebar({ className }: SidebarProps) {
   return (
-    <div className={cn('bg-zing-900', className)}>
+    <div className={cn('bg-zing-900 relative', className)}>
       <div
         id="sidebar"
         className="group/sidebar space-y-4 flex flex-col py-6 px-2 h-[100%] hover:lg:px-3 transition-all duration-700 ease-in-out transform"
@@ -59,6 +59,12 @@ export default function Sidebar({ className }: SidebarProps) {
           </div>
         </div>
       </div>
+      {/* <Button className="flex bg-[#27272a] items-center text-lg justify-start border-none absolute top-1/2 transform -translate-y-1/2 translate-x-1/2 right-0 rounded-full" variant="outline" size="sm">
+        <ArrowLeft />
+      </Button>
+      <Button className="flex bg-[#27272a] items-center text-lg justify-start border-none absolute top-1/2 transform -translate-y-1/2 translate-x-1/2 right-0 rounded-full" variant="outline" size="sm">
+        <ArrowRight />
+      </Button> */}
     </div>
   );
 }
