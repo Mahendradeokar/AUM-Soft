@@ -25,6 +25,10 @@ export const orderColumns: ColumnDef<Order>[] = [
     header: 'SKU Name',
     accessorKey: 'sku',
   },
+  {
+    header: 'Price',
+    accessorKey: 'order_price',
+  },
 ];
 
 function ScanOrderTable<T>({ data, isLoading = false }: Props<T>) {
