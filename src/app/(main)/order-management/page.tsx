@@ -1,6 +1,6 @@
 'use client';
 
-import { MarketPlaceSwitcher } from '@/components/dashboard';
+import { MarketPlaceSwitcher, Statistics } from '@/components/dashboard';
 import UploadOrdersBtn from '@/components/dashboard/UploadOrdersBtn';
 import UploadPaymentBtn from '@/components/dashboard/UploadReturnBtn';
 import { DashboardTable } from '@/components/orderManagement';
@@ -20,6 +20,7 @@ export default function OrderManagement() {
         </div>
       </div>
       <div className="flex-1 space-y-4 py-8 pt-6">
+        <Statistics />
         <DashboardTable marketplaceId={marketplaceId} />
       </div>
     </>

@@ -16,7 +16,7 @@ export default function DashboardLayout({ children }: IDashboardLayout) {
     <div className="bg-background">
       <div className="flex flex-col lg:flex-row h-screen box-border">
         <Sidebar className="sticky h-screen hidden lg:block" />
-        <ScrollArea className="px-4 grow-[1] lg:px-8 lg:border-l box-border table-overflow-fix">
+        <ScrollArea className="px-4 grow-[1] lg:px-8 box-border table-overflow-fix">
           <div className="h-full py-6">
             <div className="flex-col md:flex">{children}</div>
           </div>

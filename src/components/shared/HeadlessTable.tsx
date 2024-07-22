@@ -1,24 +1,14 @@
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import React from 'react';
+import { flexRender, useReactTable } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Loader } from '.';
 
 interface HeadlessTableProps<T> {
-  columns: any;
-  data: T[];
+  tableInstance: ReturnType<typeof useReactTable<T>>;
   isLoading: boolean;
 }
 
-function HeadlessTable<T>({ columns, data, isLoading }: HeadlessTableProps<T>) {
-  const table = useReactTable({
-    data,
-    columns,
-    manualPagination: true,
-    manualSorting: false,
-    manualFiltering: true,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
+function HeadlessTable<T>({ tableInstance, isLoading }: HeadlessTableProps<T>) {
   if (isLoading) {
     return <Loader className="h-16" />;
   }
@@ -28,7 +18,7 @@ function HeadlessTable<T>({ columns, data, isLoading }: HeadlessTableProps<T>) {
       <div className="rounded-md border relative">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
+            {tableInstance.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
@@ -41,8 +31,8 @@ function HeadlessTable<T>({ columns, data, isLoading }: HeadlessTableProps<T>) {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => {
+            {tableInstance.getRowModel().rows?.length ? (
+              tableInstance.getRowModel().rows.map((row) => {
                 return (
                   <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                     {row.getVisibleCells().map((cell) => (
@@ -53,7 +43,7 @@ function HeadlessTable<T>({ columns, data, isLoading }: HeadlessTableProps<T>) {
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell colSpan={tableInstance.getAllColumns().length} className="h-24 text-center">
                   No data available
                 </TableCell>
               </TableRow>

@@ -3,8 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import { returns } from '@/requests';
 import { ColumnDef } from '@tanstack/react-table';
+import { useCustomTable } from '@/hooks/useCustomTable';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
+import { DataTablePagination } from '../table/data-table-pagination';
+import { DataTableFacetedFilter } from '../table/data-table-faceted-filter';
 
 type Props = {
   marketplaceId: string | null;
@@ -42,6 +45,11 @@ function ReturnOrderTable({ marketplaceId }: Props) {
   const [completeOrder, setCompleteOrder] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(true);
 
+  const table = useCustomTable({
+    data: completeOrder,
+    columns: orderColumns,
+  });
+
   useEffect(() => {
     if (marketplaceId) {
       setLoading(true);
@@ -61,7 +69,22 @@ function ReturnOrderTable({ marketplaceId }: Props) {
     }
   }, [marketplaceId]);
 
-  return <HeadlessTable columns={orderColumns} data={completeOrder} isLoading={isLoading} />;
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-end gap-4">
+        <DataTableFacetedFilter
+          column={table.getColumn('order_status')}
+          title="Type of return"
+          options={[
+            { label: 'Customer Return', value: 'CustomerReturn' },
+            { label: 'Currier Return', value: 'currierReturn' },
+          ]}
+        />
+      </div>
+      <HeadlessTable tableInstance={table} isLoading={isLoading} />
+      <DataTablePagination table={table} />
+    </div>
+  );
 }
 
 export default ReturnOrderTable;

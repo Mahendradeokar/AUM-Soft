@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { returns } from '@/requests';
 import { ColumnDef } from '@tanstack/react-table';
+import { useCustomTable } from '@/hooks/useCustomTable';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
 
@@ -35,6 +36,11 @@ function CompleteOrderTable({ marketplaceId }: Props) {
   const [completeOrder, setCompleteOrder] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(true);
 
+  const table = useCustomTable({
+    data: completeOrder,
+    columns: orderColumns,
+  });
+
   useEffect(() => {
     if (marketplaceId) {
       (async () => {
@@ -54,7 +60,7 @@ function CompleteOrderTable({ marketplaceId }: Props) {
     }
   }, [marketplaceId]);
 
-  return <HeadlessTable columns={orderColumns} data={completeOrder} isLoading={isLoading} />;
+  return <HeadlessTable tableInstance={table} isLoading={isLoading} />;
 }
 
 export default CompleteOrderTable;

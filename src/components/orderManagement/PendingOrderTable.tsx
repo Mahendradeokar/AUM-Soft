@@ -3,8 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { returns } from '@/requests';
 import { ColumnDef } from '@tanstack/react-table';
+import { useCustomTable } from '@/hooks/useCustomTable';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
+import { DataTablePagination } from '../table/data-table-pagination';
 
 type Props = {
   marketplaceId: string | null;
@@ -30,6 +32,11 @@ function PendingOrderTable({ marketplaceId }: Props) {
   const [completeOrder, setCompleteOrder] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(true);
 
+  const table = useCustomTable({
+    data: completeOrder,
+    columns: orderColumns,
+  });
+
   useEffect(() => {
     if (marketplaceId) {
       setLoading(true);
@@ -49,7 +56,12 @@ function PendingOrderTable({ marketplaceId }: Props) {
     }
   }, [marketplaceId]);
 
-  return <HeadlessTable columns={orderColumns} data={completeOrder} isLoading={isLoading} />;
+  return (
+    <>
+      <HeadlessTable tableInstance={table} isLoading={isLoading} />
+      <DataTablePagination table={table} />
+    </>
+  );
 }
 
 export default PendingOrderTable;
