@@ -6,4 +6,5 @@ export interface Order {
   type_of_return: number;
   created_at: number;
   issue: string;
+  order_price: number;
 }

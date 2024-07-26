@@ -9,6 +9,7 @@ import HeadlessTable from '../shared/HeadlessTable';
 import { DataTablePagination } from '../table/data-table-pagination';
 import { DataTableFacetedFilter } from '../table/data-table-faceted-filter';
 import { DataTableSearchBar } from '../table/data-table-searchbar';
+import { NumberHighlighter } from '../shared';
 
 type Props = {
   marketplaceId: string | null;
@@ -35,6 +36,7 @@ export const orderColumns: ColumnDef<Order>[] = [
   {
     header: 'Price',
     accessorKey: 'order_price',
+    cell: ({ row }) => <NumberHighlighter number={row.original.order_price} content={row.original.order_price} />,
   },
   // {
   //   header: 'Price',

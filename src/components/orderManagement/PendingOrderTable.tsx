@@ -32,7 +32,7 @@ export const orderColumns: ColumnDef<Order>[] = [
     cell: ({ row }) => {
       const { created_at: createdAt } = row.original;
       const daysAgo = dayjs().diff(dayjs.unix(createdAt), 'day');
-      return <div>{daysAgo} days ago</div>;
+      return <span>{daysAgo} days ago</span>;
     },
   },
 ];

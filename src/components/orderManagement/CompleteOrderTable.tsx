@@ -6,6 +6,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { useCustomTable } from '@/hooks/useCustomTable';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
+import { NumberHighlighter } from '../shared';
 
 // Define column interface
 export const orderColumns: ColumnDef<Order>[] = [
@@ -24,6 +25,7 @@ export const orderColumns: ColumnDef<Order>[] = [
   {
     header: 'Price',
     accessorKey: 'order_price',
+    cell: ({ row }) => <NumberHighlighter number={row.original.order_price} content={row.original.order_price} />,
   },
 ];
 

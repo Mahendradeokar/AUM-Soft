@@ -3,8 +3,8 @@
 /* eslint-disable react/require-default-props */
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { isNegative } from '@/lib/utils';
 import React from 'react';
+import { NumberHighlighter } from '../shared';
 
 interface DashCartProps {
   title: string;
@@ -12,13 +12,6 @@ interface DashCartProps {
   originalValue: number;
   description?: string;
   Icon?: React.FC | null;
-}
-
-function NumberHighlighter({ number, content }: { number: number; content: number }) {
-  if (isNegative(number)) {
-    return <div className="text-2xl font-bold text-red-500">{content}</div>;
-  }
-  return <div className="text-2xl font-bold text-green-500">{content}</div>;
 }
 
 export default function DashCart({ title, content, originalValue, description, Icon = null }: DashCartProps) {
