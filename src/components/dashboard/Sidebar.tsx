@@ -5,7 +5,8 @@ import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/Theme';
 import Link from 'next/link';
 import { navigationLinks } from '@/config';
-import { useState } from 'react';
+import { SIDEBAR_LOCAL_STORAGE_KEY } from '@/common/constants';
+import { useLocalStorage } from 'usehooks-ts';
 import Logout from './logout';
 
 function ArrowRightWide() {
@@ -27,7 +28,7 @@ function ArrowLeftWide() {
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export default function Sidebar({ className }: SidebarProps) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useLocalStorage(SIDEBAR_LOCAL_STORAGE_KEY, true);
   return (
     <div className={cn('bg-zing-900 relative', className)}>
       <div
@@ -52,7 +53,7 @@ export default function Sidebar({ className }: SidebarProps) {
             >
               <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
             </svg>
-            <span className={cn('hidden', isSidebarOpen && 'inline-block')}>AUM</span>
+            <span className={cn(isSidebarOpen ? 'inline-block' : 'hidden')}>AUM</span>
           </Link>
         </Button>
         <div className="flex flex-col flex-1">
@@ -83,8 +84,8 @@ export default function Sidebar({ className }: SidebarProps) {
         </div>
       </div>
       <Button
-        className="flex items-center text-lg justify-center absolute top-1/2 transform -translate-y-1/2 translate-x-1/2 right-0 rounded-full border bg-zing-100"
-        variant="outline"
+        className="flex items-center text-lg justify-center absolute top-1/2 transform -translate-y-1/2 translate-x-1/2 right-0 rounded-full bg-zing-100"
+        variant="secondary"
         size="icon"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
       >

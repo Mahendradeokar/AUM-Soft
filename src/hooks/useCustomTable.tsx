@@ -102,6 +102,11 @@ export function useCustomTable<T extends RowData>({
     ...paginationConfig,
     ...sortingConfig,
     ...filteringConfig,
+    state: {
+      columnFilters: columnFilters?.state,
+      sorting: sorting?.state,
+      pagination: pagination?.state,
+    },
   });
 
   return table;

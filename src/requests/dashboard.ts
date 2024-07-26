@@ -1,69 +1,10 @@
 import { axiosInstance } from '@/config';
-import { isNegative } from '@/lib/utils';
 import successHandler from './success';
 import errorHandler from './error';
 
-const convertIntoStatisticsData = (stats: {
-  profit_loss: number;
-  total_order: number;
-  Customer_return: number;
-  Courier_return: number;
-}): {
-  id: string | number;
-  title: string;
-  icon: any;
-  totalValue: string | number;
-  percentageChange: string;
-}[] => {
-  return [
-    {
-      id: 1,
-      title: 'Profit/Loss',
-      icon: 'svg-for-total-revenue',
-      totalValue: `₹${stats.profit_loss.toFixed(2)}`,
-      percentageChange: isNegative(stats.profit_loss.toFixed(2))
-        ? `You loss is ${stats.profit_loss.toFixed(2)} till now.`
-        : `You Profit is ${stats.profit_loss.toFixed(2)} till now.`,
-    },
-    {
-      id: 2,
-      title: 'Total Orders',
-      icon: 'svg-for-subscriptions',
-      totalValue: stats.total_order,
-      percentageChange: `Your total order are ${stats.total_order} till now`,
-    },
-    {
-      id: 3,
-      title: 'Customer Return',
-      icon: 'svg-for-sales',
-      totalValue: stats.Customer_return,
-      percentageChange: `Your total customer return are ${stats.Customer_return} till now`,
-    },
-    {
-      id: 4,
-      title: 'Courier Return',
-      icon: 'svg-for-active-now',
-      totalValue: stats.Courier_return,
-      percentageChange: `Your total courier return are ${stats.Courier_return} till now`,
-    },
-  ];
-};
-
-export const getStatisticData = async ({ flipkart_by }: { flipkart_by: string }) => {
+export const getStatisticData = async () => {
   try {
-    const { data: resData } = await axiosInstance.get('/sheet-order', { params: { is_analytics: true, flipkart_by } });
-    const isDataAvailable = resData.data.orderDetailList?.length ?? null;
-    let statsData = null;
-    if (isDataAvailable === null || isDataAvailable) {
-      if (resData.data.orderDetailList) {
-        statsData = convertIntoStatisticsData(resData.data.orderDetailList[0]);
-      } else {
-        statsData = convertIntoStatisticsData(resData.data[0]);
-      }
-    } else {
-      statsData = convertIntoStatisticsData({ profit_loss: 0, total_order: 0, Customer_return: 0, Courier_return: 0 });
-    }
-    resData.data = statsData;
+    const { data: resData } = await axiosInstance.get('/sheet-order/order-analytics');
     return successHandler(resData, { showNotification: false });
   } catch (error: any) {
     return errorHandler({ status_message: error.message }, { showNotification: true });

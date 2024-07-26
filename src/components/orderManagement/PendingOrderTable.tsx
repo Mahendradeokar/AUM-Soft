@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { returns } from '@/requests';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { useCustomTable } from '@/hooks/useCustomTable';
+import dayjs from 'dayjs';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
 import { DataTablePagination } from '../table/data-table-pagination';
@@ -25,16 +26,27 @@ export const orderColumns: ColumnDef<Order>[] = [
     header: 'SKU Name',
     accessorKey: 'sku',
   },
+  {
+    header: 'Created',
+    accessorKey: 'created_at',
+    cell: ({ row }) => {
+      const { created_at: createdAt } = row.original;
+      const daysAgo = dayjs().diff(dayjs.unix(createdAt), 'day');
+      return <div>{daysAgo} days ago</div>;
+    },
+  },
 ];
 
 function PendingOrderTable({ marketplaceId }: Props) {
   // Use the useTable hook to create table instance
-  const [completeOrder, setCompleteOrder] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
   const table = useCustomTable({
-    data: completeOrder,
+    data: orders,
     columns: orderColumns,
+    pagination: { state: pagination, onChange: (pagination) => setPagination(pagination) },
   });
 
   useEffect(() => {
@@ -46,7 +58,7 @@ function PendingOrderTable({ marketplaceId }: Props) {
           status: 'pending',
         });
         if (isSuccess) {
-          setCompleteOrder(data);
+          setOrders(data);
         }
 
         setLoading(false);
@@ -65,3 +77,10 @@ function PendingOrderTable({ marketplaceId }: Props) {
 }
 
 export default PendingOrderTable;
+
+/*
+  Search design
+  issue tab
+  message in pending.
+
+*/

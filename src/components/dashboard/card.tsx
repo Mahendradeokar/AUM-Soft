@@ -3,16 +3,25 @@
 /* eslint-disable react/require-default-props */
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { isNegative } from '@/lib/utils';
 import React from 'react';
 
 interface DashCartProps {
   title: string;
-  content?: string;
+  content: number;
+  originalValue: number;
   description?: string;
   Icon?: React.FC | null;
 }
 
-export default function DashCart({ title, content, description, Icon = null }: DashCartProps) {
+function NumberHighlighter({ number, content }: { number: number; content: number }) {
+  if (isNegative(number)) {
+    return <div className="text-2xl font-bold text-red-500">{content}</div>;
+  }
+  return <div className="text-2xl font-bold text-green-500">{content}</div>;
+}
+
+export default function DashCart({ title, content, originalValue, description, Icon = null }: DashCartProps) {
   const handleClick = () => {
     // alert('handle click');
   };
@@ -24,7 +33,9 @@ export default function DashCart({ title, content, description, Icon = null }: D
         {Icon && <Icon />}
       </CardHeader>
       <CardContent className="grid gap-2">
-        <div className="text-2xl font-bold">{content}</div>
+        <div className="text-2xl font-bold">
+          <NumberHighlighter number={originalValue} content={content} />
+        </div>
         <p className="text-xs text-muted-foreground">{description}</p>
       </CardContent>
     </Card>

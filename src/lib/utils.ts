@@ -59,6 +59,19 @@ export const isNegative = (value: string | number) => {
   return value;
 };
 
+export const isZero = (value: string | number) => {
+  const type = typeof value;
+  if (type === 'string') {
+    return Number(value) === 0;
+  }
+
+  if (type === 'number') {
+    return (value as number) === 0;
+  }
+
+  return false;
+};
+
 export function fixedForwardRef<T, P = Record<any, any>>(
   render: (props: P, ref: React.Ref<T>) => React.ReactNode,
 ): (props: P & React.RefAttributes<T>) => React.ReactNode {

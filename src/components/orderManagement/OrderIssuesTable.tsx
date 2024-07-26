@@ -2,13 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { returns } from '@/requests';
-import { ColumnDef, ColumnFiltersState, PaginationState } from '@tanstack/react-table';
+import { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { useCustomTable } from '@/hooks/useCustomTable';
+import dayjs from 'dayjs';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
 import { DataTablePagination } from '../table/data-table-pagination';
-import { DataTableFacetedFilter } from '../table/data-table-faceted-filter';
-import { DataTableSearchBar } from '../table/data-table-searchbar';
 
 type Props = {
   marketplaceId: string | null;
@@ -22,37 +21,39 @@ export const orderColumns: ColumnDef<Order>[] = [
   {
     header: 'Suborder Number',
     accessorKey: 'sub_order_no',
-    enableColumnFilter: true,
-  },
-  {
-    header: 'Type of return',
-    accessorKey: 'order_status',
   },
   {
     header: 'SKU Name',
     accessorKey: 'sku',
   },
   {
-    header: 'Price',
-    accessorKey: 'order_price',
+    header: 'Created',
+    accessorKey: 'created_at',
+    cell: ({ row }) => {
+      const { created_at: createdAt } = row.original;
+      const daysAgo = dayjs().diff(dayjs.unix(createdAt), 'day');
+      return <div>{daysAgo} days ago</div>;
+    },
   },
-  // {
-  //   header: 'Price',
-  //   accessorKey: 'order_price',
-  // },
+  {
+    header: 'Issue',
+    accessorKey: 'issue',
+    cell: ({ row }) => {
+      const { issue } = row.original;
+      return <div>{issue}</div>;
+    },
+  },
 ];
 
-function ReturnOrderTable({ marketplaceId }: Props) {
+function OrderIssuesTable({ marketplaceId }: Props) {
   // Use the useTable hook to create table instance
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(true);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
   const table = useCustomTable({
     data: orders,
     columns: orderColumns,
-    columnFilters: { state: columnFilters, onChange: setColumnFilters },
     pagination: { state: pagination, onChange: (pagination) => setPagination(pagination) },
   });
 
@@ -62,7 +63,7 @@ function ReturnOrderTable({ marketplaceId }: Props) {
       (async () => {
         const { isSuccess, data } = await returns.getReturnOrders({
           accountId: marketplaceId,
-          status: 'return',
+          status: 'pending',
         });
         if (isSuccess) {
           setOrders(data);
@@ -76,22 +77,18 @@ function ReturnOrderTable({ marketplaceId }: Props) {
   }, [marketplaceId]);
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex justify-start gap-1 mt-2">
-        <DataTableSearchBar column={table.getColumn('sub_order_no')} placeholder="Search by suborder number" />
-        <DataTableFacetedFilter
-          column={table.getColumn('order_status')}
-          placeholder="Return type"
-          options={[
-            { label: 'Customer Return', value: 'CustomerReturn' },
-            { label: 'Currier Return', value: 'currierReturn' },
-          ]}
-        />
-      </div>
+    <>
       <HeadlessTable tableInstance={table} isLoading={isLoading} />
       <DataTablePagination table={table} />
-    </div>
+    </>
   );
 }
 
-export default ReturnOrderTable;
+export default OrderIssuesTable;
+
+/*
+  Search design
+  issue tab
+  message in pending.
+
+*/

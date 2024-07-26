@@ -31,7 +31,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
         {table.getColumn('return_type') && (
           <DataTableFacetedFilter
             column={table.getColumn('return_type')}
-            title="Status"
+            placeholder="Status"
             options={Object.values(FLIPKART_STATUS)}
           />
         )}
