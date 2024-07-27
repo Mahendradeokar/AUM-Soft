@@ -4,7 +4,6 @@ import * as React from 'react';
 // import { CalendarIcon } from "@radix-ui/react-icons"
 
 import { cn } from '@/lib/utils';
-import { DateRange } from 'react-day-picker';
 import { format } from 'date-fns';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
@@ -13,7 +12,7 @@ import { CalendarIcon } from 'lucide-react';
 
 interface CalendarDateRangePickerProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
-  date: DateRange;
+  date: Date;
   onSelect: any;
   size?: 'default' | 'sm' | 'lg' | 'icon' | 'xs';
 }
@@ -25,16 +24,8 @@ export default function CalendarDateRangePicker({
   size = 'default',
 }: CalendarDateRangePickerProps) {
   let dateFormat = null;
-  if (date?.from) {
-    if (date.to) {
-      dateFormat = (
-        <>
-          {format(date.from, 'LLL dd, y')} - {format(date.to, 'LLL dd, y')}
-        </>
-      );
-    } else {
-      dateFormat = format(date.from, 'LLL dd, y');
-    }
+  if (date) {
+    dateFormat = format(date, 'LLL dd, y');
   }
 
   return (
@@ -52,14 +43,7 @@ export default function CalendarDateRangePicker({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="end">
-          <Calendar
-            initialFocus
-            mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={onSelect}
-            numberOfMonths={2}
-          />
+          <Calendar initialFocus mode="single" selected={date} onSelect={onSelect} />
         </PopoverContent>
       </Popover>
     </div>

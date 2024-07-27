@@ -4,8 +4,9 @@ import { StatusCodes } from 'http-status-codes';
 import { responseMessage } from './message';
 
 export default function errorHandler(error: any, options = { showNotification: false }) {
-  const { status_message: statusMessage, status_code: statusCode } = error;
-  const message = statusMessage ?? responseMessage[statusCode as any]?.message ?? error.message;
+  const { status_message: statusMessage, status_code: stc } = error;
+  const statusCode: keyof typeof responseMessage = stc;
+  const message: string = statusMessage ?? responseMessage[statusCode]?.message ?? error.message;
 
   const rc = {
     statusMessage,
@@ -14,7 +15,7 @@ export default function errorHandler(error: any, options = { showNotification: f
     data: error.data,
   };
 
-  if (statusCode === StatusCodes.UNAUTHORIZED) {
+  if (statusCode === StatusCodes.UNAUTHORIZED || message.toLowerCase().includes('token expired')) {
     deleteToken();
     window.location.replace('/login');
     return rc;
@@ -23,7 +24,7 @@ export default function errorHandler(error: any, options = { showNotification: f
   if (options.showNotification) {
     toast({
       description: message ?? responseMessage?.default?.message,
-      title: responseMessage[statusCode as any]?.title,
+      title: responseMessage[statusCode]?.title,
       variant: 'destructive',
     });
   }

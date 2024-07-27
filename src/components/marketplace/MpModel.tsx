@@ -32,7 +32,7 @@ export default function APIModel({
   const content = mode === 'edit' ? texts.edit : texts.add;
   return (
     <Modal open={open} setOpen={setOpen} title={content.title} description={content.description}>
-      <APIKeyForm mode={mode} apiKey={apiKey} secret={secret} marketPlace={marketPlace} />
+      <APIKeyForm mode={mode} close={() => setOpen(false)} apiKey={apiKey} secret={secret} marketPlace={marketPlace} />
     </Modal>
   );
 }
