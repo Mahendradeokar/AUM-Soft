@@ -21,13 +21,22 @@ export const uploadReturns = async ({ formData }: { formData: any }) => {
 const getReturnType = (status: Lowercase<ReturnOrderUnionType>) => {
   switch (status) {
     case 'completed':
-      return null;
+      return {
+        status: 'completed',
+        is_return_update: true,
+      };
     case 'pending':
-      return false;
+      return {
+        is_return_update: false,
+      };
     case 'return':
-      return true;
+      return {
+        is_return_update: true,
+      };
     case 'issue_orders':
-      return null;
+      return {
+        is_order_issue: true,
+      };
     default:
       return false;
   }
@@ -36,24 +45,23 @@ const getReturnType = (status: Lowercase<ReturnOrderUnionType>) => {
 export const getReturnOrders = async ({
   accountId,
   status,
-  isOrderIssue,
-}: {
+} // isOrderIssue,
+: {
   accountId: string;
   status: Lowercase<ReturnOrderUnionType>;
   isOrderIssue?: boolean;
 }) => {
   try {
-    const params: {
-      account_id: string;
-      is_return_update?: string;
-      status?: string;
-      is_order_issue?: string;
-    } = { account_id: accountId };
-    const isReturnType = getReturnType(status)?.toString();
+    let params: any = { account_id: accountId };
+    const payload = getReturnType(status);
+    // params.is_return_update = returnType?.toString();
+    // if (status && !returnType) params.status = status;
+    // if (isOrderIssue) params.is_order_issue = isOrderIssue.toString();
 
-    if (isReturnType) params.is_return_update = isReturnType;
-    if (status) params.status = status;
-    if (isOrderIssue) params.is_order_issue = isOrderIssue.toString();
+    params = {
+      ...params,
+      ...payload,
+    };
 
     const { data: resData } = await axiosInstance.get(`/sheet-order/return/`, { params });
     return successHandler(resData, { showNotification: false });
