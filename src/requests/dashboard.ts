@@ -2,9 +2,12 @@ import { axiosInstance } from '@/config';
 import successHandler from './success';
 import errorHandler from './error';
 
-export const getStatisticData = async () => {
+export const getStatisticData = async ({ accountId }: { accountId: string }) => {
   try {
-    const { data: resData } = await axiosInstance.get('/sheet-order/order-analytics');
+    let params: { account_id: string } = { account_id: accountId };
+    const { data: resData } = await axiosInstance.get('/sheet-order/order-analytics', {
+      params,
+    });
     return successHandler(resData, { showNotification: false });
   } catch (error: any) {
     return errorHandler({ status_message: error.message }, { showNotification: true });

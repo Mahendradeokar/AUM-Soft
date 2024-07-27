@@ -2,13 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { returns } from '@/requests';
-import { ColumnDef, ColumnFiltersState, PaginationState } from '@tanstack/react-table';
+import { ColumnDef, ColumnFiltersState } from '@tanstack/react-table';
 import { useCustomTable } from '@/hooks/useCustomTable';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
-import { DataTablePagination } from '../table/data-table-pagination';
 import { DataTableFacetedFilter } from '../table/data-table-faceted-filter';
-import { DataTableSearchBar } from '../table/data-table-searchbar';
+// import { DataTableSearchBar } from '../table/data-table-searchbar';
 import { NumberHighlighter } from '../shared';
 
 type Props = {
@@ -49,13 +48,13 @@ function ReturnOrderTable({ marketplaceId }: Props) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(true);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
+  // const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
   const table = useCustomTable({
     data: orders,
     columns: orderColumns,
     columnFilters: { state: columnFilters, onChange: setColumnFilters },
-    pagination: { state: pagination, onChange: (pagination) => setPagination(pagination) },
+    // pagination: { state: pagination, onChange: (pagination) => setPagination(pagination) },
   });
 
   useEffect(() => {
@@ -80,7 +79,7 @@ function ReturnOrderTable({ marketplaceId }: Props) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex justify-start gap-1 mt-2">
-        <DataTableSearchBar column={table.getColumn('sub_order_no')} placeholder="Search by suborder number" />
+        {/* <DataTableSearchBar column={table.getColumn('sub_order_no')} placeholder="Search by suborder number" /> */}
         <DataTableFacetedFilter
           column={table.getColumn('order_status')}
           placeholder="Return type"
@@ -91,7 +90,7 @@ function ReturnOrderTable({ marketplaceId }: Props) {
         />
       </div>
       <HeadlessTable tableInstance={table} isLoading={isLoading} />
-      <DataTablePagination table={table} />
+      {/* <DataTablePagination table={table} /> */}
     </div>
   );
 }

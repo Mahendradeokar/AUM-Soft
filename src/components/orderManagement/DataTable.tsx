@@ -6,37 +6,38 @@ import PendingOrderTable from './PendingOrderTable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import ReturnOrderTable from './ReturnOrderTable';
 import OrderIssuesTable from './OrderIssuesTable';
+import { ReturnOrderUnionType } from '../../../types';
 
-type TabName = 'completeOrders' | 'pendingOrders' | 'scannedOrders' | 'orderIssues';
+type TabName = ReturnOrderUnionType;
 type Props = {
   marketplaceId: string | null;
 };
 
 export default function DataTable({ marketplaceId }: Props) {
-  const [activeTab, setActiveTab] = useState<TabName>('completeOrders');
+  const [activeTab, setActiveTab] = useState<TabName>('COMPLETED');
   return (
     <Tabs
-      defaultValue="completeOrders"
+      defaultValue="COMPLETED"
       className="w-full"
       value={activeTab}
       onValueChange={(value) => setActiveTab(value as TabName)}
     >
       <TabsList>
-        <TabsTrigger value="completeOrders">Completed Orders</TabsTrigger>
-        <TabsTrigger value="returnOrders">Returned Orders</TabsTrigger>
-        <TabsTrigger value="pendingOrders">Pending Orders</TabsTrigger>
-        <TabsTrigger value="orderIssues">Order Issues</TabsTrigger>
+        <TabsTrigger value="COMPLETED">Completed Orders</TabsTrigger>
+        <TabsTrigger value="RETURNED">Returned Orders</TabsTrigger>
+        <TabsTrigger value="PENDING">Pending Orders</TabsTrigger>
+        <TabsTrigger value="ISSUE_ORDERS">Order Issues</TabsTrigger>
       </TabsList>
-      <TabsContent value="completeOrders">
+      <TabsContent value="COMPLETED">
         <CompleteOrderTable marketplaceId={marketplaceId} />
       </TabsContent>
-      <TabsContent value="returnOrders">
+      <TabsContent value="RETURNED">
         <ReturnOrderTable marketplaceId={marketplaceId} />
       </TabsContent>
-      <TabsContent value="pendingOrders">
+      <TabsContent value="PENDING">
         <PendingOrderTable marketplaceId={marketplaceId} />
       </TabsContent>
-      <TabsContent value="orderIssues">
+      <TabsContent value="ISSUE_ORDERS">
         <OrderIssuesTable marketplaceId={marketplaceId} />
       </TabsContent>
     </Tabs>

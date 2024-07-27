@@ -26,6 +26,8 @@ const getReturnType = (status: Lowercase<ReturnOrderUnionType>) => {
       return false;
     case 'return':
       return true;
+    case 'issue_orders':
+      return null;
     default:
       return false;
   }
@@ -34,20 +36,26 @@ const getReturnType = (status: Lowercase<ReturnOrderUnionType>) => {
 export const getReturnOrders = async ({
   accountId,
   status,
+  isOrderIssue,
 }: {
   accountId: string;
   status: Lowercase<ReturnOrderUnionType>;
+  isOrderIssue?: boolean;
 }) => {
   try {
-    const params = new URLSearchParams();
-    params.set('account_id', accountId);
+    const params: {
+      account_id: string;
+      is_return_update?: string;
+      status?: string;
+      is_order_issue?: string;
+    } = { account_id: accountId };
     const isReturnType = getReturnType(status)?.toString();
 
-    if (isReturnType) params.set('is_return_update', isReturnType);
+    if (isReturnType) params.is_return_update = isReturnType;
+    if (status) params.status = status;
+    if (isOrderIssue) params.is_order_issue = isOrderIssue.toString();
 
-    if (status) params.set('status', status);
-
-    const { data: resData } = await axiosInstance.get(`/sheet-order/return/?${params.toString()}`);
+    const { data: resData } = await axiosInstance.get(`/sheet-order/return/`, { params });
     return successHandler(resData, { showNotification: false });
   } catch (error: any) {
     // eslint-disable-next-line no-console

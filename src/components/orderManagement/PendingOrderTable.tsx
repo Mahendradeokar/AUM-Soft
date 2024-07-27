@@ -2,12 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { returns } from '@/requests';
-import { ColumnDef, PaginationState } from '@tanstack/react-table';
+import { ColumnDef } from '@tanstack/react-table';
 import { useCustomTable } from '@/hooks/useCustomTable';
 import dayjs from 'dayjs';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
-import { DataTablePagination } from '../table/data-table-pagination';
 
 type Props = {
   marketplaceId: string | null;
@@ -41,12 +40,12 @@ function PendingOrderTable({ marketplaceId }: Props) {
   // Use the useTable hook to create table instance
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(true);
-  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
+  // const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
   const table = useCustomTable({
     data: orders,
     columns: orderColumns,
-    pagination: { state: pagination, onChange: (pagination) => setPagination(pagination) },
+    // pagination: { state: pagination, onChange: (pagination) => setPagination(pagination) },
   });
 
   useEffect(() => {
@@ -71,7 +70,7 @@ function PendingOrderTable({ marketplaceId }: Props) {
   return (
     <>
       <HeadlessTable tableInstance={table} isLoading={isLoading} />
-      <DataTablePagination table={table} />
+      {/* <DataTablePagination table={table} /> */}
     </>
   );
 }

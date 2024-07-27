@@ -94,8 +94,8 @@ export default function Statistics() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      // const flipkartBy = searchParam.has('mp') ? searchParam.get('mp')! : 'All';
-      const { data, isSuccess } = await dashboard.getStatisticData();
+      const accountId = searchParam.has('mp') ? searchParam.get('mp')! : 'All';
+      const { data, isSuccess } = await dashboard.getStatisticData({ accountId });
       if (isSuccess) {
         setStatisticData(data ?? {});
       }

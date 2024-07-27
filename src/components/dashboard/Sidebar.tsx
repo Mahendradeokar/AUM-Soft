@@ -33,7 +33,10 @@ export default function Sidebar({ className }: SidebarProps) {
     <div className={cn('bg-zing-900 relative', className)}>
       <div
         id="sidebar"
-        className="space-y-4 flex flex-col py-6 px-2 h-[100%] transition-all duration-700 ease-in-out transform border-r"
+        className={cn(
+          'space-y-4 flex flex-col py-6 px-2 h-[100%] transition-all duration-700 ease-in-out transform border-r',
+          isSidebarOpen ? 'w-60' : 'w-16',
+        )}
       >
         <Button
           asChild
