@@ -1,7 +1,7 @@
 import { axiosInstance } from '@/config';
 import successHandler from './success';
 import errorHandler from './error';
-import { ReturnOrderUnionType } from '../../types';
+import type { OrderReturnTypeUnion, ReturnOrderUnionType } from '../../types';
 
 export const uploadReturns = async ({ formData }: { formData: any }) => {
   try {
@@ -18,7 +18,10 @@ export const uploadReturns = async ({ formData }: { formData: any }) => {
   }
 };
 
-const getPayloadData = (status: Lowercase<ReturnOrderUnionType>) => {
+const getPayloadData = (
+  status: Lowercase<ReturnOrderUnionType>,
+  { returnType }: { returnType?: OrderReturnTypeUnion },
+) => {
   switch (status) {
     case 'completed':
       return {
@@ -32,6 +35,7 @@ const getPayloadData = (status: Lowercase<ReturnOrderUnionType>) => {
     case 'return':
       return {
         is_return_update: true,
+        status: returnType,
       };
     case 'issue_orders':
       return {
@@ -45,13 +49,15 @@ const getPayloadData = (status: Lowercase<ReturnOrderUnionType>) => {
 export const getReturnOrders = async ({
   accountId,
   status,
+  returnType,
 }: {
   accountId: string;
   status: Lowercase<ReturnOrderUnionType>;
+  returnType?: OrderReturnTypeUnion;
 }) => {
   try {
     let params: any = { account_id: accountId };
-    const payload = getPayloadData(status);
+    const payload = getPayloadData(status, { returnType });
 
     params = {
       ...params,
@@ -71,7 +77,7 @@ export const sendScanOrder = async ({
   orderId, // returnType,
 }: {
   orderId: string;
-  // returnType: ReturnTypeUnion | null | undefined;
+  returnType: OrderReturnTypeUnion | null | undefined;
 }) => {
   try {
     const { data: resData } = await axiosInstance.put(
