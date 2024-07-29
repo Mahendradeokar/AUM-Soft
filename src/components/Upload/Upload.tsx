@@ -58,7 +58,7 @@ export function UploadOrders({ openMp, closeModal }: { openMp: () => void; close
 
   const onFileUpload = useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
-      const allowedExtensions = ['xls', 'xlsx' /* 'csv', 'pdf' */];
+      const allowedExtensions = ['pdf'];
 
       if (e.target.files?.[0]) {
         const file = e.target.files[0];
