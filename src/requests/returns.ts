@@ -18,7 +18,7 @@ export const uploadReturns = async ({ formData }: { formData: any }) => {
   }
 };
 
-const getReturnType = (status: Lowercase<ReturnOrderUnionType>) => {
+const getPayloadData = (status: Lowercase<ReturnOrderUnionType>) => {
   switch (status) {
     case 'completed':
       return {
@@ -45,18 +45,13 @@ const getReturnType = (status: Lowercase<ReturnOrderUnionType>) => {
 export const getReturnOrders = async ({
   accountId,
   status,
-} // isOrderIssue,
-: {
+}: {
   accountId: string;
   status: Lowercase<ReturnOrderUnionType>;
-  isOrderIssue?: boolean;
 }) => {
   try {
     let params: any = { account_id: accountId };
-    const payload = getReturnType(status);
-    // params.is_return_update = returnType?.toString();
-    // if (status && !returnType) params.status = status;
-    // if (isOrderIssue) params.is_order_issue = isOrderIssue.toString();
+    const payload = getPayloadData(status);
 
     params = {
       ...params,

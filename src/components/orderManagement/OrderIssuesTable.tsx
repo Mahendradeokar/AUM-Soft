@@ -63,7 +63,6 @@ function OrderIssuesTable({ marketplaceId }: Props) {
         const { isSuccess, data } = await returns.getReturnOrders({
           accountId: marketplaceId,
           status: 'issue_orders',
-          isOrderIssue: true,
         });
         if (isSuccess) {
           setOrders(data);
