@@ -28,7 +28,10 @@ function ArrowLeftWide() {
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export default function Sidebar({ className }: SidebarProps) {
-  const [isSidebarOpen, setIsSidebarOpen] = useLocalStorage(SIDEBAR_LOCAL_STORAGE_KEY, true);
+  const [isSidebarOpen, setIsSidebarOpen] = useLocalStorage(SIDEBAR_LOCAL_STORAGE_KEY, true, {
+    initializeWithValue: true,
+  });
+
   return (
     <div className={cn('bg-zing-900 relative', className)}>
       <div

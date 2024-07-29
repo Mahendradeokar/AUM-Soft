@@ -9,6 +9,8 @@ import HeadlessTable from '../shared/HeadlessTable';
 import { DataTableFacetedFilter } from '../table/data-table-faceted-filter';
 // import { DataTableSearchBar } from '../table/data-table-searchbar';
 import { NumberHighlighter } from '../shared';
+import type { OrderReturnTypeUnion } from '../../../types';
+import { OrderReturnType } from '../../../types';
 
 type Props = {
   marketplaceId: string | null;
@@ -59,11 +61,13 @@ function ReturnOrderTable({ marketplaceId }: Props) {
 
   useEffect(() => {
     if (marketplaceId) {
+      const [filterReturnType] = (table.getColumn('order_status')?.getFilterValue() as OrderReturnTypeUnion[]) ?? [];
       setLoading(true);
       (async () => {
         const { isSuccess, data } = await returns.getReturnOrders({
           accountId: marketplaceId,
           status: 'return',
+          returnType: filterReturnType ?? undefined,
         });
         if (isSuccess) {
           setOrders(data);
@@ -74,7 +78,7 @@ function ReturnOrderTable({ marketplaceId }: Props) {
     } else {
       setLoading(false);
     }
-  }, [marketplaceId]);
+  }, [marketplaceId, columnFilters, table]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -84,8 +88,8 @@ function ReturnOrderTable({ marketplaceId }: Props) {
           column={table.getColumn('order_status')}
           placeholder="Return type"
           options={[
-            { label: 'Customer Return', value: 'CustomerReturn' },
-            { label: 'Currier Return', value: 'currierReturn' },
+            { label: 'Customer Return', value: OrderReturnType.CUSTOMER },
+            { label: 'Currier Return', value: OrderReturnType.CURRIER },
           ]}
         />
       </div>
