@@ -77,7 +77,7 @@ export const sendScanOrder = async ({
   orderId, // returnType,
 }: {
   orderId: string;
-  returnType: OrderReturnTypeUnion | null | undefined;
+  returnType?: OrderReturnTypeUnion | null | undefined;
 }) => {
   try {
     const { data: resData } = await axiosInstance.put(
