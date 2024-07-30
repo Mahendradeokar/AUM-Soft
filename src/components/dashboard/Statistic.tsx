@@ -58,7 +58,7 @@ const convertIntoStatisticsData = ({
       title: 'Return Loss',
       icon: TrendingDown,
       originalValue: totalCustomerReturnLoss,
-      content: isZero(totalCustomerReturnLoss) ? `₹${totalCustomerReturnLoss}` : `₹-${totalCustomerReturnLoss}`,
+      content: isZero(totalCustomerReturnLoss) ? `₹${totalCustomerReturnLoss}` : `₹${totalCustomerReturnLoss}`,
       description: `Your total return loss are ${totalCustomerReturnLoss} till now`,
     },
     {

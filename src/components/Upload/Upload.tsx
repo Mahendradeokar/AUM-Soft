@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { reloadSite } from '@/lib/utils';
 import { toast } from '../ui/use-toast';
 import { Loader } from '../shared';
 
@@ -51,6 +52,7 @@ export function UploadOrders({ openMp, closeModal }: { openMp: () => void; close
           variant: 'success',
         });
         closeModal();
+        reloadSite();
       }
     },
     [sheet, closeModal, form],
@@ -225,6 +227,7 @@ export function UploadPaymentSheet({ openMp, closeModal }: { openMp: () => void;
           variant: 'success',
         });
         closeModal();
+        reloadSite();
       }
     },
     [sheet, closeModal, form],

@@ -29,15 +29,34 @@ export const orderColumns: ColumnDef<Order>[] = [
   {
     header: 'Type of return',
     accessorKey: 'order_status',
+    cell: ({ row }) => {
+      const status = row.original.order_status ?? '-:-';
+      return <span>{status}</span>;
+    },
   },
   {
     header: 'SKU Name',
     accessorKey: 'sku',
   },
   {
+    header: 'Courier Partner',
+    accessorKey: 'courier',
+  },
+  {
+    header: 'Supplier Name',
+    accessorKey: 'supplier_name',
+  },
+  {
     header: 'Price',
     accessorKey: 'order_price',
-    cell: ({ row }) => <NumberHighlighter number={row.original.order_price} content={row.original.order_price} />,
+    cell: ({ row }) => {
+      const price = Number(row.original.order_price);
+
+      if (typeof price === null || price === undefined || Number.isNaN(price)) {
+        return <span>-:-</span>;
+      }
+      return <NumberHighlighter number={price} content={price} />;
+    },
   },
   // {
   //   header: 'Price',

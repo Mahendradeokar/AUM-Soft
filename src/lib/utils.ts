@@ -77,3 +77,9 @@ export function fixedForwardRef<T, P = Record<any, any>>(
 ): (props: P & React.RefAttributes<T>) => React.ReactNode {
   return forwardRef(render) as any;
 }
+
+export function reloadSite() {
+  if (window) {
+    window.location.reload();
+  }
+}

@@ -30,8 +30,12 @@ export const orderColumns: ColumnDef<Order>[] = [
     accessorKey: 'sku',
   },
   {
-    header: 'Price',
-    accessorKey: 'order_price',
+    header: 'Courier Partner',
+    accessorKey: 'courier',
+  },
+  {
+    header: 'Supplier Name',
+    accessorKey: 'supplier_name',
   },
 ];
 

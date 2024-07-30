@@ -23,25 +23,35 @@ export default function ScanReturns() {
 
   const barcodeInputRef = useRef<HTMLInputElement>(null);
 
-  const handleOnScan = useCallback(async (barcode: string) => {
-    const { isSuccess, data } = await returns.sendScanOrder({ orderId: barcode });
-    if (isSuccess) {
-      setScannedOrder((prev) => {
-        return [...prev, data];
-      });
-      setOrderCont((prev) => {
-        return {
-          totalReturnOrders: prev.totalReturnOrders + 1,
-          totalOrders: prev.totalOrders - 1,
-        };
-      });
-    }
-  }, []);
+  const addOrderInReverse = useCallback(
+    (order: Order) => {
+      const data = structuredClone(scannedOrder);
+      data.unshift(order);
+      setScannedOrder(data);
+    },
+    [scannedOrder],
+  );
+
+  const handleOnScan = useCallback(
+    async (barcode: string) => {
+      const { isSuccess, data } = await returns.sendScanOrder({ orderId: barcode });
+      if (isSuccess) {
+        addOrderInReverse(data);
+        setOrderCont((prev) => {
+          return {
+            totalReturnOrders: prev.totalReturnOrders + 1,
+            totalOrders: prev.totalOrders - 1,
+          };
+        });
+      }
+    },
+    [addOrderInReverse],
+  );
 
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { isSuccess, data } = await general.getOrderCounts();
+      const { isSuccess, data } = await general.getOrderCounts({ accountId: 'all' });
       const [countData] = data;
       const { totalOrder, totalReturn } = countData ?? {};
       const counts = { totalReturnOrders: totalReturn ?? 0, totalOrders: totalOrder ?? 0 };

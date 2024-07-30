@@ -26,7 +26,6 @@ const getPayloadData = (
     case 'completed':
       return {
         status: 'completed',
-        is_return_update: true,
       };
     case 'pending':
       return {
