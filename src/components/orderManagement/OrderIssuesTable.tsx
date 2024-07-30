@@ -26,6 +26,14 @@ export const orderColumns: ColumnDef<Order>[] = [
     accessorKey: 'sku',
   },
   {
+    header: 'Courier Partner',
+    accessorKey: 'courier',
+  },
+  {
+    header: 'Supplier Name',
+    accessorKey: 'supplier_name',
+  },
+  {
     header: 'Created',
     accessorKey: 'created_at',
     cell: ({ row }) => {

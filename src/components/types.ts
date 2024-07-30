@@ -7,4 +7,5 @@ export interface Order {
   created_at: number;
   issue: string;
   order_price: number;
+  order_status: string;
 }
