@@ -5,21 +5,46 @@ import { general, returns } from '@/requests';
 import ShowCounts from './ShowCount';
 import { Order } from '../types';
 import { useBarcodeScanner } from './hooks';
-import { Loader } from '../shared';
+import { Loader, Modal } from '../shared';
 import ScannerButton from './ScannerStatus';
 import ScanOrderTable from './ScanTable';
 import ScanInput from './ScanInput';
+import { ScanForm } from './ScanForm';
+import { toast } from '../ui/use-toast';
 
 // interface OrderManageProps {
 //   // selectedReturnType: ReturnTypeUnion | undefined | null;
 //   // formData.marketplaceName: string | null;
 // }
 
+function ScanFormModal({
+  isOpen,
+  setOpen,
+  onDataChange,
+}: {
+  isOpen: boolean;
+  setOpen: (a: any) => void;
+  onDataChange: (a: any) => void;
+}) {
+  return (
+    <Modal open={isOpen} setOpen={setOpen} title="Scan Options" description="Select the account here.">
+      <ScanForm
+        setFormData={(value) => {
+          onDataChange(value);
+          setOpen(false);
+        }}
+      />
+    </Modal>
+  );
+}
+
 // TODO:- Refactor this in create seperate component for count and button and table. And place them in root component.
 export default function ScanReturns() {
   const [scannedOrder, setScannedOrder] = useState<Order[]>([]);
   const [orderCount, setOrderCont] = useState({ totalReturnOrders: 0, totalOrders: 0 });
   const [isLoading, setLoading] = useState(true);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [formData, setFormData] = useState<{ marketplaceId: string | null }>({ marketplaceId: null });
 
   const barcodeInputRef = useRef<HTMLInputElement>(null);
 
@@ -34,7 +59,14 @@ export default function ScanReturns() {
 
   const handleOnScan = useCallback(
     async (barcode: string) => {
-      const { isSuccess, data } = await returns.sendScanOrder({ orderId: barcode });
+      if (!formData?.marketplaceId) {
+        toast({
+          title: 'Please click on start scanning and select the page.',
+          variant: 'destructive',
+        });
+        return;
+      }
+      const { isSuccess, data } = await returns.sendScanOrder({ orderId: barcode, accountId: formData?.marketplaceId });
       if (isSuccess) {
         addOrderInReverse(data);
         setOrderCont((prev) => {
@@ -45,7 +77,7 @@ export default function ScanReturns() {
         });
       }
     },
-    [addOrderInReverse],
+    [addOrderInReverse, formData?.marketplaceId],
   );
 
   useEffect(() => {
@@ -65,6 +97,14 @@ export default function ScanReturns() {
   }, []);
 
   const { isScanning, startScan, isInit } = useBarcodeScanner(barcodeInputRef, handleOnScan);
+
+  const onFormDataUpdate = (value: { [key: string]: string }) => {
+    if (value.marketplaceId) {
+      setFormData(value as any);
+      startScan();
+    }
+  };
+
   return (
     <div className="hidden h-full flex-1 flex-col space-y-8 py-8 md:flex">
       {isLoading ? (
@@ -74,9 +114,14 @@ export default function ScanReturns() {
         <ShowCounts currentCount={orderCount.totalReturnOrders} totalCount={orderCount.totalOrders} />
       )}
 
-      <ScanInput ref={barcodeInputRef} placeholder="Scan or enter Order Id..." />
+      <ScanInput ref={barcodeInputRef} placeholder="Scan or enter AWB Id..." />
 
-      <ScannerButton className="m-auto" isInit={isInit} isScanning={isScanning} startScan={startScan} />
+      <ScannerButton
+        className="m-auto"
+        isInit={isInit}
+        isScanning={isScanning}
+        startScan={isInit ? startScan : () => setModalOpen(true)}
+      />
 
       {/* <p className="text-foreground text-center">Please Select the Return type</p> */}
       <div className="flex items-center justify-between space-y-2">
@@ -88,6 +133,7 @@ export default function ScanReturns() {
       </div>
 
       <ScanOrderTable data={scannedOrder} />
+      <ScanFormModal isOpen={isModalOpen} setOpen={setModalOpen} onDataChange={onFormDataUpdate} />
     </div>
   );
 }

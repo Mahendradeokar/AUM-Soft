@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { returns } from '@/requests';
+// import { returns } from '@/requests';
 import { ColumnDef, ColumnFiltersState } from '@tanstack/react-table';
 import { useCustomTable } from '@/hooks/useCustomTable';
 import { Order } from '../types';
@@ -9,7 +9,7 @@ import HeadlessTable from '../shared/HeadlessTable';
 import { DataTableFacetedFilter } from '../table/data-table-faceted-filter';
 // import { DataTableSearchBar } from '../table/data-table-searchbar';
 import { NumberHighlighter } from '../shared';
-import type { OrderReturnTypeUnion } from '../../../types';
+// import type { OrderReturnTypeUnion } from '../../../types';
 import { OrderReturnType } from '../../../types';
 
 type Props = {
@@ -66,8 +66,8 @@ export const orderColumns: ColumnDef<Order>[] = [
 
 function ReturnOrderTable({ marketplaceId }: Props) {
   // Use the useTable hook to create table instance
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [isLoading, setLoading] = useState(true);
+  const [orders] = useState<Order[]>([]);
+  const [isLoading, setLoading] = useState(false);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   // const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
@@ -80,17 +80,17 @@ function ReturnOrderTable({ marketplaceId }: Props) {
 
   useEffect(() => {
     if (marketplaceId) {
-      const [filterReturnType] = (table.getColumn('order_status')?.getFilterValue() as OrderReturnTypeUnion[]) ?? [];
-      setLoading(true);
+      // const [filterReturnType] = (table.getColumn('order_status')?.getFilterValue() as OrderReturnTypeUnion[]) ?? [];
+      // setLoading(true);
       (async () => {
-        const { isSuccess, data } = await returns.getReturnOrders({
-          accountId: marketplaceId,
-          status: 'return',
-          returnType: filterReturnType ?? undefined,
-        });
-        if (isSuccess) {
-          setOrders(data);
-        }
+        // const { isSuccess, data } = await returns.getReturnOrders({
+        //   accountId: marketplaceId,
+        //   status: 'return',
+        //   returnType: filterReturnType ?? undefined,
+        // });
+        // if (isSuccess) {
+        //   setOrders(data);
+        // }
 
         setLoading(false);
       })();
@@ -112,7 +112,7 @@ function ReturnOrderTable({ marketplaceId }: Props) {
           ]}
         />
       </div>
-      <HeadlessTable tableInstance={table} isLoading={isLoading} />
+      <HeadlessTable tableInstance={table} isLoading={isLoading} noFountMessage="Work in progress." />
       {/* <DataTablePagination table={table} /> */}
     </div>
   );

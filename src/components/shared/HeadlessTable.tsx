@@ -5,10 +5,11 @@ import { Loader } from '.';
 
 interface HeadlessTableProps<T> {
   tableInstance: ReturnType<typeof useReactTable<T>>;
+  noFountMessage?: string;
   isLoading: boolean;
 }
 
-function HeadlessTable<T>({ tableInstance, isLoading }: HeadlessTableProps<T>) {
+function HeadlessTable<T>({ tableInstance, isLoading, noFountMessage }: HeadlessTableProps<T>) {
   if (isLoading) {
     return <Loader className="h-16" />;
   }
@@ -44,7 +45,7 @@ function HeadlessTable<T>({ tableInstance, isLoading }: HeadlessTableProps<T>) {
             ) : (
               <TableRow>
                 <TableCell colSpan={tableInstance.getAllColumns().length} className="h-24 text-center">
-                  No data available
+                  {noFountMessage ?? 'No data available'}
                 </TableCell>
               </TableRow>
             )}
