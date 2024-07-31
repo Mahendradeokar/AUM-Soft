@@ -15,12 +15,11 @@ import { Button } from '../ui/button';
  *
  */
 const formSchema = z.object({
-  marketplaceName: z.string().min(1, { message: 'Marketplace is required' }),
+  marketplaceId: z.string().min(1, { message: 'Marketplace is required' }),
 });
 
 interface ScanFormProps {
-  openMp: () => void;
-  setFormData: (state: { marketplaceName: string }) => void;
+  setFormData: (state: { marketplaceId: string }) => void;
 }
 
 export function ScanForm({ setFormData }: ScanFormProps) {
@@ -32,7 +31,7 @@ export function ScanForm({ setFormData }: ScanFormProps) {
 
   const onSubmit = useCallback(
     async (value: z.infer<typeof formSchema>) => {
-      setFormData({ marketplaceName: value.marketplaceName });
+      setFormData({ marketplaceId: value.marketplaceId });
     },
     [setFormData],
   );
@@ -55,7 +54,7 @@ export function ScanForm({ setFormData }: ScanFormProps) {
         ) : (
           <FormField
             control={form.control}
-            name="marketplaceName"
+            name="marketplaceId"
             render={({ field }) => (
               <FormItem>
                 <Select onValueChange={field.onChange} value={field.value}>
@@ -80,7 +79,7 @@ export function ScanForm({ setFormData }: ScanFormProps) {
         )}
 
         <Button
-          disabled={isLoading || form.formState.isSubmitting}
+          // disabled={isLoading || form.formState.isSubmitting}
           isLoading={form.formState.isSubmitting}
           className="w-full"
           type="submit"
