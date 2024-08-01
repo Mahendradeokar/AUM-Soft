@@ -83,3 +83,12 @@ export function reloadSite() {
     window.location.reload();
   }
 }
+
+export function sortArrayOfObjectsByKey(arr: any[], key: string) {
+  return arr.sort((a, b) => {
+    if (a[key] && b[key]) {
+      return a[key].localeCompare(b[key]);
+    }
+    return 0;
+  });
+}

@@ -44,7 +44,7 @@ function ScanOrderTable<T extends Order>({ data, isLoading = false }: Props<T>) 
     data,
     columns: orderColumns,
   });
-  return <HeadlessTable tableInstance={table} isLoading={isLoading} />;
+  return <HeadlessTable tableInstance={table} isLoading={isLoading} noFountMessage="Work in Progress" />;
 }
 
 export default ScanOrderTable;

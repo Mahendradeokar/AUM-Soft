@@ -17,7 +17,7 @@ import {
 import { CheckIcon } from 'lucide-react';
 import { CaretSortIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 import { marketplace } from '@/requests';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import AddMarketPlace from './AddMarketPlace';
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
@@ -49,6 +49,7 @@ export default function MarketPlaceSwitcher({ className, onSelectChange }: Marke
   const [isPopoverOpen, setPopoverOpen] = React.useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const searchParam = useSearchParams();
 
   const [marketPlaceData, setMarketPlaceData] = React.useState<{ label: string; accounts: Account[] }[]>([
     {
@@ -64,16 +65,16 @@ export default function MarketPlaceSwitcher({ className, onSelectChange }: Marke
 
   const [isMarketplaceOpen, setMarketplaceOpen] = React.useState(false);
 
-  React.useEffect(() => {
-    if (onSelectChange) {
-      onSelectChange(selectedAccount.value);
+  if (searchParam.has('mp')) {
+    const querySelectedMp = searchParam.get('mp');
+    if (querySelectedMp !== selectedAccount.value) {
       const searchParam = new URLSearchParams();
-      searchParam.set('mp', selectedAccount.value ?? '');
+      searchParam.set('mp', 'all');
       const currentUrl = `${pathname}?${searchParam.toString()}`;
+      setSelectedAccount({ label: 'All', value: 'all' });
       router.push(currentUrl);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onSelectChange]);
+  }
 
   const onSelect = (account: Account) => {
     setSelectedAccount(account);
@@ -82,10 +83,21 @@ export default function MarketPlaceSwitcher({ className, onSelectChange }: Marke
       onSelectChange(account.value);
     }
     const searchParam = new URLSearchParams();
-    searchParam.set('mp', account.value ?? '');
+    searchParam.set('mp', account.value ?? 'all');
     const currentUrl = `${pathname}?${searchParam.toString()}`;
     router.push(currentUrl);
   };
+
+  React.useEffect(() => {
+    if (onSelectChange) {
+      onSelectChange(selectedAccount.value);
+      const searchParam = new URLSearchParams();
+      searchParam.set('mp', selectedAccount.value ?? 'all');
+      const currentUrl = `${pathname}?${searchParam.toString()}`;
+      router.push(currentUrl);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onSelectChange]);
 
   React.useEffect(() => {
     (async () => {

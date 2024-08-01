@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Loader } from '@/components/shared';
 import { useSearchParams } from 'next/navigation';
 import { isNegative, isZero } from '@/lib/utils';
-import { ClipboardCheck, IndianRupee, RotateCcw, TrendingDown } from 'lucide-react';
+import { ClipboardCheck, CornerDownLeft, IndianRupee, TrendingDown } from 'lucide-react';
 import DashCart from './card';
 
 interface StatsType {
@@ -50,7 +50,7 @@ const convertIntoStatisticsData = ({
       title: 'Total Orders',
       icon: ClipboardCheck,
       originalValue: totalOrder,
-      content: `#${totalOrder}`,
+      content: `${totalOrder}`,
       description: `Your total order are ${totalOrder} till now`,
     },
     {
@@ -64,8 +64,8 @@ const convertIntoStatisticsData = ({
     {
       id: 4,
       title: 'Total Return',
-      icon: RotateCcw,
-      content: `↩ ${totalReturn}`,
+      icon: CornerDownLeft,
+      content: `${totalReturn}`,
       originalValue: totalReturn,
       description: `Customer Return is ${totalCustomerReturn} & Currier Return is ${totalCurrieReturn}`,
     },
@@ -94,7 +94,7 @@ export default function Statistics() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const accountId = searchParam.has('mp') ? searchParam.get('mp')! : 'All';
+      const accountId = searchParam.has('mp') ? searchParam.get('mp')! : 'all';
       const { data, isSuccess } = await dashboard.getStatisticData({ accountId });
       if (isSuccess) {
         setStatisticData(data ?? {});
