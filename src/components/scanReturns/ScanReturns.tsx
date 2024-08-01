@@ -40,7 +40,7 @@ function ScanFormModal({
 
 // TODO:- Refactor this in create seperate component for count and button and table. And place them in root component.
 export default function ScanReturns() {
-  const [scannedOrder, setScannedOrder] = useState<Order[]>([]);
+  const [scannedOrder] = useState<Order[]>([]);
   const [orderCount, setOrderCont] = useState({ totalReturnOrders: 0, totalOrders: 0 });
   const [isLoading, setLoading] = useState(true);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -48,14 +48,14 @@ export default function ScanReturns() {
 
   const barcodeInputRef = useRef<HTMLInputElement>(null);
 
-  const addOrderInReverse = useCallback(
-    (order: Order) => {
-      const data = structuredClone(scannedOrder);
-      data.unshift(order);
-      setScannedOrder(data);
-    },
-    [scannedOrder],
-  );
+  // const addOrderInReverse = useCallback(
+  //   (order: Order) => {
+  //     const data = structuredClone(scannedOrder);
+  //     data.unshift(order);
+  //     setScannedOrder(data);
+  //   },
+  //   [scannedOrder],
+  // );
 
   const handleOnScan = useCallback(
     async (barcode: string) => {
@@ -66,9 +66,9 @@ export default function ScanReturns() {
         });
         return;
       }
-      const { isSuccess, data } = await returns.sendScanOrder({ orderId: barcode, accountId: formData?.marketplaceId });
+      const { isSuccess } = await returns.sendScanOrder({ orderId: barcode, accountId: formData?.marketplaceId });
       if (isSuccess) {
-        addOrderInReverse(data);
+        // addOrderInReverse(data);
         setOrderCont((prev) => {
           return {
             totalReturnOrders: prev.totalReturnOrders + 1,
@@ -77,7 +77,7 @@ export default function ScanReturns() {
         });
       }
     },
-    [addOrderInReverse, formData?.marketplaceId],
+    [formData?.marketplaceId],
   );
 
   useEffect(() => {

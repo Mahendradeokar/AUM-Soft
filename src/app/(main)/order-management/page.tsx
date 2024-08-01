@@ -7,7 +7,7 @@ import { DashboardTable } from '@/components/orderManagement';
 import { useState } from 'react';
 
 export default function OrderManagement() {
-  const [marketplaceId, setMarketplaceId] = useState<string | null>('');
+  const [marketplaceId, setMarketplaceId] = useState<string | null>('all');
   return (
     <>
       <div className="flex justify-between h-16 items-center">
