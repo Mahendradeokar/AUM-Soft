@@ -65,17 +65,6 @@ export default function MarketPlaceSwitcher({ className, onSelectChange }: Marke
 
   const [isMarketplaceOpen, setMarketplaceOpen] = React.useState(false);
 
-  if (searchParam.has('mp')) {
-    const querySelectedMp = searchParam.get('mp');
-    if (querySelectedMp !== selectedAccount.value) {
-      const searchParam = new URLSearchParams();
-      searchParam.set('mp', 'all');
-      const currentUrl = `${pathname}?${searchParam.toString()}`;
-      setSelectedAccount({ label: 'All', value: 'all' });
-      router.push(currentUrl);
-    }
-  }
-
   const onSelect = (account: Account) => {
     setSelectedAccount(account);
     setPopoverOpen(false);
@@ -136,6 +125,18 @@ export default function MarketPlaceSwitcher({ className, onSelectChange }: Marke
       })();
     }
   }, [isPopoverOpen]);
+
+  React.useEffect(() => {
+    if (searchParam.has('mp')) {
+      const querySelectedMp = searchParam.get('mp');
+      if (querySelectedMp !== selectedAccount.value) {
+        const searchParam = new URLSearchParams();
+        searchParam.set('mp', selectedAccount.value ?? 'all');
+        const currentUrl = `${pathname}?${searchParam.toString()}`;
+        router.push(currentUrl);
+      }
+    }
+  }, [searchParam, router, pathname, selectedAccount.value]);
 
   return (
     <>

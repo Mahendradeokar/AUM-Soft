@@ -104,7 +104,7 @@ export default function Statistics() {
   }, [searchParam]);
 
   if (isLoading) {
-    return <Loader className="h-auto col-span-full row-span-full " />;
+    return <Loader className="h-auto col-span-full row-span-full" />;
   }
 
   return convertIntoStatisticsData(statisticData).map((stats: any) => (
