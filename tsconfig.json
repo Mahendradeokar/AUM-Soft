@@ -35,9 +35,9 @@
     "**/*..mjs",
     ".next/types/**/*.ts",
     ".prettierrc",
-    "postcss.config.js" ,
+    "postcss.config.js",
     "/.eslintrc.json",
-   ],
+  ],
   "exclude": [
     "node_modules"
   ]

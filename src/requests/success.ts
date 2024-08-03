@@ -2,7 +2,8 @@ import { toast } from '@/components/ui/use-toast';
 import { responseMessage } from './message';
 
 export default function successHandler(res: any, options = { showNotification: false }) {
-  const { status_message: statusMessage, status_code: statusCode } = res;
+  const { status_message: statusMessage, status_code: stc } = res;
+  const statusCode: keyof typeof responseMessage = stc;
   const message = statusMessage ?? responseMessage[statusCode];
 
   if (options.showNotification) {

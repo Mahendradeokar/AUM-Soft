@@ -63,3 +63,5 @@ export const orderFields: any = {
   return_type: { name: 'Status', id: 'return_type' },
   shopsy_order: { name: 'Shopsy Order', id: 'shopsy_order' },
 };
+
+export const SIDEBAR_LOCAL_STORAGE_KEY = 'SB.L.S.K';

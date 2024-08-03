@@ -24,14 +24,14 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
         <CalendarDateRangePicker
           className="min-w-[15rem]"
           size="sm"
-          date={dateColumn?.getFilterValue() as { from: Date; to: Date }}
+          date={dateColumn?.getFilterValue() as Date}
           onSelect={dateColumn?.setFilterValue}
         />
 
         {table.getColumn('return_type') && (
           <DataTableFacetedFilter
             column={table.getColumn('return_type')}
-            title="Status"
+            placeholder="Status"
             options={Object.values(FLIPKART_STATUS)}
           />
         )}

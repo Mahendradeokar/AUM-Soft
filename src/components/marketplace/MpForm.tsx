@@ -11,8 +11,7 @@ import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { toast } from '@/components/ui/use-toast';
 import { MARKETPLACE_TYPE } from '@/common/constants';
-import { useRouter } from 'next/navigation';
-import { getFbOauthUrl } from '@/config/flipkart';
+import { marketplace } from '@/requests';
 
 const formSchema = z.object({
   marketPlace: z.string().min(1, 'Please select the marketplace.'),
@@ -31,9 +30,9 @@ const formSchema = z.object({
 // }
 
 const marketplaceOptions = [
-  { name: 'Flipkart', value: MARKETPLACE_TYPE.flipkart, isDisable: false },
+  { name: 'Flipkart', value: MARKETPLACE_TYPE.flipkart, isDisable: true },
   { name: 'Amazon', value: MARKETPLACE_TYPE.amazon, isDisable: true },
-  { name: 'Meesho', value: MARKETPLACE_TYPE.meesho, isDisable: true },
+  { name: 'Meesho', value: MARKETPLACE_TYPE.meesho, isDisable: false },
 ];
 
 export type Mode = 'edit' | 'create';
@@ -46,8 +45,7 @@ interface IAPIKeyFormProps {
   close?: () => void;
 }
 
-function APIKeyForm({ mode = 'create', marketPlace = null }: IAPIKeyFormProps) {
-  const router = useRouter();
+function APIKeyForm({ mode = 'create', marketPlace = null, close }: IAPIKeyFormProps) {
   const defaultValues = {
     // apiKey: mode === 'edit' ? apiKey : '',
     // apiSecret: mode === 'edit' ? secret : '',
@@ -74,17 +72,12 @@ function APIKeyForm({ mode = 'create', marketPlace = null }: IAPIKeyFormProps) {
       });
     }
 
-    const jsonString = JSON.stringify(reqData);
-    const redirectURL = getFbOauthUrl(encodeURIComponent(jsonString));
-    if (redirectURL) {
-      router.push(redirectURL);
+    const { isSuccess } = await marketplace.addMarketplace(reqData);
+    if (isSuccess) {
+      form.reset();
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      close && close();
     }
-    // const { isSuccess } = await marketplace.addMarketplace(reqData);
-    // if (isSuccess) {
-    //   form.reset();
-    //   // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    //   close && close();
-    // }
     return null;
   };
 

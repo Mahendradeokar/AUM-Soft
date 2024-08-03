@@ -1,25 +1,30 @@
 import { DashboardIcon, PersonIcon } from '@radix-ui/react-icons';
-import { KeyRoundIcon, Lock } from 'lucide-react';
+import { KeyRoundIcon, Lock, ScanLineIcon } from 'lucide-react';
 
 export const navigationLinks = {
   dashboard: {
     label: 'Dashboard',
     Icon: DashboardIcon,
-    link: '/',
+    link: '/order-management',
   },
-  profile: {
-    label: 'Profile',
-    Icon: PersonIcon,
-    link: '/profile',
+  scanOrder: {
+    label: 'Scan Returns',
+    Icon: ScanLineIcon,
+    link: '/scan-returns',
+  },
+  settings: {
+    label: 'Settings',
+    Icon: KeyRoundIcon,
+    link: '/settings',
   },
   changePassword: {
     label: 'Change Password',
     Icon: Lock,
     link: '/change-password',
   },
-  marketplaceSettings: {
-    label: 'Marketplace Settings',
-    Icon: KeyRoundIcon,
-    link: '/mpsetting',
+  profile: {
+    label: 'Profile',
+    Icon: PersonIcon,
+    link: '/profile',
   },
 };
