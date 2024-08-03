@@ -128,6 +128,7 @@ export default function MarketPlaceSwitcher({ className, onSelectChange }: Marke
 
   React.useEffect(() => {
     if (searchParam.has('mp')) {
+      // Will keep the query and state in sync.
       const querySelectedMp = searchParam.get('mp');
       if (querySelectedMp !== selectedAccount.value) {
         const searchParam = new URLSearchParams();
