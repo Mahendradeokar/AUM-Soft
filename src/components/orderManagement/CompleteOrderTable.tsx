@@ -2,18 +2,15 @@
 
 import React, { useEffect, useState } from 'react';
 import { returns } from '@/requests';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { useCustomTable } from '@/hooks/useCustomTable';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
 import { NumberHighlighter } from '../shared';
+import { DataTablePagination } from '../table/data-table-pagination';
 
 // Define column interface
 export const orderColumns: ColumnDef<Order>[] = [
-  {
-    header: 'Sr No.',
-    accessorFn: (_, index) => index + 1,
-  },
   {
     header: 'Suborder Number',
     accessorKey: 'sub_order_no',
@@ -37,10 +34,14 @@ function CompleteOrderTable({ marketplaceId }: Props) {
   // Use the useTable hook to create table instance
   const [completeOrder, setCompleteOrder] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
+  const [totalPage, setTotalPage] = useState<number>(-1);
 
   const table = useCustomTable({
     data: completeOrder,
     columns: orderColumns,
+    pagination: { state: pagination, onChange: (pagination) => setPagination(pagination) },
+    pageCount: totalPage,
   });
 
   useEffect(() => {
@@ -50,9 +51,11 @@ function CompleteOrderTable({ marketplaceId }: Props) {
         const { isSuccess, data } = await returns.getReturnOrders({
           accountId: marketplaceId,
           status: 'completed',
+          pagination,
         });
         if (isSuccess) {
-          setCompleteOrder(data);
+          setCompleteOrder(data.orders);
+          setTotalPage(data.pageCount);
         }
 
         setLoading(false);
@@ -60,9 +63,14 @@ function CompleteOrderTable({ marketplaceId }: Props) {
     } else {
       setLoading(false);
     }
-  }, [marketplaceId]);
+  }, [marketplaceId, pagination]);
 
-  return <HeadlessTable tableInstance={table} isLoading={isLoading} />;
+  return (
+    <div className="space-y-2">
+      <HeadlessTable tableInstance={table} isLoading={isLoading} />
+      <DataTablePagination table={table} />
+    </div>
+  );
 }
 
 export default CompleteOrderTable;

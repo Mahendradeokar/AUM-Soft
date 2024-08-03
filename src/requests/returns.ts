@@ -1,4 +1,5 @@
 import { axiosInstance } from '@/config';
+import { PaginationState } from '@tanstack/react-table';
 import successHandler from './success';
 import errorHandler from './error';
 import type { OrderReturnTypeUnion, ReturnOrderUnionType } from '../../types';
@@ -49,13 +50,20 @@ export const getReturnOrders = async ({
   accountId,
   status,
   returnType,
+  pagination = { pageIndex: 0, pageSize: 10 },
 }: {
   accountId: string;
   status: Lowercase<ReturnOrderUnionType>;
   returnType?: OrderReturnTypeUnion;
+  pagination?: PaginationState;
 }) => {
   try {
     let params: any = { account_id: accountId };
+    if (pagination) {
+      params.limit = pagination.pageSize;
+      params.offset = pagination.pageIndex;
+    }
+
     const payload = getPayloadData(status, { returnType });
 
     params = {

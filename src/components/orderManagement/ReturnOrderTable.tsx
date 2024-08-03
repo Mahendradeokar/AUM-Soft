@@ -2,25 +2,21 @@
 
 import React, { useEffect, useState } from 'react';
 // import { returns } from '@/requests';
-import { ColumnDef, ColumnFiltersState } from '@tanstack/react-table';
+import { ColumnDef, ColumnFiltersState, PaginationState } from '@tanstack/react-table';
 import { useCustomTable } from '@/hooks/useCustomTable';
 import { Order } from '../types';
-import HeadlessTable from '../shared/HeadlessTable';
+import HeadlessTable, { HighlighterNumberCell } from '../shared/HeadlessTable';
 import { DataTableFacetedFilter } from '../table/data-table-faceted-filter';
 // import { DataTableSearchBar } from '../table/data-table-searchbar';
-import { NumberHighlighter } from '../shared';
 // import type { OrderReturnTypeUnion } from '../../../types';
 import { OrderReturnType } from '../../../types';
+import { DataTablePagination } from '../table/data-table-pagination';
 
 type Props = {
   marketplaceId: string | null;
 };
 
 export const orderColumns: ColumnDef<Order>[] = [
-  {
-    header: 'Sr No.',
-    accessorFn: (_, index) => index + 1,
-  },
   {
     header: 'Suborder Number',
     accessorKey: 'sub_order_no',
@@ -49,14 +45,7 @@ export const orderColumns: ColumnDef<Order>[] = [
   {
     header: 'Price',
     accessorKey: 'order_price',
-    cell: ({ row }) => {
-      const price = Number(row.original.order_price);
-
-      if (typeof price === null || price === undefined || Number.isNaN(price)) {
-        return <span>-:-</span>;
-      }
-      return <NumberHighlighter number={price} content={price} />;
-    },
+    cell: HighlighterNumberCell('order_price'),
   },
   // {
   //   header: 'Price',
@@ -69,13 +58,15 @@ function ReturnOrderTable({ marketplaceId }: Props) {
   const [orders] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  // const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
+  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
+  const [totalPage] = useState<number>(-1);
 
   const table = useCustomTable({
     data: orders,
     columns: orderColumns,
     columnFilters: { state: columnFilters, onChange: setColumnFilters },
-    // pagination: { state: pagination, onChange: (pagination) => setPagination(pagination) },
+    pagination: { state: pagination, onChange: (pagination) => setPagination(pagination) },
+    pageCount: totalPage,
   });
 
   useEffect(() => {
@@ -89,7 +80,8 @@ function ReturnOrderTable({ marketplaceId }: Props) {
         //   returnType: filterReturnType ?? undefined,
         // });
         // if (isSuccess) {
-        //   setOrders(data);
+        //   setOrders(data.orders);
+        //   setTotalPage(data.pageCount)
         // }
 
         setLoading(false);
@@ -112,8 +104,10 @@ function ReturnOrderTable({ marketplaceId }: Props) {
           ]}
         />
       </div>
-      <HeadlessTable tableInstance={table} isLoading={isLoading} noFountMessage="Work in progress." />
-      {/* <DataTablePagination table={table} /> */}
+      <div className="space-y-2">
+        <HeadlessTable tableInstance={table} isLoading={isLoading} noFountMessage="Work in progress." />
+        <DataTablePagination table={table} />
+      </div>
     </div>
   );
 }

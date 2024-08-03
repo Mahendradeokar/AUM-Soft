@@ -87,7 +87,7 @@ export function reloadSite() {
 export function sortArrayOfObjectsByKey(arr: any[], key: string) {
   return arr.sort((a, b) => {
     if (a[key] && b[key]) {
-      return a[key].localeCompare(b[key]);
+      return a[key][0].localeCompare(b[key]);
     }
     return 0;
   });

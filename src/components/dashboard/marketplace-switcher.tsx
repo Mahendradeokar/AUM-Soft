@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
+import { cn, sortArrayOfObjectsByKey } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import {
@@ -100,7 +100,7 @@ export default function MarketPlaceSwitcher({ className, onSelectChange }: Marke
         return;
       }
 
-      const accounts = extractMPData(data);
+      const accounts = sortArrayOfObjectsByKey(extractMPData(data), 'label');
       setMarketPlaceData((prev) => {
         const updated = [...prev];
         updated[0].accounts = [...accounts];

@@ -8,4 +8,5 @@ export interface Order {
   issue: string;
   order_price: number;
   order_status: string;
+  order_date: string;
 }
