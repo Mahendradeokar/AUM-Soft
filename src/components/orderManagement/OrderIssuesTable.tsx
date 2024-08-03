@@ -2,21 +2,18 @@
 
 import React, { useEffect, useState } from 'react';
 import { returns } from '@/requests';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { useCustomTable } from '@/hooks/useCustomTable';
 import dayjs from 'dayjs';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
+import { DataTablePagination } from '../table/data-table-pagination';
 
 type Props = {
   marketplaceId: string | null;
 };
 
 export const orderColumns: ColumnDef<Order>[] = [
-  {
-    header: 'Sr No.',
-    accessorFn: (_, index) => index + 1,
-  },
   {
     header: 'Suborder Number',
     accessorKey: 'sub_order_no',
@@ -56,12 +53,14 @@ function OrderIssuesTable({ marketplaceId }: Props) {
   // Use the useTable hook to create table instance
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(true);
-  // const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
+  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
+  const [totalPage, setTotalPage] = useState<number>(-1);
 
   const table = useCustomTable({
     data: orders,
     columns: orderColumns,
-    // pagination: { state: pagination, onChange: (pagination) => setPagination(pagination) },
+    pagination: { state: pagination, onChange: (pagination) => setPagination(pagination) },
+    pageCount: totalPage,
   });
 
   useEffect(() => {
@@ -71,9 +70,11 @@ function OrderIssuesTable({ marketplaceId }: Props) {
         const { isSuccess, data } = await returns.getReturnOrders({
           accountId: marketplaceId,
           status: 'issue_orders',
+          pagination,
         });
         if (isSuccess) {
-          setOrders(data);
+          setOrders(data.orders);
+          setTotalPage(data.pageCount);
         }
 
         setLoading(false);
@@ -81,13 +82,13 @@ function OrderIssuesTable({ marketplaceId }: Props) {
     } else {
       setLoading(false);
     }
-  }, [marketplaceId]);
+  }, [marketplaceId, pagination]);
 
   return (
-    <>
+    <div className="space-y-2">
       <HeadlessTable tableInstance={table} isLoading={isLoading} />
-      {/* <DataTablePagination table={table} /> */}
-    </>
+      <DataTablePagination table={table} />
+    </div>
   );
 }
 
