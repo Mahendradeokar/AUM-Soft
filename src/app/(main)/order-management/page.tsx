@@ -2,8 +2,8 @@
 
 import { MarketPlaceSwitcher, Statistics } from '@/components/dashboard';
 import UploadOrdersBtn from '@/components/dashboard/UploadOrdersBtn';
-import UploadReturnBtn from '@/components/dashboard/uploadReturn';
-import UploadPaymentBtn from '@/components/dashboard/UploadReturnBtn';
+import UploadReturnBtn from '@/components/dashboard/uploadReturnBtn';
+import UploadPaymentBtn from '@/components/dashboard/UploadPaymentBtn';
 import { DashboardTable } from '@/components/orderManagement';
 import { useState } from 'react';
 

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { marketplace, mock, orders, payment } from '@/requests';
+import { marketplace, orders, payment, returns } from '@/requests';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -396,7 +396,7 @@ export function UploadReturnSheet({ openMp, closeModal }: { openMp: () => void; 
       formData.append('payment_sheet', sheet);
       formData.append('account_name', value.marketplaceName);
       // formData.append('sheet_start_date', String(startDate));
-      const { isSuccess } = await mock.api({ formData });
+      const { isSuccess } = await returns.upload({ formData });
       if (isSuccess) {
         toast({
           description: 'Payment sheet uploaded  successfully!',
