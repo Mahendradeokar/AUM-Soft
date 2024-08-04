@@ -6,6 +6,7 @@ import { uploadOrders } from './orders';
 import { getReturnOrders, sendScanOrder, uploadReturns } from './returns';
 import { uploadPaymentSheet } from './payment';
 import { getOrderCounts } from './general';
+import { mockApiRequest } from './mock';
 
 export const auth = {
   login,
@@ -53,4 +54,8 @@ export const payment = {
 
 export const general = {
   getOrderCounts,
+};
+
+export const mock = {
+  api: mockApiRequest,
 };
