@@ -1,20 +1,62 @@
 'use client';
 
-import { useState } from 'react';
+import { ComponentProps, useState } from 'react';
+import { objectEntities } from '@/lib/utils';
 import CompleteOrderTable from './CompleteOrderTable';
 import PendingOrderTable from './PendingOrderTable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import ReturnOrderTable from './ReturnOrderTable';
 import OrderIssuesTable from './OrderIssuesTable';
 import { ReturnOrderUnionType } from '../../../types';
+import { Badge } from '../ui/badge';
 
 type TabName = ReturnOrderUnionType;
 type Props = {
   marketplaceId: string | null;
 };
 
+type CountDetailsState = { tab: TabName; count: number };
+
+function DisplayCount({ children }: ComponentProps<'div'>) {
+  return (
+    <Badge variant="outline" className="dark:text-primary dark:border-primary bg-primary text-white dark:bg-secondary">
+      {children}
+    </Badge>
+  );
+}
+
+const renderTabTriggers = ({ orderCountDetails }: { orderCountDetails: CountDetailsState }) => {
+  const config: Partial<Record<TabName, { label: string }>> = {
+    COMPLETED: {
+      label: 'Completed Orders',
+    },
+    RETURN: {
+      label: 'Returned Orders',
+    },
+    PENDING: {
+      label: 'Pending Orders',
+    },
+    ISSUE_ORDERS: {
+      label: 'Order Issues',
+    },
+  };
+
+  return objectEntities(config).map(([key, value]) => {
+    return (
+      <TabsTrigger value={key}>
+        <span>{value?.label}</span>
+        {orderCountDetails.tab === key && <DisplayCount>{orderCountDetails.count}</DisplayCount>}
+      </TabsTrigger>
+    );
+  });
+};
+
 export default function DataTable({ marketplaceId }: Props) {
   const [activeTab, setActiveTab] = useState<TabName>('COMPLETED');
+  const [totalOrderCountDetails, setTotalOrderCountDetails] = useState<CountDetailsState>({
+    tab: 'COMPLETED',
+    count: 0,
+  });
   return (
     <Tabs
       defaultValue="COMPLETED"
@@ -22,23 +64,31 @@ export default function DataTable({ marketplaceId }: Props) {
       value={activeTab}
       onValueChange={(value) => setActiveTab(value as TabName)}
     >
-      <TabsList>
-        <TabsTrigger value="COMPLETED">Completed Orders</TabsTrigger>
-        <TabsTrigger value="RETURNED">Returned Orders</TabsTrigger>
-        <TabsTrigger value="PENDING">Pending Orders</TabsTrigger>
-        <TabsTrigger value="ISSUE_ORDERS">Order Issues</TabsTrigger>
-      </TabsList>
+      {/* // TODO Make this dyanamic render */}
+      <TabsList>{renderTabTriggers({ orderCountDetails: totalOrderCountDetails })}</TabsList>
       <TabsContent value="COMPLETED">
-        <CompleteOrderTable marketplaceId={marketplaceId} />
+        <CompleteOrderTable
+          marketplaceId={marketplaceId}
+          setOrderCount={(count) => setTotalOrderCountDetails({ count, tab: 'COMPLETED' })}
+        />
       </TabsContent>
-      <TabsContent value="RETURNED">
-        <ReturnOrderTable marketplaceId={marketplaceId} />
+      <TabsContent value="RETURN">
+        <ReturnOrderTable
+          marketplaceId={marketplaceId}
+          setOrderCount={(count) => setTotalOrderCountDetails({ count, tab: 'RETURN' })}
+        />
       </TabsContent>
       <TabsContent value="PENDING">
-        <PendingOrderTable marketplaceId={marketplaceId} />
+        <PendingOrderTable
+          marketplaceId={marketplaceId}
+          setOrderCount={(count) => setTotalOrderCountDetails({ count, tab: 'PENDING' })}
+        />
       </TabsContent>
       <TabsContent value="ISSUE_ORDERS">
-        <OrderIssuesTable marketplaceId={marketplaceId} />
+        <OrderIssuesTable
+          marketplaceId={marketplaceId}
+          setOrderCount={(count) => setTotalOrderCountDetails({ count, tab: 'ISSUE_ORDERS' })}
+        />
       </TabsContent>
     </Tabs>
   );

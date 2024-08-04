@@ -13,10 +13,9 @@ import { NumberHighlighter } from '../shared';
 // import type { OrderReturnTypeUnion } from '../../../types';
 import { OrderReturnType, OrderReturnTypeUnion } from '../../../types';
 import { DataTablePagination } from '../table/data-table-pagination';
+import { OrderTableProps } from './type';
 
-type Props = {
-  marketplaceId: string | null;
-};
+interface Props extends OrderTableProps {}
 
 export const orderColumns: ColumnDef<Order>[] = [
   {

@@ -7,6 +7,7 @@ import { useCustomTable } from '@/hooks/useCustomTable';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
 import { NumberHighlighter } from '../shared';
+import { OrderTableProps } from './type';
 
 // Define column interface
 export const orderColumns: ColumnDef<Order>[] = [
@@ -29,9 +30,7 @@ export const orderColumns: ColumnDef<Order>[] = [
   },
 ];
 
-type Props = {
-  marketplaceId: string | null;
-};
+interface Props extends OrderTableProps {}
 
 function CompleteOrderTable({ marketplaceId }: Props) {
   // Use the useTable hook to create table instance

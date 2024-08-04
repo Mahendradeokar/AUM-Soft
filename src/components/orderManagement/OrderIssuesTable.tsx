@@ -7,10 +7,9 @@ import { useCustomTable } from '@/hooks/useCustomTable';
 import dayjs from 'dayjs';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
+import { OrderTableProps } from './type';
 
-type Props = {
-  marketplaceId: string | null;
-};
+interface Props extends OrderTableProps {}
 
 export const orderColumns: ColumnDef<Order>[] = [
   {

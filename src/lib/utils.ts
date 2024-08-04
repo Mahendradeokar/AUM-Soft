@@ -92,3 +92,7 @@ export function sortArrayOfObjectsByKey(arr: any[], key: string) {
     return 0;
   });
 }
+
+export const objectEntities = <TData extends Record<any, any>>(obj: {
+  [K in keyof TData]: TData[K];
+}): [keyof TData, TData[keyof TData]][] => Object.entries(obj) as [keyof TData, TData[keyof TData]][];
