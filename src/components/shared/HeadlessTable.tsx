@@ -49,7 +49,7 @@ function HeadlessTable<T>({ tableInstance, isLoading, noFountMessage }: Headless
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={tableInstance.getAllColumns().length} className="h-24 text-center">
+                <TableCell colSpan={tableInstance.getAllColumns().length + 1} className="h-24 text-center">
                   {noFountMessage ?? 'No data available'}
                 </TableCell>
               </TableRow>
