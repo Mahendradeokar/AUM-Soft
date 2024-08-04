@@ -4,12 +4,13 @@ import React, { useEffect, useState } from 'react';
 // import { returns } from '@/requests';
 import { ColumnDef, ColumnFiltersState, PaginationState } from '@tanstack/react-table';
 import { useCustomTable } from '@/hooks/useCustomTable';
+import { returns } from '@/requests';
 import { Order } from '../types';
 import HeadlessTable, { HighlighterNumberCell } from '../shared/HeadlessTable';
 import { DataTableFacetedFilter } from '../table/data-table-faceted-filter';
 // import { DataTableSearchBar } from '../table/data-table-searchbar';
 // import type { OrderReturnTypeUnion } from '../../../types';
-import { OrderReturnType } from '../../../types';
+import { OrderReturnType, OrderReturnTypeUnion } from '../../../types';
 import { DataTablePagination } from '../table/data-table-pagination';
 
 type Props = {
@@ -55,11 +56,11 @@ export const orderColumns: ColumnDef<Order>[] = [
 
 function ReturnOrderTable({ marketplaceId }: Props) {
   // Use the useTable hook to create table instance
-  const [orders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
-  const [totalPage] = useState<number>(-1);
+  const [totalPage, setTotalPage] = useState<number>(-1);
 
   const table = useCustomTable({
     data: orders,
@@ -71,18 +72,18 @@ function ReturnOrderTable({ marketplaceId }: Props) {
 
   useEffect(() => {
     if (marketplaceId) {
-      // const [filterReturnType] = (table.getColumn('order_status')?.getFilterValue() as OrderReturnTypeUnion[]) ?? [];
-      // setLoading(true);
+      const [filterReturnType] = (table.getColumn('order_status')?.getFilterValue() as OrderReturnTypeUnion[]) ?? [];
+      setLoading(true);
       (async () => {
-        // const { isSuccess, data } = await returns.getReturnOrders({
-        //   accountId: marketplaceId,
-        //   status: 'return',
-        //   returnType: filterReturnType ?? undefined,
-        // });
-        // if (isSuccess) {
-        //   setOrders(data.orders);
-        //   setTotalPage(data.pageCount)
-        // }
+        const { isSuccess, data } = await returns.getReturnOrders({
+          accountId: marketplaceId,
+          status: 'return',
+          returnType: filterReturnType ?? undefined,
+        });
+        if (isSuccess) {
+          setOrders(data.order);
+          setTotalPage(data.pageCount);
+        }
 
         setLoading(false);
       })();
@@ -104,10 +105,8 @@ function ReturnOrderTable({ marketplaceId }: Props) {
           ]}
         />
       </div>
-      <div className="space-y-2">
-        <HeadlessTable tableInstance={table} isLoading={isLoading} noFountMessage="Work in progress." />
-        <DataTablePagination table={table} />
-      </div>
+      <HeadlessTable tableInstance={table} isLoading={isLoading} noFountMessage="Work in progress." />
+      <DataTablePagination table={table} />
     </div>
   );
 }
