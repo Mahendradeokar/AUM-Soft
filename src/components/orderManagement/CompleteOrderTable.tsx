@@ -54,8 +54,8 @@ function CompleteOrderTable({ marketplaceId }: Props) {
           pagination,
         });
         if (isSuccess) {
-          setCompleteOrder(data.orders);
-          setTotalPage(data.pageCount);
+          setCompleteOrder(data.data);
+          setTotalPage(Math.ceil(data.count / pagination.pageSize));
         }
 
         setLoading(false);

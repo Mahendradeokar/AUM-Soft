@@ -65,8 +65,8 @@ function PendingOrderTable({ marketplaceId }: Props) {
           pagination,
         });
         if (isSuccess) {
-          setOrders(data.orders);
-          setTotalPage(data.pageCount);
+          setOrders(data.data);
+          setTotalPage(Math.ceil(data.count / pagination.pageSize));
         }
 
         setLoading(false);

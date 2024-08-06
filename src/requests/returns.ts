@@ -61,7 +61,7 @@ export const getReturnOrders = async ({
     let params: any = { account_id: accountId };
     if (pagination) {
       params.limit = pagination.pageSize;
-      params.offset = pagination.pageIndex;
+      params.offset = pagination.pageIndex + 1;
     }
 
     const payload = getPayloadData(status, { returnType });
