@@ -11,4 +11,5 @@ export interface Order {
   order_date: string;
   return_currier_partner: string;
   awb_number: string;
+  courier: string;
 }
