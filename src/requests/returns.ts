@@ -61,7 +61,7 @@ export const getReturnOrders = async ({
     let params: any = { account_id: accountId };
     if (pagination) {
       params.limit = pagination.pageSize;
-      params.offset = pagination.pageIndex;
+      params.offset = pagination.pageIndex + 1;
     }
 
     const payload = getPayloadData(status, { returnType });
@@ -82,15 +82,15 @@ export const getReturnOrders = async ({
 
 export const sendScanOrder = async ({
   orderId, // returnType,
-  accountId,
-}: {
+} // accountId,
+: {
   orderId: string;
   returnType?: OrderReturnTypeUnion | null | undefined;
-  accountId: string;
+  // accountId: string;
 }) => {
   try {
     const { data: resData } = await axiosInstance.put(`sheet-order/update`, {
-      account_id: accountId,
+      // account_id: accountId,
       order_id: orderId,
     });
     return successHandler(resData, { showNotification: false });

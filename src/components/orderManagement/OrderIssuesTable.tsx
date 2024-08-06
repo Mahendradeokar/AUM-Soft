@@ -8,10 +8,9 @@ import dayjs from 'dayjs';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
 import { DataTablePagination } from '../table/data-table-pagination';
+import { OrderTableProps } from './type';
 
-type Props = {
-  marketplaceId: string | null;
-};
+interface Props extends OrderTableProps {}
 
 export const orderColumns: ColumnDef<Order>[] = [
   {
@@ -49,7 +48,7 @@ export const orderColumns: ColumnDef<Order>[] = [
   },
 ];
 
-function OrderIssuesTable({ marketplaceId }: Props) {
+function OrderIssuesTable({ marketplaceId, setOrderCount }: Props) {
   // Use the useTable hook to create table instance
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(true);
@@ -73,8 +72,9 @@ function OrderIssuesTable({ marketplaceId }: Props) {
           pagination,
         });
         if (isSuccess) {
-          setOrders(data.orders);
-          setTotalPage(data.pageCount);
+          setOrders(data.data);
+          setTotalPage(Math.ceil(data.count / pagination.pageSize));
+          setOrderCount(data.count);
         }
 
         setLoading(false);
@@ -82,7 +82,7 @@ function OrderIssuesTable({ marketplaceId }: Props) {
     } else {
       setLoading(false);
     }
-  }, [marketplaceId, pagination]);
+  }, [marketplaceId, pagination, setOrderCount]);
 
   return (
     <div className="space-y-2">

@@ -1,4 +1,4 @@
-export type ModalType = 'order' | 'marketplace' | 'payment'; // Define types for data
+export type ModalType = 'order' | 'marketplace' | 'payment' | 'return'; // Define types for data
 
 export interface Order {
   _id: string;
@@ -9,4 +9,6 @@ export interface Order {
   order_price: number;
   order_status: string;
   order_date: string;
+  return_currier_partner: string;
+  awb_number: string;
 }
