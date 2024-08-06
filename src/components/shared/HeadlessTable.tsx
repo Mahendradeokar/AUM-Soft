@@ -1,7 +1,8 @@
 import React from 'react';
-import { flexRender, useReactTable } from '@tanstack/react-table';
+import { CellContext, flexRender, useReactTable } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
-import { Loader } from '.';
+import { Loader, NumberHighlighter } from '.';
+import { Order } from '../types';
 
 interface HeadlessTableProps<T> {
   tableInstance: ReturnType<typeof useReactTable<T>>;
@@ -14,6 +15,8 @@ function HeadlessTable<T>({ tableInstance, isLoading, noFountMessage }: Headless
     return <Loader className="h-16" />;
   }
 
+  const { pageIndex, pageSize } = tableInstance.getState().pagination ?? { pageIndex: 0, pageSize: 0 };
+  const serialNumberStartFrom = pageIndex * pageSize + 1;
   return (
     <div className="space-y-4">
       <div className="rounded-md border relative">
@@ -21,6 +24,7 @@ function HeadlessTable<T>({ tableInstance, isLoading, noFountMessage }: Headless
           <TableHeader>
             {tableInstance.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
+                <TableHead>Sr No</TableHead>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
@@ -33,9 +37,10 @@ function HeadlessTable<T>({ tableInstance, isLoading, noFountMessage }: Headless
           </TableHeader>
           <TableBody>
             {tableInstance.getRowModel().rows?.length ? (
-              tableInstance.getRowModel().rows.map((row) => {
+              tableInstance.getRowModel().rows.map((row, index) => {
                 return (
                   <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                    <TableCell>{serialNumberStartFrom + index}</TableCell>
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                     ))}
@@ -44,7 +49,7 @@ function HeadlessTable<T>({ tableInstance, isLoading, noFountMessage }: Headless
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={tableInstance.getAllColumns().length} className="h-24 text-center">
+                <TableCell colSpan={tableInstance.getAllColumns().length + 1} className="h-24 text-center">
                   {noFountMessage ?? 'No data available'}
                 </TableCell>
               </TableRow>
@@ -57,3 +62,14 @@ function HeadlessTable<T>({ tableInstance, isLoading, noFountMessage }: Headless
 }
 
 export default HeadlessTable;
+
+export const HighlighterNumberCell = (fieldName: keyof Order) => {
+  return function ({ row }: CellContext<Order, unknown>) {
+    const price = Number(row.original[fieldName]);
+
+    if (typeof price === null || price === undefined || Number.isNaN(price)) {
+      return <span>-:-</span>;
+    }
+    return <NumberHighlighter number={price} content={price} />;
+  };
+};

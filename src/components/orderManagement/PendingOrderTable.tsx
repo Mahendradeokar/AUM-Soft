@@ -2,20 +2,17 @@
 
 import React, { useEffect, useState } from 'react';
 import { returns } from '@/requests';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { useCustomTable } from '@/hooks/useCustomTable';
 import dayjs from 'dayjs';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
+import { DataTablePagination } from '../table/data-table-pagination';
 import { OrderTableProps } from './type';
 
 interface Props extends OrderTableProps {}
 
 export const orderColumns: ColumnDef<Order>[] = [
-  {
-    header: 'Sr No.',
-    accessorFn: (_, index) => index + 1,
-  },
   {
     header: 'Suborder Number',
     accessorKey: 'sub_order_no',
@@ -30,10 +27,14 @@ export const orderColumns: ColumnDef<Order>[] = [
   },
   {
     header: 'Created',
-    accessorKey: 'created_at',
+    accessorKey: 'order_date',
     cell: ({ row }) => {
-      const { created_at: createdAt } = row.original;
-      const daysAgo = dayjs().diff(dayjs.unix(createdAt), 'day');
+      const { order_date: createdAt } = row.original;
+      const createdDate = dayjs.unix(Number(createdAt));
+      const daysAgo = dayjs().diff(createdDate, 'day');
+      if (daysAgo > 5) {
+        return <span>{createdDate.format('D MMMM')}</span>;
+      }
       return <span>{daysAgo} days ago</span>;
     },
   },
@@ -43,12 +44,14 @@ function PendingOrderTable({ marketplaceId }: Props) {
   // Use the useTable hook to create table instance
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(true);
-  // const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
+  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
+  const [totalPage, setTotalPage] = useState<number>(-1);
 
   const table = useCustomTable({
     data: orders,
     columns: orderColumns,
-    // pagination: { state: pagination, onChange: (pagination) => setPagination(pagination) },
+    pagination: { state: pagination, onChange: (pagination) => setPagination(pagination) },
+    pageCount: totalPage,
   });
 
   useEffect(() => {
@@ -58,9 +61,11 @@ function PendingOrderTable({ marketplaceId }: Props) {
         const { isSuccess, data } = await returns.getReturnOrders({
           accountId: marketplaceId,
           status: 'pending',
+          pagination,
         });
         if (isSuccess) {
-          setOrders(data);
+          setOrders(data.data);
+          setTotalPage(Math.ceil(data.count / pagination.pageSize));
         }
 
         setLoading(false);
@@ -68,13 +73,13 @@ function PendingOrderTable({ marketplaceId }: Props) {
     } else {
       setLoading(false);
     }
-  }, [marketplaceId]);
+  }, [marketplaceId, pagination]);
 
   return (
-    <>
+    <div className="space-y-2">
       <HeadlessTable tableInstance={table} isLoading={isLoading} />
-      {/* <DataTablePagination table={table} /> */}
-    </>
+      <DataTablePagination table={table} />
+    </div>
   );
 }
 

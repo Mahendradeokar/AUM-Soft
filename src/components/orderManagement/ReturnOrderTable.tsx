@@ -5,23 +5,20 @@ import React, { useEffect, useState } from 'react';
 import { ColumnDef, ColumnFiltersState, PaginationState } from '@tanstack/react-table';
 import { useCustomTable } from '@/hooks/useCustomTable';
 import { returns } from '@/requests';
+
 import { Order } from '../types';
-import HeadlessTable from '../shared/HeadlessTable';
+import HeadlessTable, { HighlighterNumberCell } from '../shared/HeadlessTable';
 import { DataTableFacetedFilter } from '../table/data-table-faceted-filter';
 // import { DataTableSearchBar } from '../table/data-table-searchbar';
-import { NumberHighlighter } from '../shared';
 // import type { OrderReturnTypeUnion } from '../../../types';
 import { OrderReturnType, OrderReturnTypeUnion } from '../../../types';
 import { DataTablePagination } from '../table/data-table-pagination';
+
 import { OrderTableProps } from './type';
 
 interface Props extends OrderTableProps {}
 
 export const orderColumns: ColumnDef<Order>[] = [
-  {
-    header: 'Sr No.',
-    accessorFn: (_, index) => index + 1,
-  },
   {
     header: 'Suborder Number',
     accessorKey: 'sub_order_no',
@@ -50,14 +47,7 @@ export const orderColumns: ColumnDef<Order>[] = [
   {
     header: 'Price',
     accessorKey: 'order_price',
-    cell: ({ row }) => {
-      const price = Number(row.original.order_price);
-
-      if (typeof price === null || price === undefined || Number.isNaN(price)) {
-        return <span>-:-</span>;
-      }
-      return <NumberHighlighter number={price} content={price} />;
-    },
+    cell: HighlighterNumberCell('order_price'),
   },
   // {
   //   header: 'Price',
@@ -92,8 +82,8 @@ function ReturnOrderTable({ marketplaceId }: Props) {
           returnType: filterReturnType ?? undefined,
         });
         if (isSuccess) {
-          setOrders(data.order);
-          setTotalPage(data.pageCount);
+          setOrders(data.data);
+          setTotalPage(Math.ceil(data.count / pagination.pageSize));
         }
 
         setLoading(false);
@@ -101,7 +91,7 @@ function ReturnOrderTable({ marketplaceId }: Props) {
     } else {
       setLoading(false);
     }
-  }, [marketplaceId, columnFilters, table]);
+  }, [marketplaceId, columnFilters, table, pagination]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -116,8 +106,10 @@ function ReturnOrderTable({ marketplaceId }: Props) {
           ]}
         />
       </div>
-      <HeadlessTable tableInstance={table} isLoading={isLoading} noFountMessage="Work in progress." />
-      <DataTablePagination table={table} />
+      <div className="space-y-2">
+        <HeadlessTable tableInstance={table} isLoading={isLoading} />
+        <DataTablePagination table={table} />
+      </div>
     </div>
   );
 }
