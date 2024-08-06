@@ -18,6 +18,10 @@ export const orderColumns: ColumnDef<Order>[] = [
     accessorKey: 'sub_order_no',
   },
   {
+    header: 'Awb Number',
+    accessorKey: 'awb_number',
+  },
+  {
     header: 'SKU Name',
     accessorKey: 'sku',
   },
@@ -40,7 +44,7 @@ export const orderColumns: ColumnDef<Order>[] = [
   },
 ];
 
-function PendingOrderTable({ marketplaceId }: Props) {
+function PendingOrderTable({ marketplaceId, setOrderCount }: Props) {
   // Use the useTable hook to create table instance
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(true);
@@ -66,6 +70,7 @@ function PendingOrderTable({ marketplaceId }: Props) {
         if (isSuccess) {
           setOrders(data.data);
           setTotalPage(Math.ceil(data.count / pagination.pageSize));
+          setOrderCount(data.count);
         }
 
         setLoading(false);
@@ -73,7 +78,7 @@ function PendingOrderTable({ marketplaceId }: Props) {
     } else {
       setLoading(false);
     }
-  }, [marketplaceId, pagination]);
+  }, [marketplaceId, pagination, setOrderCount]);
 
   return (
     <div className="space-y-2">

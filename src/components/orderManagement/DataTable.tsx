@@ -1,6 +1,6 @@
 'use client';
 
-import { ComponentProps, useState } from 'react';
+import { ComponentProps, useCallback, useState } from 'react';
 import { objectEntities } from '@/lib/utils';
 import CompleteOrderTable from './CompleteOrderTable';
 import PendingOrderTable from './PendingOrderTable';
@@ -43,7 +43,7 @@ const renderTabTriggers = ({ orderCountDetails }: { orderCountDetails: CountDeta
 
   return objectEntities(config).map(([key, value]) => {
     return (
-      <TabsTrigger value={key}>
+      <TabsTrigger value={key} key={key} className="flex gap-2">
         <span>{value?.label}</span>
         {orderCountDetails.tab === key && <DisplayCount>{orderCountDetails.count}</DisplayCount>}
       </TabsTrigger>
@@ -57,6 +57,24 @@ export default function DataTable({ marketplaceId }: Props) {
     tab: 'COMPLETED',
     count: 0,
   });
+
+  const setCompleteOrderCount = useCallback(
+    (count: number) => setTotalOrderCountDetails({ count, tab: 'COMPLETED' }),
+    [setTotalOrderCountDetails],
+  );
+  const setReturnOrdersCount = useCallback(
+    (count: number) => setTotalOrderCountDetails({ count, tab: 'RETURN' }),
+    [setTotalOrderCountDetails],
+  );
+  const setPendingOrderCount = useCallback(
+    (count: number) => setTotalOrderCountDetails({ count, tab: 'PENDING' }),
+    [setTotalOrderCountDetails],
+  );
+  const setIssueOrderCount = useCallback(
+    (count: number) => setTotalOrderCountDetails({ count, tab: 'ISSUE_ORDERS' }),
+    [setTotalOrderCountDetails],
+  );
+
   return (
     <Tabs
       defaultValue="COMPLETED"
@@ -67,28 +85,16 @@ export default function DataTable({ marketplaceId }: Props) {
       {/* // TODO Make this dyanamic render */}
       <TabsList>{renderTabTriggers({ orderCountDetails: totalOrderCountDetails })}</TabsList>
       <TabsContent value="COMPLETED">
-        <CompleteOrderTable
-          marketplaceId={marketplaceId}
-          setOrderCount={(count) => setTotalOrderCountDetails({ count, tab: 'COMPLETED' })}
-        />
+        <CompleteOrderTable marketplaceId={marketplaceId} setOrderCount={setCompleteOrderCount} />
       </TabsContent>
       <TabsContent value="RETURN">
-        <ReturnOrderTable
-          marketplaceId={marketplaceId}
-          setOrderCount={(count) => setTotalOrderCountDetails({ count, tab: 'RETURN' })}
-        />
+        <ReturnOrderTable marketplaceId={marketplaceId} setOrderCount={setReturnOrdersCount} />
       </TabsContent>
       <TabsContent value="PENDING">
-        <PendingOrderTable
-          marketplaceId={marketplaceId}
-          setOrderCount={(count) => setTotalOrderCountDetails({ count, tab: 'PENDING' })}
-        />
+        <PendingOrderTable marketplaceId={marketplaceId} setOrderCount={setPendingOrderCount} />
       </TabsContent>
       <TabsContent value="ISSUE_ORDERS">
-        <OrderIssuesTable
-          marketplaceId={marketplaceId}
-          setOrderCount={(count) => setTotalOrderCountDetails({ count, tab: 'ISSUE_ORDERS' })}
-        />
+        <OrderIssuesTable marketplaceId={marketplaceId} setOrderCount={setIssueOrderCount} />
       </TabsContent>
     </Tabs>
   );

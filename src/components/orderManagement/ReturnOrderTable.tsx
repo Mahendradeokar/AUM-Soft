@@ -18,6 +18,11 @@ import { OrderTableProps } from './type';
 
 interface Props extends OrderTableProps {}
 
+const returnTypeMapping = {
+  currierReturn: 'Currier Return',
+  customerReturn: 'Customer Return',
+} as any;
+
 export const orderColumns: ColumnDef<Order>[] = [
   {
     header: 'Suborder Number',
@@ -28,8 +33,11 @@ export const orderColumns: ColumnDef<Order>[] = [
     header: 'Type of return',
     accessorKey: 'order_status',
     cell: ({ row }) => {
-      const status = row.original.order_status ?? '-:-';
-      return <span>{status}</span>;
+      const { order_status: status = null } = row.original;
+      if (status) {
+        return <span>{returnTypeMapping[status]}</span>;
+      }
+      return '-:-';
     },
   },
   {
@@ -39,6 +47,11 @@ export const orderColumns: ColumnDef<Order>[] = [
   {
     header: 'Courier Partner',
     accessorKey: 'courier',
+    cell: ({ row }) => {
+      const { courier = null } = row.original;
+
+      return courier ?? '-:-';
+    },
   },
   {
     header: 'Supplier Name',
@@ -55,7 +68,7 @@ export const orderColumns: ColumnDef<Order>[] = [
   // },
 ];
 
-function ReturnOrderTable({ marketplaceId }: Props) {
+function ReturnOrderTable({ marketplaceId, setOrderCount }: Props) {
   // Use the useTable hook to create table instance
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(false);
@@ -84,6 +97,7 @@ function ReturnOrderTable({ marketplaceId }: Props) {
         if (isSuccess) {
           setOrders(data.data);
           setTotalPage(Math.ceil(data.count / pagination.pageSize));
+          setOrderCount(data.count);
         }
 
         setLoading(false);
@@ -91,7 +105,7 @@ function ReturnOrderTable({ marketplaceId }: Props) {
     } else {
       setLoading(false);
     }
-  }, [marketplaceId, columnFilters, table, pagination]);
+  }, [marketplaceId, columnFilters, table, pagination, setOrderCount]);
 
   return (
     <div className="flex flex-col gap-2">

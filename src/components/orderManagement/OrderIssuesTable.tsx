@@ -48,7 +48,7 @@ export const orderColumns: ColumnDef<Order>[] = [
   },
 ];
 
-function OrderIssuesTable({ marketplaceId }: Props) {
+function OrderIssuesTable({ marketplaceId, setOrderCount }: Props) {
   // Use the useTable hook to create table instance
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(true);
@@ -74,6 +74,7 @@ function OrderIssuesTable({ marketplaceId }: Props) {
         if (isSuccess) {
           setOrders(data.data);
           setTotalPage(Math.ceil(data.count / pagination.pageSize));
+          setOrderCount(data.count);
         }
 
         setLoading(false);
@@ -81,7 +82,7 @@ function OrderIssuesTable({ marketplaceId }: Props) {
     } else {
       setLoading(false);
     }
-  }, [marketplaceId, pagination]);
+  }, [marketplaceId, pagination, setOrderCount]);
 
   return (
     <div className="space-y-2">

@@ -82,15 +82,15 @@ export const getReturnOrders = async ({
 
 export const sendScanOrder = async ({
   orderId, // returnType,
-  accountId,
-}: {
+} // accountId,
+: {
   orderId: string;
   returnType?: OrderReturnTypeUnion | null | undefined;
-  accountId: string;
+  // accountId: string;
 }) => {
   try {
     const { data: resData } = await axiosInstance.put(`sheet-order/update`, {
-      account_id: accountId,
+      // account_id: accountId,
       order_id: orderId,
     });
     return successHandler(resData, { showNotification: false });

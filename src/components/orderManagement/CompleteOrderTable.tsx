@@ -29,7 +29,7 @@ export const orderColumns: ColumnDef<Order>[] = [
 
 interface Props extends OrderTableProps {}
 
-function CompleteOrderTable({ marketplaceId }: Props) {
+function CompleteOrderTable({ marketplaceId, setOrderCount }: Props) {
   // Use the useTable hook to create table instance
   const [completeOrder, setCompleteOrder] = useState<Order[]>([]);
   const [isLoading, setLoading] = useState(true);
@@ -55,6 +55,7 @@ function CompleteOrderTable({ marketplaceId }: Props) {
         if (isSuccess) {
           setCompleteOrder(data.data);
           setTotalPage(Math.ceil(data.count / pagination.pageSize));
+          setOrderCount(data.count);
         }
 
         setLoading(false);
@@ -62,7 +63,7 @@ function CompleteOrderTable({ marketplaceId }: Props) {
     } else {
       setLoading(false);
     }
-  }, [marketplaceId, pagination]);
+  }, [marketplaceId, pagination, setOrderCount]);
 
   return (
     <div className="space-y-2">

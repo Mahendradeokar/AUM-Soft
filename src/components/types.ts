@@ -9,4 +9,6 @@ export interface Order {
   order_price: number;
   order_status: string;
   order_date: string;
+  return_currier_partner: string;
+  awb_number: string;
 }
