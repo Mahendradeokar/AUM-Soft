@@ -8,7 +8,7 @@ import { useBarcodeScanner } from './hooks';
 import { Loader } from '../shared';
 import ScannerButton from './ScannerStatus';
 import ScanOrderTable from './ScanTable';
-import ScanInput from './ScanInput';
+import ScanInput from '../shared/ScanInput';
 // import { ScanForm } from './ScanForm';
 
 // interface OrderManageProps {

@@ -9,6 +9,7 @@ import ReturnOrderTable from './ReturnOrderTable';
 import OrderIssuesTable from './OrderIssuesTable';
 import { ReturnOrderUnionType } from '../../../types';
 import { Badge } from '../ui/badge';
+import CancelOrders from './CancelOrdersTable';
 
 type TabName = ReturnOrderUnionType;
 type Props = {
@@ -26,7 +27,7 @@ function DisplayCount({ children }: ComponentProps<'div'>) {
 }
 
 const renderTabTriggers = ({ orderCountDetails }: { orderCountDetails: CountDetailsState }) => {
-  const config: Partial<Record<TabName, { label: string }>> = {
+  const config: Record<TabName, { label: string }> = {
     COMPLETED: {
       label: 'Completed Orders',
     },
@@ -38,6 +39,9 @@ const renderTabTriggers = ({ orderCountDetails }: { orderCountDetails: CountDeta
     },
     ISSUE_ORDERS: {
       label: 'Order Issues',
+    },
+    CANCEL_ORDERS: {
+      label: 'Cancel Orders',
     },
   };
 
@@ -75,6 +79,11 @@ export default function DataTable({ marketplaceId }: Props) {
     [setTotalOrderCountDetails],
   );
 
+  const setCancelOrderCount = useCallback(
+    (count: number) => setTotalOrderCountDetails({ count, tab: 'CANCEL_ORDERS' }),
+    [setTotalOrderCountDetails],
+  );
+
   return (
     <Tabs
       defaultValue="COMPLETED"
@@ -84,6 +93,7 @@ export default function DataTable({ marketplaceId }: Props) {
     >
       {/* // TODO Make this dyanamic render */}
       <TabsList>{renderTabTriggers({ orderCountDetails: totalOrderCountDetails })}</TabsList>
+
       <TabsContent value="COMPLETED">
         <CompleteOrderTable marketplaceId={marketplaceId} setOrderCount={setCompleteOrderCount} />
       </TabsContent>
@@ -95,6 +105,9 @@ export default function DataTable({ marketplaceId }: Props) {
       </TabsContent>
       <TabsContent value="ISSUE_ORDERS">
         <OrderIssuesTable marketplaceId={marketplaceId} setOrderCount={setIssueOrderCount} />
+      </TabsContent>
+      <TabsContent value="CANCEL_ORDERS">
+        <CancelOrders marketplaceId={marketplaceId} setOrderCount={setCancelOrderCount} />
       </TabsContent>
     </Tabs>
   );

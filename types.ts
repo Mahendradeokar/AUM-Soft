@@ -3,6 +3,7 @@ export const ReturnOrderType = {
   COMPLETED: 'COMPLETED',
   RETURN: 'RETURN',
   ISSUE_ORDERS: 'ISSUE_ORDERS',
+  CANCEL_ORDERS: 'CANCEL_ORDERS',
 } as const;
 export type ReturnOrderUnionType = keyof typeof ReturnOrderType;
 
