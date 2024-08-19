@@ -41,6 +41,10 @@ const getPayloadData = (
       return {
         is_order_issue: true,
       };
+    case 'cancel_orders':
+      return {
+        status: 'cancelled',
+      };
     default:
       return false;
   }
@@ -82,8 +86,8 @@ export const getReturnOrders = async ({
 
 export const sendScanOrder = async ({
   orderId, // returnType,
-} // accountId,
-: {
+  // accountId,
+}: {
   orderId: string;
   returnType?: OrderReturnTypeUnion | null | undefined;
   // accountId: string;

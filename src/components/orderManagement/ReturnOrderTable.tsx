@@ -19,7 +19,7 @@ import { OrderTableProps } from './type';
 interface Props extends OrderTableProps {}
 
 const returnTypeMapping = {
-  currierReturn: 'Currier Return',
+  currierReturn: 'Courier Return',
   customerReturn: 'Customer Return',
 } as any;
 
@@ -46,9 +46,9 @@ export const orderColumns: ColumnDef<Order>[] = [
   },
   {
     header: 'Courier Partner',
-    accessorKey: 'courier',
+    accessorKey: 'return_currier_partner',
     cell: ({ row }) => {
-      const { courier = null } = row.original;
+      const { return_currier_partner: courier = null } = row.original;
 
       return courier ?? '-:-';
     },
@@ -60,7 +60,7 @@ export const orderColumns: ColumnDef<Order>[] = [
   {
     header: 'Price',
     accessorKey: 'order_price',
-    cell: HighlighterNumberCell('order_price'),
+    cell: HighlighterNumberCell('order_price', <>₹</>),
   },
   // {
   //   header: 'Price',

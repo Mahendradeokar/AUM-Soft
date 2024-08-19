@@ -377,38 +377,41 @@ export function UploadPaymentSheet({ openMp, closeModal }: { openMp: () => void;
   );
 }
 
-export function UploadReturnSheet({ openMp, closeModal }: { openMp: () => void; closeModal: () => void }) {
-  const [existingMarketPlaces, setExistingMarketplaces] = useState([]);
-  const [isLoading, setLoading] = useState(true);
+const returnFormSchema = z.object({
+  // dateRange: z.date({ required_error: 'Please select the date', invalid_type_error: "That's not a date!" }),
+  file: z.any().refine(() => {
+    return true;
+  }, 'File is required with a valid extension'),
+});
+
+export function UploadReturnSheet({ closeModal }: { openMp: () => void; closeModal: () => void }) {
+  // const [existingMarketPlaces, setExistingMarketplaces] = useState([]);
+  // const [isLoading, setLoading] = useState(true);
   const [sheet, setSheet] = useState(new File([], 'demo'));
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof returnFormSchema>>({
+    resolver: zodResolver(returnFormSchema),
   });
 
-  const onSubmit = useCallback(
-    async (value: z.infer<typeof formSchema>) => {
-      const formData = new FormData();
-      // const startDate = convertDateToUnix(value?.dateRange);
-      if (sheet.size === 0) {
-        form.setError('file', { message: `File is empty. Please upload another file.`, type: 'required' });
-        return;
-      }
-      formData.append('return_sheet', sheet);
-      formData.append('account_name', value.marketplaceName);
-      // formData.append('sheet_start_date', String(startDate));
-      const { isSuccess } = await returns.upload({ formData });
-      if (isSuccess) {
-        toast({
-          description: 'Payment sheet uploaded  successfully!',
-          title: 'Return Upload!',
-          variant: 'success',
-        });
-        closeModal();
-        reloadSite();
-      }
-    },
-    [sheet, closeModal, form],
-  );
+  const onSubmit = useCallback(async () => {
+    const formData = new FormData();
+    // const startDate = convertDateToUnix(value?.dateRange);
+    if (sheet.size === 0) {
+      form.setError('file', { message: `File is empty. Please upload another file.`, type: 'required' });
+      return;
+    }
+    formData.append('return_sheet', sheet);
+    // formData.append('sheet_start_date', String(startDate));
+    const { isSuccess } = await returns.upload({ formData });
+    if (isSuccess) {
+      toast({
+        description: 'Payment sheet uploaded  successfully!',
+        title: 'Return Upload!',
+        variant: 'success',
+      });
+      closeModal();
+      reloadSite();
+    }
+  }, [sheet, closeModal, form]);
 
   const onFileUpload = useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
@@ -432,24 +435,24 @@ export function UploadReturnSheet({ openMp, closeModal }: { openMp: () => void; 
     [form],
   );
 
-  useEffect(() => {
-    (async () => {
-      const { isSuccess, data } = await marketplace.getMarketplace();
-      if (isSuccess) {
-        setExistingMarketplaces(data);
-      }
+  // useEffect(() => {
+  //   (async () => {
+  //     const { isSuccess, data } = await marketplace.getMarketplace();
+  //     if (isSuccess) {
+  //       setExistingMarketplaces(data);
+  //     }
 
-      setLoading(false);
-    })();
-  }, []);
+  //     setLoading(false);
+  //   })();
+  // }, []);
   return (
     <Form {...form}>
       <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
-        {isLoading ? (
+        {/* {isLoading ? (
           <Loader className="h-auto" />
         ) : (
-          <>
-            <FormField
+          <> */}
+        {/* <FormField
               control={form.control}
               name="marketplaceName"
               render={({ field }) => (
@@ -484,9 +487,9 @@ export function UploadReturnSheet({ openMp, closeModal }: { openMp: () => void; 
                   </div>
                 </FormItem>
               )}
-            />
+            /> */}
 
-            {/* <FormField
+        {/* <FormField
               control={form.control}
               name="month"
               render={({ field }) => (
@@ -510,7 +513,7 @@ export function UploadReturnSheet({ openMp, closeModal }: { openMp: () => void; 
               )}
             /> */}
 
-            {/* <FormField
+        {/* <FormField
               control={form.control}
               name="dateRange"
               render={({ field }) => (
@@ -521,28 +524,24 @@ export function UploadReturnSheet({ openMp, closeModal }: { openMp: () => void; 
               )}
             /> */}
 
-            <FormField
-              control={form.control}
-              name="file"
-              render={() => (
-                <FormItem>
-                  <FormControl>
-                    <Input type="file" onChange={onFileUpload} id="sheetFile" />
-                  </FormControl>
-                  <div className="flex justify-between">
-                    <FormMessage />
-                    <FormDescription className="dark:text-primary text-primary">
-                      *Upload Your Return sheet
-                    </FormDescription>
-                  </div>
-                </FormItem>
-              )}
-            />
-          </>
-        )}
+        <FormField
+          control={form.control}
+          name="file"
+          render={() => (
+            <FormItem>
+              <FormControl>
+                <Input type="file" onChange={onFileUpload} id="sheetFile" />
+              </FormControl>
+              <div className="flex justify-between">
+                <FormMessage />
+                <FormDescription className="dark:text-primary text-primary">*Upload Your Return sheet</FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
 
         <Button
-          disabled={isLoading || form.formState.isSubmitting}
+          disabled={form.formState.isSubmitting}
           isLoading={form.formState.isSubmitting}
           className="w-full"
           type="submit"

@@ -7,6 +7,7 @@ import { getReturnOrders, sendScanOrder, uploadReturns } from './returns';
 import { uploadPaymentSheet } from './payment';
 import { getOrderCounts } from './general';
 import { mockApiRequest } from './mock';
+import { cancelOrder } from './cancelOrder';
 
 export const auth = {
   login,
@@ -58,4 +59,8 @@ export const general = {
 
 export const mock = {
   api: mockApiRequest,
+};
+
+export const cancel = {
+  cancelOrder,
 };

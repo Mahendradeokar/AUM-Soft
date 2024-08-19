@@ -1,6 +1,6 @@
 import { isNegative } from '@/lib/utils';
 
-export function NumberHighlighter({ number, content }: { number: number; content: number }) {
+export function NumberHighlighter({ number, content }: { number: number; content: number | React.JSX.Element }) {
   if (isNegative(number)) {
     return <span className="text-2xl font-bold text-red-500">{content}</span>;
   }

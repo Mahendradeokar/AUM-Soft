@@ -63,13 +63,23 @@ function HeadlessTable<T>({ tableInstance, isLoading, noFountMessage }: Headless
 
 export default HeadlessTable;
 
-export const HighlighterNumberCell = (fieldName: keyof Order) => {
+export const HighlighterNumberCell = (fieldName: keyof Order, icon?: React.JSX.Element) => {
   return function ({ row }: CellContext<Order, unknown>) {
     const price = Number(row.original[fieldName]);
 
     if (typeof price === null || price === undefined || Number.isNaN(price)) {
       return <span>-:-</span>;
     }
-    return <NumberHighlighter number={price} content={price} />;
+    return (
+      <NumberHighlighter
+        number={price}
+        content={
+          <>
+            {icon && icon}
+            {price}
+          </>
+        }
+      />
+    );
   };
 };
