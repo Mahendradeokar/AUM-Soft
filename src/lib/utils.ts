@@ -3,6 +3,7 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { TOKEN } from '@/common/constants';
 import { forwardRef } from 'react';
+import dayjs from 'dayjs';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -87,8 +88,50 @@ export function reloadSite() {
 export function sortArrayOfObjectsByKey(arr: any[], key: string) {
   return arr.sort((a, b) => {
     if (a[key] && b[key]) {
-      return a[key].localeCompare(b[key]);
+      return a[key][0].localeCompare(b[key]);
     }
     return 0;
   });
 }
+
+export const objectEntities = <TData extends Record<any, any>>(obj: {
+  [K in keyof TData]: TData[K];
+}): [keyof TData, TData[keyof TData]][] => Object.entries(obj) as [keyof TData, TData[keyof TData]][];
+
+type CalculateDaysAgoParams = {
+  date: number;
+  threshold?: number;
+};
+
+type FormatDateParams = {
+  date: number;
+  daysAgo: number;
+  threshold: number;
+};
+
+// Function to calculate the difference in days
+export const calculateDaysDifference = (date: number): number => {
+  const createdDate = dayjs.unix(date);
+  return dayjs().diff(createdDate, 'day');
+};
+
+export const formatUnixDate = (date: number, format: string = 'D MMMM YY'): string => {
+  return dayjs.unix(date).format(format);
+};
+
+// Function to format the date based on the difference in days and threshold
+export const formatDaysAgo = ({ date, daysAgo, threshold }: FormatDateParams): string => {
+  if (daysAgo > threshold) {
+    return formatUnixDate(date, 'D MMMM YY');
+  }
+  if (daysAgo === 0) {
+    return 'Today';
+  }
+  return `${daysAgo} days ago`;
+};
+
+// Main function that combines the above responsibilities
+export const calculateDaysAgo = ({ date, threshold = 3 }: CalculateDaysAgoParams): string => {
+  const daysAgo = calculateDaysDifference(date);
+  return formatDaysAgo({ date, daysAgo, threshold });
+};

@@ -18,12 +18,12 @@ interface Props<T extends Order> extends NecessaryProp<T>, OptionalProps<T> {
 
 export const orderColumns: ColumnDef<Order>[] = [
   {
-    header: 'Sr No.',
-    accessorFn: (_, index) => index + 1,
-  },
-  {
     header: 'Suborder Number',
     accessorKey: 'sub_order_no',
+  },
+  {
+    header: 'AWB Number',
+    accessorKey: 'awb_number',
   },
   {
     header: 'SKU Name',
@@ -31,7 +31,7 @@ export const orderColumns: ColumnDef<Order>[] = [
   },
   {
     header: 'Courier Partner',
-    accessorKey: 'courier',
+    accessorKey: 'return_currier_partner',
   },
   {
     header: 'Supplier Name',
@@ -44,7 +44,7 @@ function ScanOrderTable<T extends Order>({ data, isLoading = false }: Props<T>) 
     data,
     columns: orderColumns,
   });
-  return <HeadlessTable tableInstance={table} isLoading={isLoading} noFountMessage="Work in Progress" />;
+  return <HeadlessTable tableInstance={table} isLoading={isLoading} />;
 }
 
 export default ScanOrderTable;

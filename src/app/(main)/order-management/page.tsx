@@ -2,7 +2,8 @@
 
 import { MarketPlaceSwitcher, Statistics } from '@/components/dashboard';
 import UploadOrdersBtn from '@/components/dashboard/UploadOrdersBtn';
-import UploadPaymentBtn from '@/components/dashboard/UploadReturnBtn';
+import UploadPaymentBtn from '@/components/dashboard/UploadPaymentBtn';
+import UploadReturnBtn from '@/components/dashboard/UploadReturnBtn';
 import { DashboardTable } from '@/components/orderManagement';
 import { useState } from 'react';
 
@@ -16,6 +17,7 @@ export default function OrderManagement() {
         <div className="flex gap-3">
           <UploadOrdersBtn />
           <UploadPaymentBtn />
+          <UploadReturnBtn />
           <MarketPlaceSwitcher onSelectChange={setMarketplaceId} />
         </div>
       </div>

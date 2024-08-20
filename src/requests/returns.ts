@@ -1,4 +1,5 @@
 import { axiosInstance } from '@/config';
+import { PaginationState } from '@tanstack/react-table';
 import successHandler from './success';
 import errorHandler from './error';
 import type { OrderReturnTypeUnion, ReturnOrderUnionType } from '../../types';
@@ -40,6 +41,10 @@ const getPayloadData = (
       return {
         is_order_issue: true,
       };
+    case 'cancel_orders':
+      return {
+        status: 'cancelled',
+      };
     default:
       return false;
   }
@@ -49,13 +54,20 @@ export const getReturnOrders = async ({
   accountId,
   status,
   returnType,
+  pagination = { pageIndex: 0, pageSize: 10 },
 }: {
   accountId: string;
   status: Lowercase<ReturnOrderUnionType>;
   returnType?: OrderReturnTypeUnion;
+  pagination?: PaginationState;
 }) => {
   try {
     let params: any = { account_id: accountId };
+    if (pagination) {
+      params.limit = pagination.pageSize;
+      params.offset = pagination.pageIndex + 1;
+    }
+
     const payload = getPayloadData(status, { returnType });
 
     params = {
@@ -74,15 +86,15 @@ export const getReturnOrders = async ({
 
 export const sendScanOrder = async ({
   orderId, // returnType,
-  accountId,
+  // accountId,
 }: {
   orderId: string;
   returnType?: OrderReturnTypeUnion | null | undefined;
-  accountId: string;
+  // accountId: string;
 }) => {
   try {
     const { data: resData } = await axiosInstance.put(`sheet-order/update`, {
-      account_id: accountId,
+      // account_id: accountId,
       order_id: orderId,
     });
     return successHandler(resData, { showNotification: false });

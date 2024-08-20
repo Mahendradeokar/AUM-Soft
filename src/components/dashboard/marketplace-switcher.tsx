@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
+import { cn, sortArrayOfObjectsByKey } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import {
@@ -101,9 +101,10 @@ export default function MarketPlaceSwitcher({ className, onSelectChange }: Marke
       }
 
       const accounts = extractMPData(data);
+      const sortedAccount = sortArrayOfObjectsByKey(accounts, 'label');
       setMarketPlaceData((prev) => {
         const updated = [...prev];
-        updated[0].accounts = [...accounts];
+        updated[0].accounts = [...sortedAccount];
         return updated;
       });
     })();
@@ -117,9 +118,10 @@ export default function MarketPlaceSwitcher({ className, onSelectChange }: Marke
           return;
         }
         const accounts = extractMPData(data);
-        setMarketPlaceData((pre: any) => {
-          const updated = [{ ...pre }];
-          updated[0].accounts = accounts;
+        const sortedAccount = sortArrayOfObjectsByKey(accounts, 'label');
+        setMarketPlaceData((prev) => {
+          const updated = [...prev];
+          updated[0].accounts = [...sortedAccount];
           return updated;
         });
       })();
@@ -128,6 +130,7 @@ export default function MarketPlaceSwitcher({ className, onSelectChange }: Marke
 
   React.useEffect(() => {
     if (searchParam.has('mp')) {
+      // Will keep the query and state in sync.
       const querySelectedMp = searchParam.get('mp');
       if (querySelectedMp !== selectedAccount.value) {
         const searchParam = new URLSearchParams();

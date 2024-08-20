@@ -2,7 +2,7 @@
 
 import { Modal } from '@/components/shared';
 import { useState } from 'react';
-import { UploadOrders, UploadPaymentSheet } from './Upload';
+import { UploadOrders, UploadPaymentSheet, UploadReturnSheet } from './Upload';
 import APIKeyForm from '../marketplace/MpForm';
 import type { ModalType } from '../types';
 
@@ -25,6 +25,10 @@ const content: Record<ModalType, Record<string, string>> = {
     heading: 'Upload Payment Sheet',
     description: 'Upload payment sheet here!',
   },
+  return: {
+    heading: 'Upload Returns',
+    description: 'Upload return here!',
+  },
 };
 
 const renderModal = (name: ModalType, restProps: any) => {
@@ -35,6 +39,8 @@ const renderModal = (name: ModalType, restProps: any) => {
       return <UploadPaymentSheet {...restProps} />;
     case 'MARKETPLACE':
       return null;
+    case 'RETURN':
+      return <UploadReturnSheet {...restProps} />;
     default:
       throw new Error('Name not matched');
   }

@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import DataTable from '@/components/table';
 import { MarketPlaceSwitcher, Statistics } from '@/components/dashboard';
 import UploadOrdersBtn from '@/components/dashboard/UploadOrdersBtn';
-import UploadPaymentBtn from '@/components/dashboard/UploadReturnBtn';
+import UploadPaymentBtn from '@/components/dashboard/UploadPaymentBtn';
 
 export const metadata: Metadata = {
   title: 'Dashboard',

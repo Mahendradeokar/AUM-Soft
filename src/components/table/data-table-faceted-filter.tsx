@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Circle } from 'lucide-react';
 
 interface DataTableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;
@@ -91,17 +91,18 @@ export function DataTableFacetedFilter<TData, TValue>({
                   <CommandItem key={option.value} onSelect={() => onSelect(option, isSelected)}>
                     <div
                       className={cn(
-                        'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
+                        'mr-2 flex h-4 w-4 items-center justify-center border border-primary',
                         isSelected ? 'bg-primary text-primary-foreground' : 'opacity-50 [&_svg]:invisible',
+                        isMultiSelect ? 'rounded-sm' : 'rounded-full',
                       )}
                     >
-                      <CheckIcon className={cn('h-4 w-4')} />
+                      {isMultiSelect ? <CheckIcon className={cn('h-4 w-4')} /> : <Circle className={cn('h-4 w-4')} />}
                     </div>
                     {option.icon && <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />}
                     <span>{option.label}</span>
                     {facets?.get(option.value) && (
                       <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
-                        {facets.get(option.value)}
+                        {/* {facets.get(option.value)} // Total available count */}
                       </span>
                     )}
                   </CommandItem>
