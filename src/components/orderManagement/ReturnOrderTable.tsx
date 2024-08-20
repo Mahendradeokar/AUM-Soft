@@ -6,6 +6,7 @@ import { ColumnDef, ColumnFiltersState, PaginationState } from '@tanstack/react-
 import { useCustomTable } from '@/hooks/useCustomTable';
 import { returns } from '@/requests';
 
+import { calculateDaysAgo } from '@/lib/utils';
 import { Order } from '../types';
 import HeadlessTable, { HighlighterNumberCell } from '../shared/HeadlessTable';
 import { DataTableFacetedFilter } from '../table/data-table-faceted-filter';
@@ -61,6 +62,15 @@ export const orderColumns: ColumnDef<Order>[] = [
     header: 'Price',
     accessorKey: 'order_price',
     cell: HighlighterNumberCell('order_price', <>₹</>),
+  },
+  {
+    header: 'Created',
+    accessorKey: 'order_date',
+    cell: ({ row }) => {
+      const { order_date: createdAt } = row.original;
+      const dateOrDaysAgo = calculateDaysAgo({ date: Number(createdAt), threshold: 3 });
+      return <span>{dateOrDaysAgo}</span>;
+    },
   },
   // {
   //   header: 'Price',

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { returns } from '@/requests';
 import { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { useCustomTable } from '@/hooks/useCustomTable';
-import dayjs from 'dayjs';
+import { calculateDaysAgo, formatUnixDate } from '@/lib/utils';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
 import { DataTablePagination } from '../table/data-table-pagination';
@@ -19,7 +19,13 @@ export const orderColumns: ColumnDef<Order>[] = [
   },
   {
     header: 'Awb Number',
-    accessorKey: 'awb_number',
+    cell: ({ row }) => {
+      const { awb_number: awbNumber } = row.original;
+      if (awbNumber) {
+        return <span>{awbNumber}</span>;
+      }
+      return <span>-:-</span>;
+    },
   },
   {
     header: 'SKU Name',
@@ -34,12 +40,13 @@ export const orderColumns: ColumnDef<Order>[] = [
     accessorKey: 'order_date',
     cell: ({ row }) => {
       const { order_date: createdAt } = row.original;
-      const createdDate = dayjs.unix(Number(createdAt));
-      const daysAgo = dayjs().diff(createdDate, 'day');
-      if (daysAgo > 5) {
-        return <span>{createdDate.format('D MMMM')}</span>;
-      }
-      return <span>{daysAgo} days ago</span>;
+      const dateOrDaysAgo = calculateDaysAgo({ date: Number(createdAt), threshold: 3 });
+      const date = formatUnixDate(Number(createdAt), 'D MMMM YY');
+      return (
+        <span title={date} className="cursor-help w-full h-full">
+          {dateOrDaysAgo}
+        </span>
+      );
     },
   },
 ];

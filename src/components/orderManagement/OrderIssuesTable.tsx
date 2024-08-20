@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { returns } from '@/requests';
 import { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { useCustomTable } from '@/hooks/useCustomTable';
-import dayjs from 'dayjs';
+import { calculateDaysAgo, formatUnixDate } from '@/lib/utils';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
 import { DataTablePagination } from '../table/data-table-pagination';
@@ -33,9 +33,14 @@ export const orderColumns: ColumnDef<Order>[] = [
     header: 'Created',
     accessorKey: 'created_at',
     cell: ({ row }) => {
-      const { created_at: createdAt } = row.original;
-      const daysAgo = dayjs().diff(dayjs.unix(createdAt), 'day');
-      return <div>{daysAgo} days ago</div>;
+      const { order_date: createdAt } = row.original;
+      const dateOrDaysAgo = calculateDaysAgo({ date: Number(createdAt), threshold: 3 });
+      const date = formatUnixDate(Number(createdAt), 'D MMMM YY');
+      return (
+        <span title={date} className="cursor-help w-full h-full">
+          {dateOrDaysAgo}
+        </span>
+      );
     },
   },
   {
