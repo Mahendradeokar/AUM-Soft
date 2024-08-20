@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { returns } from '@/requests';
 import { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { useCustomTable } from '@/hooks/useCustomTable';
+import { calculateDaysAgo } from '@/lib/utils';
 import { Order } from '../types';
 import HeadlessTable from '../shared/HeadlessTable';
 import { NumberHighlighter } from '../shared';
@@ -24,6 +25,15 @@ export const orderColumns: ColumnDef<Order>[] = [
     header: 'Price',
     accessorKey: 'order_price',
     cell: ({ row }) => <NumberHighlighter number={row.original.order_price} content={row.original.order_price} />,
+  },
+  {
+    header: 'Created',
+    accessorKey: 'order_date',
+    cell: ({ row }) => {
+      const { order_date: createdAt } = row.original;
+      const dateOrDaysAgo = calculateDaysAgo({ date: Number(createdAt), threshold: 3 });
+      return <span>{dateOrDaysAgo}</span>;
+    },
   },
 ];
 
