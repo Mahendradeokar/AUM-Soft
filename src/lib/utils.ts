@@ -111,8 +111,9 @@ type FormatDateParams = {
 
 // Function to calculate the difference in days
 export const calculateDaysDifference = (date: number): number => {
-  const createdDate = dayjs.unix(date);
-  return dayjs().diff(createdDate, 'day');
+  const createdDate = dayjs.unix(date).startOf('day');
+  const today = dayjs().startOf('day');
+  return today.diff(createdDate, 'day');
 };
 
 export const formatUnixDate = (date: number, format: string = 'D MMMM YY'): string => {
@@ -127,7 +128,7 @@ export const formatDaysAgo = ({ date, daysAgo, threshold }: FormatDateParams): s
   if (daysAgo === 0) {
     return 'Today';
   }
-  return `${daysAgo} days ago`;
+  return `${daysAgo} day ago`;
 };
 
 // Main function that combines the above responsibilities
