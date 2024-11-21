@@ -6,7 +6,6 @@ export default function successHandler(res: any, options = { showNotification: f
   const statusCode: keyof typeof responseMessage = stc;
   const message = statusMessage ?? responseMessage[statusCode].message;
   const { title } = responseMessage[statusCode];
-
   if (options.showNotification) {
     toast({
       title,
