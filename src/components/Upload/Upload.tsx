@@ -235,7 +235,7 @@ export function UploadPaymentSheet({ openMp, closeModal }: { openMp: () => void;
 
   const onFileUpload = useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
-      const allowedExtensions = ['xls', 'xlsx'];
+      const allowedExtensions = ['zip'];
 
       if (e.target.files?.[0]) {
         const file = e.target.files[0];
