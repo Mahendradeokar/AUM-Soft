@@ -65,7 +65,7 @@ export const getReturnOrders = async ({
     let params: any = { account_id: accountId };
     if (pagination) {
       params.limit = pagination.pageSize;
-      params.offset = pagination.pageIndex + 1;
+      params.offset = pagination.pageIndex;
     }
 
     const payload = getPayloadData(status, { returnType });
@@ -86,8 +86,8 @@ export const getReturnOrders = async ({
 
 export const sendScanOrder = async ({
   orderId, // returnType,
-  // accountId,
-}: {
+} // accountId,
+: {
   orderId: string;
   returnType?: OrderReturnTypeUnion | null | undefined;
   // accountId: string;

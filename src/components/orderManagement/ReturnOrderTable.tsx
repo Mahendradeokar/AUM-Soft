@@ -103,6 +103,7 @@ function ReturnOrderTable({ marketplaceId, setOrderCount }: Props) {
           accountId: marketplaceId,
           status: 'return',
           returnType: filterReturnType ?? undefined,
+          pagination,
         });
         if (isSuccess) {
           setOrders(data.data);
