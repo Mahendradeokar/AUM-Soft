@@ -4,8 +4,8 @@ import * as React from 'react';
 
 import type { ToastActionElement, ToastProps } from '@/components/ui/toast';
 
-const TOAST_LIMIT = 10;
-const TOAST_REMOVE_DELAY = 1000000;
+const TOAST_LIMIT = 1;
+const TOAST_REMOVE_DELAY = 300;
 
 export type ToasterToast = ToastProps & {
   id: string;
@@ -77,7 +77,6 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         toasts: [action.toast, ...state.toasts].slice(0, TOAST_LIMIT),
       };
-
     case 'UPDATE_TOAST':
       return {
         ...state,

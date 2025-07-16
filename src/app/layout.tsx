@@ -4,6 +4,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
 import Script from 'next/script';
+import Nudge from '@/components/Nudge';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}');
         `}
           </Script>
+          <Nudge className="xl:hidden">Please view the site in desktop for better experiences</Nudge>
           {children}
         </ThemeProvider>
         <Toaster />
