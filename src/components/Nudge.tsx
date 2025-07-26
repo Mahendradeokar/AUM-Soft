@@ -6,7 +6,7 @@ type NudgeProps = React.HTMLAttributes<HTMLDivElement> & {
 
 export default function Nudge({ className, children, ...props }: NudgeProps) {
   return (
-    <div className={`xl:hidden text-sm bg-yellow-200 text-black ${className ?? ''}`} {...props}>
+    <div className={`text-sm bg-yellow-200 text-black ${className ?? ''}`} {...props}>
       <p className="text-center">{children}</p>
     </div>
   );
